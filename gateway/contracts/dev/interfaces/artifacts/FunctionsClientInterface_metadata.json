@@ -1,0 +1,82 @@
+{
+	"compiler": {
+		"version": "0.8.17+commit.8df45f5f"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "requestId",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes",
+						"name": "response",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "err",
+						"type": "bytes"
+					}
+				],
+				"name": "handleOracleFulfillment",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {
+				"handleOracleFulfillment(bytes32,bytes,bytes)": {
+					"params": {
+						"err": "Aggregated error either from the user code or from the execution pipeline. Either response or error parameter will be set, but never both.",
+						"requestId": "The requestId returned by FunctionsClient.sendRequest().",
+						"response": "Aggregated response from the user code."
+					}
+				}
+			},
+			"title": "Chainlink Functions client interface.",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"handleOracleFulfillment(bytes32,bytes,bytes)": {
+					"notice": "Chainlink Functions response handler called by the designated transmitter node in an OCR round."
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"dev/interfaces/FunctionsClientInterface.sol": "FunctionsClientInterface"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"dev/interfaces/FunctionsClientInterface.sol": {
+			"keccak256": "0xe1a1cd28844da5ac804d05a72d0a024a1b35d90b7bfad57e1ae9605da01d34da",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a9a7277615a685ef0eb55db2c909e0af3bac2143216a10729ce1234f4f835bba",
+				"dweb:/ipfs/Qmf16vpigTCvN86GSrUY7sR4VHbCSAVthDHdHGFNGD74ts"
+			]
+		}
+	},
+	"version": 1
+}

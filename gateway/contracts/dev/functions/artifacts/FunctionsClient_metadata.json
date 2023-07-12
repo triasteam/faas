@@ -1,0 +1,207 @@
+{
+	"compiler": {
+		"version": "0.8.17+commit.8df45f5f"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "EmptyRequestData",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "RequestIsAlreadyPending",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "SenderIsNotRegistry",
+				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "requestId",
+						"type": "bytes32"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "requestingContract",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "requestInitiator",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint64",
+						"name": "subscriptionId",
+						"type": "uint64"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "subscriptionOwner",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					}
+				],
+				"name": "OracleRequest",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "id",
+						"type": "bytes32"
+					}
+				],
+				"name": "RequestFulfilled",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "id",
+						"type": "bytes32"
+					}
+				],
+				"name": "RequestSent",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "requestId",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes",
+						"name": "response",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "err",
+						"type": "bytes"
+					}
+				],
+				"name": "handleOracleFulfillment",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {
+				"handleOracleFulfillment(bytes32,bytes,bytes)": {
+					"params": {
+						"err": "Aggregated error either from the user code or from the execution pipeline. Either response or error parameter will be set, but never both.",
+						"requestId": "The requestId returned by FunctionsClient.sendRequest().",
+						"response": "Aggregated response from the user code."
+					}
+				}
+			},
+			"title": "The Chainlink Functions client contract",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"handleOracleFulfillment(bytes32,bytes,bytes)": {
+					"notice": "Chainlink Functions response handler called by the designated transmitter node in an OCR round."
+				}
+			},
+			"notice": "Contract writers can inherit this contract in order to create Chainlink Functions requests",
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"dev/functions/FunctionsClient.sol": "FunctionsClient"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"dev/functions/Functions.sol": {
+			"keccak256": "0x003968103f0a16719cd94bb3712e47e2fa9bcf8ec9750c8460a89d5a8aa0ec94",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://59fb4e620bf70a792fd7f3c47697f5ab149dbab50593496b0d511cac455c50e3",
+				"dweb:/ipfs/QmNmLgJZmdbWsDeBk3sU8AZF1sVm6FDwtW7puze8pkJzeP"
+			]
+		},
+		"dev/functions/FunctionsClient.sol": {
+			"keccak256": "0x793f2d81c2c0cddfde763f7e234ceb72779f7dcfabc2ab58f72facc04c48f021",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://15c98692e7e2da4208f1ef2aa1164f17c888e2c3d541f7ccf5c410a437b89aff",
+				"dweb:/ipfs/QmWBVNpCjQsTkkXJhbyh4qcTR5aEAhrMha2iTJzkRJdGhz"
+			]
+		},
+		"dev/interfaces/FunctionsClientInterface.sol": {
+			"keccak256": "0xe1a1cd28844da5ac804d05a72d0a024a1b35d90b7bfad57e1ae9605da01d34da",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a9a7277615a685ef0eb55db2c909e0af3bac2143216a10729ce1234f4f835bba",
+				"dweb:/ipfs/Qmf16vpigTCvN86GSrUY7sR4VHbCSAVthDHdHGFNGD74ts"
+			]
+		},
+		"dev/interfaces/FunctionsOracleInterface.sol": {
+			"keccak256": "0xdf718c57d58ce28df47079e675a9b94afd7f69879583c7404bd8400bd1755865",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://956dbfc276a9b0330a85f496d4291818bbf5602922882cf5283b68c6fb9d4d43",
+				"dweb:/ipfs/QmZRbzRrbZXK7Q5kP2VRHUyFYBCEKyByHShFXHvTa6F3xD"
+			]
+		},
+		"dev/vendor/@ensdomains/buffer/0.1.0/Buffer.sol": {
+			"keccak256": "0x136790eb689cbbeeddac95a2cba37d1537018ecc20c090f83359ad74b65c166e",
+			"license": "BSD-2-Clause",
+			"urls": [
+				"bzz-raw://238b528d38c1abde9a5b1bd03493b6ba7783bda8401a5e090dc799e41bda52e4",
+				"dweb:/ipfs/QmW3eQyUZ591vJkfsdxupGd594ES3XDc9pSXRZCKmsGBiY"
+			]
+		},
+		"dev/vendor/solidity-cborutils/2.0.0/CBOR.sol": {
+			"keccak256": "0x899020e1a773e6c6c4d52619db3f25b9ed479d41db109b71ed4a2401312e78f5",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://eba667deb04c88b34e5645f578874216eb730db3bf2bc0136f054d0498ee9481",
+				"dweb:/ipfs/QmdPu97HGiBsfMLauU22FFkfUJ2zNF4c8r4C7FFcvw1Jth"
+			]
+		}
+	},
+	"version": 1
+}

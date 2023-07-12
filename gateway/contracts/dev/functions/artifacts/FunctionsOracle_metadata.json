@@ -1,0 +1,238 @@
+{
+	"compiler": {
+		"version": "0.8.17+commit.8df45f5f"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "EmptyBillingRegistry",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "EmptyPublicKey",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "EmptyRequestData",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InconsistentReportData",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "UnauthorizedPublicKeyChange",
+				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "requestId",
+						"type": "bytes32"
+					}
+				],
+				"name": "InvalidRequestID",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "requestId",
+						"type": "bytes32"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "requestingContract",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "requestInitiator",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint64",
+						"name": "subscriptionId",
+						"type": "uint64"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "subscriptionOwner",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					}
+				],
+				"name": "OracleRequest",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "requestId",
+						"type": "bytes32"
+					}
+				],
+				"name": "OracleResponse",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "requestId",
+						"type": "bytes32"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "reason",
+						"type": "string"
+					}
+				],
+				"name": "UserCallbackError",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "requestId",
+						"type": "bytes32"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "lowLevelData",
+						"type": "bytes"
+					}
+				],
+				"name": "UserCallbackRawError",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint64",
+						"name": "subscriptionId",
+						"type": "uint64"
+					},
+					{
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					},
+					{
+						"internalType": "uint32",
+						"name": "gasLimit",
+						"type": "uint32"
+					}
+				],
+				"name": "sendRequest",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"details": "THIS CONTRACT HAS NOT GONE THROUGH ANY SECURITY REVIEW. DO NOT USE IN PROD.",
+			"kind": "dev",
+			"methods": {
+				"sendRequest(uint64,bytes,uint32)": {
+					"params": {
+						"data": "Encoded Chainlink Functions request data, use FunctionsClient API to encode a request",
+						"gasLimit": "Gas limit for the fulfillment callback",
+						"subscriptionId": "A unique subscription ID allocated by billing system, a client can make requests from different contracts referencing the same subscription"
+					},
+					"returns": {
+						"_0": "requestId A unique request identifier (unique per DON)"
+					}
+				}
+			},
+			"stateVariables": {
+				"__gap": {
+					"details": "This empty reserved space is put in place to allow future versions to add new variables without shifting down storage in the inheritance chain. See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps"
+				}
+			},
+			"title": "Functions Oracle contract",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"sendRequest(uint64,bytes,uint32)": {
+					"notice": "Sends a request (encoded as data) using the provided subscriptionId"
+				}
+			},
+			"notice": "Contract that nodes of a Decentralized Oracle Network (DON) interact with",
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"dev/functions/FunctionsOracle.sol": "FunctionsOracle"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"dev/functions/FunctionsOracle.sol": {
+			"keccak256": "0xe4cdb5c972ae2053be16a69a5dfabd2f4dd2ca36ed722e5228f0b9613ac510fe",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e04441d29c6d6a3de448949e92704edbb491c87636709a525c981a3e10c81a8b",
+				"dweb:/ipfs/QmZyJkD8A7WnDdqx4ejWVcTKdyCcXA9s9CfKAbaXd9tZda"
+			]
+		},
+		"dev/interfaces/FunctionsOracleInterface.sol": {
+			"keccak256": "0xdf718c57d58ce28df47079e675a9b94afd7f69879583c7404bd8400bd1755865",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://956dbfc276a9b0330a85f496d4291818bbf5602922882cf5283b68c6fb9d4d43",
+				"dweb:/ipfs/QmZRbzRrbZXK7Q5kP2VRHUyFYBCEKyByHShFXHvTa6F3xD"
+			]
+		}
+	},
+	"version": 1
+}
