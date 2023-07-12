@@ -1,0 +1,91 @@
+{
+	"compiler": {
+		"version": "0.8.17+commit.8df45f5f"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "uint64",
+						"name": "subscriptionId",
+						"type": "uint64"
+					},
+					{
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					},
+					{
+						"internalType": "uint32",
+						"name": "gasLimit",
+						"type": "uint32"
+					}
+				],
+				"name": "sendRequest",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {
+				"sendRequest(uint64,bytes,uint32)": {
+					"params": {
+						"data": "Encoded Chainlink Functions request data, use FunctionsClient API to encode a request",
+						"gasLimit": "Gas limit for the fulfillment callback",
+						"subscriptionId": "A unique subscription ID allocated by billing system, a client can make requests from different contracts referencing the same subscription"
+					},
+					"returns": {
+						"_0": "requestId A unique request identifier (unique per DON)"
+					}
+				}
+			},
+			"title": "Chainlink Functions oracle interface.",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"sendRequest(uint64,bytes,uint32)": {
+					"notice": "Sends a request (encoded as data) using the provided subscriptionId"
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"dev/interfaces/FunctionsOracleInterface.sol": "FunctionsOracleInterface"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"dev/interfaces/FunctionsOracleInterface.sol": {
+			"keccak256": "0xdf718c57d58ce28df47079e675a9b94afd7f69879583c7404bd8400bd1755865",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://956dbfc276a9b0330a85f496d4291818bbf5602922882cf5283b68c6fb9d4d43",
+				"dweb:/ipfs/QmZRbzRrbZXK7Q5kP2VRHUyFYBCEKyByHShFXHvTa6F3xD"
+			]
+		}
+	},
+	"version": 1
+}
