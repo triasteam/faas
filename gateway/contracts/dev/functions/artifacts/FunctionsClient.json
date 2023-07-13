@@ -74,49 +74,6 @@
 				{
 					"indexed": true,
 					"internalType": "bytes32",
-					"name": "requestId",
-					"type": "bytes32"
-				},
-				{
-					"indexed": false,
-					"internalType": "address",
-					"name": "requestingContract",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"internalType": "address",
-					"name": "requestInitiator",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"internalType": "uint64",
-					"name": "subscriptionId",
-					"type": "uint64"
-				},
-				{
-					"indexed": false,
-					"internalType": "address",
-					"name": "subscriptionOwner",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"internalType": "bytes",
-					"name": "data",
-					"type": "bytes"
-				}
-			],
-			"name": "OracleRequest",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"internalType": "bytes32",
 					"name": "id",
 					"type": "bytes32"
 				}

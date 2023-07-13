@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.17+commit.8df45f5f"
+		"version": "0.8.7+commit.e28d00a7"
 	},
 	"language": "Solidity",
 	"output": {
@@ -19,49 +19,6 @@
 				"inputs": [],
 				"name": "SenderIsNotRegistry",
 				"type": "error"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": true,
-						"internalType": "bytes32",
-						"name": "requestId",
-						"type": "bytes32"
-					},
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "requestingContract",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "requestInitiator",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint64",
-						"name": "subscriptionId",
-						"type": "uint64"
-					},
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "subscriptionOwner",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "bytes",
-						"name": "data",
-						"type": "bytes"
-					}
-				],
-				"name": "OracleRequest",
-				"type": "event"
 			},
 			{
 				"anonymous": false,
@@ -163,11 +120,11 @@
 			]
 		},
 		"dev/functions/FunctionsClient.sol": {
-			"keccak256": "0x793f2d81c2c0cddfde763f7e234ceb72779f7dcfabc2ab58f72facc04c48f021",
+			"keccak256": "0xae6c7bff8b15880090d033a0dd0f0b44225b9e782cfbee5476995bd2ddf3face",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://15c98692e7e2da4208f1ef2aa1164f17c888e2c3d541f7ccf5c410a437b89aff",
-				"dweb:/ipfs/QmWBVNpCjQsTkkXJhbyh4qcTR5aEAhrMha2iTJzkRJdGhz"
+				"bzz-raw://6ca1cc02ab781dd930a9860bcf61034c957b47e1e9aac305e189a555d2cbe09d",
+				"dweb:/ipfs/QmSSBsMYHhm9esGSTXKrm5AyTbFVva4X8Rbep2i9ZoJ6Lx"
 			]
 		},
 		"dev/interfaces/FunctionsClientInterface.sol": {

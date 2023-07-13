@@ -1,10 +1,21 @@
 {
 	"compiler": {
-		"version": "0.8.17+commit.8df45f5f"
+		"version": "0.8.7+commit.e28d00a7"
 	},
 	"language": "Solidity",
 	"output": {
 		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "oracle",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
 			{
 				"inputs": [],
 				"name": "EmptyArgs",
@@ -293,11 +304,11 @@
 	},
 	"sources": {
 		"FunctionsConsumer.sol": {
-			"keccak256": "0xcfe3771cfdf907423c085c5cb61dbeb5de8a68fd30632d6d05910ad90619de4b",
+			"keccak256": "0xcdd3675e5a2b5b118ae74f963ac157b2b0ef5b90d8c7e6c8e1725b3e7176299e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://82e554c767c72bd519cc1eaf2e9fba301e05685fca681d257fe5cf9d29c0e180",
-				"dweb:/ipfs/QmcLkFjjvjuwPrSo23MTckgxKJfVhXJG7zxGMGsJKWh5rp"
+				"bzz-raw://7c72ef75ed9421d84151999099ccefca5223b86ee5f31f91467f6d3d15c65276",
+				"dweb:/ipfs/QmVhPLDRWYHAFYnDtqegUxCUotXu7ZZCssvmELoRmUcVmG"
 			]
 		},
 		"dev/functions/Functions.sol": {
@@ -309,11 +320,11 @@
 			]
 		},
 		"dev/functions/FunctionsClient.sol": {
-			"keccak256": "0x793f2d81c2c0cddfde763f7e234ceb72779f7dcfabc2ab58f72facc04c48f021",
+			"keccak256": "0x5ca3957fbae37e117e6a1d7c912b0f7c04d85643e6897be5600b8afd8e189106",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://15c98692e7e2da4208f1ef2aa1164f17c888e2c3d541f7ccf5c410a437b89aff",
-				"dweb:/ipfs/QmWBVNpCjQsTkkXJhbyh4qcTR5aEAhrMha2iTJzkRJdGhz"
+				"bzz-raw://acf4a4608400eb1855a5829483f3545cf293e7dfb022ef6f022080a18451dfad",
+				"dweb:/ipfs/QmcXt8XbqFEWoaM4ckfZYLqm7ZYwQDyUxMAx8eKFJ2jQwW"
 			]
 		},
 		"dev/interfaces/FunctionsClientInterface.sol": {
