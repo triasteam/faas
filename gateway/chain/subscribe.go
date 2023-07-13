@@ -1,4 +1,4 @@
-package handlers
+package chain
 
 import (
 	"context"
@@ -11,21 +11,24 @@ import (
 )
 
 type ChainSubscribe struct {
-	contractAddr string
-	ethCli       *ethclient.Client
+	contractAddrs []string
+	ethCli        *ethclient.Client
 }
 
 func (cs ChainSubscribe) watch() {
 
-	contractAddress := common.HexToAddress(cs.contractAddr)
+	var hexAddr []common.Address
+	for _, addr := range cs.contractAddrs {
+		hexAddr = append(hexAddr, common.HexToAddress(addr))
+	}
 
 	query := ethereum.FilterQuery{
-		Addresses: []common.Address{contractAddress},
+		Addresses: hexAddr,
 	}
 	logs := make(chan types.Log)
 	sub, err := cs.ethCli.SubscribeFilterLogs(context.Background(), query, logs)
 	if err != nil {
-		//logger.Fatal("failed to start watching eth", "err", err)
+		log.Fatal("failed to start watching eth", "err", err)
 	}
 
 	for {

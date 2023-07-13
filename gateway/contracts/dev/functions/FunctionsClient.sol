@@ -14,7 +14,7 @@ abstract contract FunctionsClient is FunctionsClientInterface{
   mapping(bytes32 => address) internal s_pendingRequests;
 
   event RequestSent(bytes32 indexed id);
-  event RequestFulfilled(bytes32 indexed id);
+  event RequestFulfilled(bytes32 indexed id,bytes result, bytes err);
 
   error SenderIsNotRegistry();
   error EmptyRequestData();
@@ -23,6 +23,7 @@ abstract contract FunctionsClient is FunctionsClientInterface{
   constructor(address oracle) {
     setOracle(oracle);
   }
+
   /**
    * @notice Sets the stored Oracle address
    * @param oracle The address of Functions Oracle contract
@@ -45,7 +46,7 @@ abstract contract FunctionsClient is FunctionsClientInterface{
   ) internal returns (bytes32) {
 
     bytes32 requestId = s_oracle.sendRequest(subscriptionId, Functions.encodeCBOR(req), gasLimit);
-    s_pendingRequests[requestId] = address(0x01);
+    s_pendingRequests[requestId] = tx.origin;
     emit RequestSent(requestId);
     return requestId;
   }
@@ -66,7 +67,9 @@ abstract contract FunctionsClient is FunctionsClientInterface{
     bytes memory err
   ) external override recordFulfillment(requestId) {
     fulfillRequest(requestId, response, err);
+    emit RequestFulfilled(requestId, response, err);
   }
+
   /**
    * @dev Reverts if the sender is not the oracle that serviced the request.
    * Emits RequestFulfilled event.
@@ -77,9 +80,10 @@ abstract contract FunctionsClient is FunctionsClientInterface{
       revert SenderIsNotRegistry();
     }
     delete s_pendingRequests[requestId];
-    emit RequestFulfilled(requestId);
+   
     _;
   }
+
   /**
    * @dev Reverts if the request is already pending
    * @param requestId The request ID for fulfillment

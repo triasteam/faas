@@ -28,6 +28,18 @@
 						"internalType": "bytes32",
 						"name": "id",
 						"type": "bytes32"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "result",
+						"type": "bytes"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "err",
+						"type": "bytes"
 					}
 				],
 				"name": "RequestFulfilled",
@@ -120,11 +132,11 @@
 			]
 		},
 		"dev/functions/FunctionsClient.sol": {
-			"keccak256": "0xae6c7bff8b15880090d033a0dd0f0b44225b9e782cfbee5476995bd2ddf3face",
+			"keccak256": "0x85ca6ae377a5397d24a59665bf0780c6550aad7d19115f5e297d84a503f4688b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6ca1cc02ab781dd930a9860bcf61034c957b47e1e9aac305e189a555d2cbe09d",
-				"dweb:/ipfs/QmSSBsMYHhm9esGSTXKrm5AyTbFVva4X8Rbep2i9ZoJ6Lx"
+				"bzz-raw://02a384150fba7a6b55a3ee4ddd4727d878db6bb69261caf1c113749fed477090",
+				"dweb:/ipfs/QmWfeiJ5PyNRKUZqyAjxqvosCqhGTccAg58qkZEZYXbySY"
 			]
 		},
 		"dev/interfaces/FunctionsClientInterface.sol": {

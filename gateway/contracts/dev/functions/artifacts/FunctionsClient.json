@@ -76,6 +76,18 @@
 					"internalType": "bytes32",
 					"name": "id",
 					"type": "bytes32"
+				},
+				{
+					"indexed": false,
+					"internalType": "bytes",
+					"name": "result",
+					"type": "bytes"
+				},
+				{
+					"indexed": false,
+					"internalType": "bytes",
+					"name": "err",
+					"type": "bytes"
 				}
 			],
 			"name": "RequestFulfilled",
