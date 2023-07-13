@@ -82,51 +82,20 @@
 					{
 						"indexed": true,
 						"internalType": "bytes32",
-						"name": "requestId",
+						"name": "id",
 						"type": "bytes32"
-					},
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "requestingContract",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "requestInitiator",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint64",
-						"name": "subscriptionId",
-						"type": "uint64"
-					},
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "subscriptionOwner",
-						"type": "address"
 					},
 					{
 						"indexed": false,
 						"internalType": "bytes",
-						"name": "data",
+						"name": "result",
 						"type": "bytes"
-					}
-				],
-				"name": "OracleRequest",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
+					},
 					{
-						"indexed": true,
-						"internalType": "bytes32",
-						"name": "id",
-						"type": "bytes32"
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "err",
+						"type": "bytes"
 					}
 				],
 				"name": "RequestFulfilled",
@@ -320,11 +289,11 @@
 			]
 		},
 		"dev/functions/FunctionsClient.sol": {
-			"keccak256": "0x5ca3957fbae37e117e6a1d7c912b0f7c04d85643e6897be5600b8afd8e189106",
+			"keccak256": "0x85ca6ae377a5397d24a59665bf0780c6550aad7d19115f5e297d84a503f4688b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://acf4a4608400eb1855a5829483f3545cf293e7dfb022ef6f022080a18451dfad",
-				"dweb:/ipfs/QmcXt8XbqFEWoaM4ckfZYLqm7ZYwQDyUxMAx8eKFJ2jQwW"
+				"bzz-raw://02a384150fba7a6b55a3ee4ddd4727d878db6bb69261caf1c113749fed477090",
+				"dweb:/ipfs/QmWfeiJ5PyNRKUZqyAjxqvosCqhGTccAg58qkZEZYXbySY"
 			]
 		},
 		"dev/interfaces/FunctionsClientInterface.sol": {

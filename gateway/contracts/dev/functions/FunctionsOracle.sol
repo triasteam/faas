@@ -17,10 +17,10 @@ contract FunctionsOracle is FunctionsOracleInterface {
     address subscriptionOwner,
     bytes data
   );
-  event OracleResponse(bytes32 indexed requestId);
-  event UserCallbackError(bytes32 indexed requestId, string reason);
-  event UserCallbackRawError(bytes32 indexed requestId, bytes lowLevelData);
-  event InvalidRequestID(bytes32 indexed requestId);
+  // event OracleResponse(bytes32 indexed requestId);
+  // event UserCallbackError(bytes32 indexed requestId, string reason);
+  // event UserCallbackRawError(bytes32 indexed requestId, bytes lowLevelData);
+  // event InvalidRequestID(bytes32 indexed requestId);
 
   error EmptyRequestData();
   error InconsistentReportData();
@@ -30,17 +30,20 @@ contract FunctionsOracle is FunctionsOracleInterface {
 
 
   /**
-   * @inheritdoc FunctionsOracleInterface
+   *  
    */
   function sendRequest(
     uint64 subscriptionId,
     bytes calldata data,
     uint32 gasLimit
   ) external override returns (bytes32) {
+
     if (data.length == 0) {
       revert EmptyRequestData();
     }
-    bytes32 requestId = bytes32("123456");
+
+    bytes32 requestId = computeRequestId(msg.sender, tx.origin, subscriptionId,0);
+
     emit OracleRequest(
       requestId,
       msg.sender,
@@ -52,6 +55,14 @@ contract FunctionsOracle is FunctionsOracleInterface {
     return requestId;
   }
 
+  function computeRequestId(
+    address nodeAddr,
+    address client,
+    uint64 subscriptionId,
+    uint64 nonce
+  ) private pure returns (bytes32) {
+    return keccak256(abi.encode(nodeAddr, client, subscriptionId, nonce));
+  }
   /**
    * @dev This empty reserved space is put in place to allow future versions to add new
    * variables without shifting down storage in the inheritance chain.
