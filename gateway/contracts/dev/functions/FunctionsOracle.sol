@@ -41,7 +41,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
     if (data.length == 0) {
       revert EmptyRequestData();
     }
-
+  // msg.sender, tx.origin 反了
     bytes32 requestId = computeRequestId(msg.sender, tx.origin, subscriptionId,0);
 
     emit OracleRequest(
