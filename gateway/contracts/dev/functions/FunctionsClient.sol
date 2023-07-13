@@ -16,21 +16,20 @@ abstract contract FunctionsClient is FunctionsClientInterface{
   event RequestSent(bytes32 indexed id);
   event RequestFulfilled(bytes32 indexed id);
 
-  event OracleRequest(
-    bytes32 indexed requestId,
-    address requestingContract,
-    address requestInitiator,
-    uint64 subscriptionId,
-    address subscriptionOwner,
-    bytes data
-  );
-
   error SenderIsNotRegistry();
   error EmptyRequestData();
   error RequestIsAlreadyPending();
 
-
-
+  constructor(address oracle) {
+    setOracle(oracle);
+  }
+  /**
+   * @notice Sets the stored Oracle address
+   * @param oracle The address of Functions Oracle contract
+   */
+  function setOracle(address oracle) internal {
+    s_oracle = FunctionsOracleInterface(oracle);
+  }
 
   /**
    * @notice Sends a Chainlink Functions request to the stored oracle address
