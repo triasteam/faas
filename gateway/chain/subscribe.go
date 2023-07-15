@@ -27,7 +27,7 @@ type Subscriber struct {
 	oracleClient       *actor.FunctionOracle
 
 	renewChan   chan struct{}
-	dailEthDone chan ethereum.Subscription
+	dailEthDone chan struct{}
 	locker      sync.RWMutex
 }
 
@@ -38,7 +38,7 @@ func NewSubscriber(functionClientAddr, functionOracleAddr, nodeAddr string) *Sub
 		functionOracleAddr: functionOracleAddr,
 		ethAddr:            nodeAddr,
 		renewChan:          make(chan struct{}),
-		dailEthDone:        make(chan ethereum.Subscription),
+		dailEthDone:        make(chan struct{}),
 		locker:             sync.RWMutex{},
 	}
 }
@@ -79,8 +79,8 @@ func (cs *Subscriber) retryDailEth(addr string) {
 			return nil
 		},
 		retry.Attempts(0),
-		retry.Delay(50*time.Millisecond),
-		retry.MaxDelay(3*time.Second),
+		retry.Delay(time.Second),
+		retry.MaxDelay(2*time.Second),
 	)
 	dur := time.Since(start)
 	if err != nil {
@@ -99,6 +99,7 @@ func (cs *Subscriber) ConnectLoop() {
 					panic("resubscribe channel is closed")
 				}
 				cs.retryDailEth(cs.ethAddr)
+				cs.dailEthDone <- struct{}{}
 
 			}
 		}
@@ -117,9 +118,12 @@ func (cs *Subscriber) watch() {
 		isRenewed bool
 	)
 
+	timer := time.NewTicker(time.Second)
+	defer timer.Stop()
 	for {
 		for !isRenewed {
 			logger.Info("############# not found chain log event subscriber, resubscribe")
+			cs.renewChan <- struct{}{}
 			select {
 			case <-cs.dailEthDone:
 				err = retry.Do(
@@ -135,19 +139,17 @@ func (cs *Subscriber) watch() {
 						return nil
 					},
 					retry.Attempts(5),
-					retry.Delay(100*time.Millisecond),
-					retry.MaxDelay(300*time.Millisecond),
+					retry.Delay(500*time.Millisecond),
+					retry.MaxDelay(time.Second),
 				)
 				if err != nil {
 					logger.Error("retry exception during watching", "err", err)
+				} else {
+					logger.Info("############# finish to resubscribe")
 				}
-
-			default:
-				cs.renewChan <- struct{}{}
 			}
 		}
 
-		logger.Info("############# finish to resubscribe")
 		select {
 		case err = <-sub.Err():
 			logger.Error("failed to watch eth", "err", err)
