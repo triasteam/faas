@@ -1,14 +1,14 @@
 package chain
 
 import (
-	"bytes"
 	"context"
+	"encoding/hex"
 	"sync"
 	"time"
 
-	"github.com/avast/retry-go/v4"
-	"github.com/fxamacker/cbor/v2"
+	"github.com/openfaas/faas/gateway/chain/cbor"
 
+	"github.com/avast/retry-go/v4"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -168,7 +168,9 @@ func (cs *Subscriber) watch() {
 }
 
 func (cs *Subscriber) selectEvent(vLog types.Log) (interface{}, error) {
-	var data interface{}
+	var (
+		data interface{}
+	)
 
 	switch vLog.Topics[0].Hex() {
 	case RequestFulfilledSignature:
@@ -190,19 +192,15 @@ func (cs *Subscriber) selectEvent(vLog types.Log) (interface{}, error) {
 		if err != nil {
 			return nil, err
 		}
-		logger.Debug("request raw data", "data", string(sent.Data))
-		logger.Info("parse sent function request", "resp", sent)
-		data = sent
-		//cbor.Unmarshal()
-		var dataBytes []byte
-		dec := cbor.NewDecoder(bytes.NewReader(dataBytes))
+		logger.Debug("request raw data", "log data", string(sent.Data), "hex req data", hex.EncodeToString(sent.Data))
 
-		err = dec.Decode(sent.Data)
+		data = sent
+		reqRawDataMap, err := cbor.ParseDietCBOR(sent.Data)
 		if err != nil {
 			logger.Error("failed to decode contract request", "err", err)
 			return nil, err
 		}
-		logger.Info("decode requested data", "raw ", string(dataBytes))
+		logger.Info("decode requested data", "raw ", reqRawDataMap)
 	default:
 		return nil, errors.Errorf("not support event, topic:%s", vLog.Topics[0].Hex())
 	}

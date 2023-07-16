@@ -14,6 +14,9 @@ github.com/btcsuite/btcd/btcec/v2/ecdsa
 # github.com/cespare/xxhash/v2 v2.2.0
 ## explicit; go 1.11
 github.com/cespare/xxhash/v2
+# github.com/davecgh/go-spew v1.1.1
+## explicit
+github.com/davecgh/go-spew/spew
 # github.com/deckarep/golang-set/v2 v2.1.0
 ## explicit; go 1.18
 github.com/deckarep/golang-set/v2
@@ -136,6 +139,9 @@ github.com/openfaas/nats-queue-worker/nats
 # github.com/pkg/errors v0.9.1
 ## explicit
 github.com/pkg/errors
+# github.com/pmezard/go-difflib v1.0.0
+## explicit
+github.com/pmezard/go-difflib/difflib
 # github.com/prometheus/client_golang v1.16.0
 ## explicit; go 1.17
 github.com/prometheus/client_golang/prometheus
@@ -158,6 +164,10 @@ github.com/prometheus/procfs/internal/util
 ## explicit
 github.com/shirou/gopsutil/cpu
 github.com/shirou/gopsutil/internal/common
+# github.com/stretchr/testify v1.8.3
+## explicit; go 1.20
+github.com/stretchr/testify/assert
+github.com/stretchr/testify/require
 # github.com/tklauser/go-sysconf v0.3.5
 ## explicit; go 1.13
 github.com/tklauser/go-sysconf
@@ -271,3 +281,6 @@ google.golang.org/protobuf/types/known/timestamppb
 # gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce
 ## explicit
 gopkg.in/natefinch/npipe.v2
+# gopkg.in/yaml.v3 v3.0.1
+## explicit
+gopkg.in/yaml.v3
