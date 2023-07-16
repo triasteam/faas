@@ -160,6 +160,7 @@ func (cs *Subscriber) watch() {
 			data, err := cs.selectEvent(vLog)
 			if err != nil {
 				logger.Error(err.Error())
+				continue
 			}
 			logger.Info("watched event successfully", "data", data)
 		}
