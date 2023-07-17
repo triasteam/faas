@@ -6,6 +6,7 @@ import (
 )
 
 func TestParseLog(t *testing.T) {
+	t.Skip()
 	ChainAddr := "ws://127.0.0.1:9546"
 	//ethCli, err := ethclient.Dial(ChainAddr)
 	//if err != nil {

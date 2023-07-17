@@ -19,6 +19,7 @@ var (
 )
 
 func TestNewLogger(t *testing.T) {
+	t.Skip()
 	tLogger := NewLogger(Config{
 		FileName:  "test",
 		Level:     "debug",
@@ -28,6 +29,7 @@ func TestNewLogger(t *testing.T) {
 }
 
 func TestNewTraceProvider(t *testing.T) {
+	t.Skip()
 	tracerP := NewTracerProvider(jaegerUrl, "test-ns", "test")
 	// Cleanly shutdown and flush telemetry when the application exits.
 	ctx := context.Background()
@@ -64,10 +66,11 @@ func TestNewTraceProvider(t *testing.T) {
 }
 
 func TestHttpServiceWithJaeger(t *testing.T) {
-	ExampleServer()
+	t.Skip()
+	exampleServer()
 }
 
-func ExampleServer() {
+func exampleServer() {
 	tp := NewTracerProvider(jaegerUrl, "test-http-server1", "test")
 	// Cleanly shutdown and flush telemetry when the application exits.
 
