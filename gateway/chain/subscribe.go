@@ -193,6 +193,11 @@ func (cs *Subscriber) selectEvent(vLog types.Log) (interface{}, error) {
 		if err != nil {
 			return nil, err
 		}
+		logger.Info("receive request event",
+			"requestId", sent.RequestId,
+			"requestContract", sent.RequestingContract,
+			"requestInitiator", sent.RequestInitiator)
+
 		logger.Debug("request raw data", "log data", string(sent.Data), "hex req data", hex.EncodeToString(sent.Data))
 
 		data = sent
@@ -206,4 +211,20 @@ func (cs *Subscriber) selectEvent(vLog types.Log) (interface{}, error) {
 		return nil, errors.Errorf("not support event, topic:%s", vLog.Topics[0].Hex())
 	}
 	return data, nil
+}
+
+type CodeLanguage uint
+
+const (
+	NotSupportedLang CodeLanguage = iota
+	Golang
+)
+
+type Request struct {
+	//Location     codeLocation
+	//Location     secretsLocation
+	language CodeLanguage
+	source   string // Source code for Location.Inline or url for Location.Remote
+	secrets  []byte // Encrypted secrets blob for Location.Inline or url for Location.Remote
+	args     []string
 }
