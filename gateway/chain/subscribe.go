@@ -3,9 +3,12 @@ package chain
 import (
 	"context"
 	"encoding/hex"
+	"encoding/json"
+	"fmt"
 	"sync"
 	"time"
 
+	"github.com/mitchellh/mapstructure"
 	"github.com/openfaas/faas/gateway/chain/cbor"
 
 	"github.com/avast/retry-go/v4"
@@ -18,6 +21,11 @@ import (
 	"github.com/pkg/errors"
 )
 
+type Publish interface {
+	Send([]byte) error
+	Receive() chan []byte
+}
+
 type Subscriber struct {
 	functionClientAddr string
 	functionOracleAddr string
@@ -29,6 +37,8 @@ type Subscriber struct {
 	renewChan   chan struct{}
 	dailEthDone chan struct{}
 	locker      sync.RWMutex
+
+	publishChannel chan []byte
 }
 
 func NewSubscriber(functionClientAddr, functionOracleAddr, nodeAddr string) *Subscriber {
@@ -40,6 +50,7 @@ func NewSubscriber(functionClientAddr, functionOracleAddr, nodeAddr string) *Sub
 		renewChan:          make(chan struct{}),
 		dailEthDone:        make(chan struct{}),
 		locker:             sync.RWMutex{},
+		publishChannel:     make(chan []byte, 100),
 	}
 }
 
@@ -104,6 +115,14 @@ func (cs *Subscriber) ConnectLoop() {
 			}
 		}
 	}()
+}
+
+func (cs *Subscriber) Send(data []byte) error {
+	cs.publishChannel <- data
+	return nil
+}
+func (cs *Subscriber) Receive() chan []byte {
+	return cs.publishChannel
 }
 
 func (cs *Subscriber) watch() {
@@ -207,24 +226,58 @@ func (cs *Subscriber) selectEvent(vLog types.Log) (interface{}, error) {
 			return nil, err
 		}
 		logger.Info("decode requested data", "raw ", reqRawDataMap)
+		err = callFunction(cs, reqRawDataMap)
+		if err != nil {
+			logger.Error("failed to call function", "err", err)
+			return nil, err
+		}
+
 	default:
 		return nil, errors.Errorf("not support event, topic:%s", vLog.Topics[0].Hex())
 	}
 	return data, nil
 }
 
-type CodeLanguage uint
+//type CodeLanguage uint
+//
+//const (
+//	NotSupportedLang CodeLanguage = iota
+//	Golang
+//)
+//
+//type Request struct {
+//	//Location     codeLocation
+//	//Location     secretsLocation
+//	language CodeLanguage
+//	source   string // Source code for Location.Inline or url for Location.Remote
+//	secrets  []byte // Encrypted secrets blob for Location.Inline or url for Location.Remote
+//	args     []string
+//}
 
-const (
-	NotSupportedLang CodeLanguage = iota
-	Golang
-)
+type FunctionRequest struct {
+	FunctionName string
+	FunctionUrl  string
+	Body         map[string]string
+}
 
-type Request struct {
-	//Location     codeLocation
-	//Location     secretsLocation
-	language CodeLanguage
-	source   string // Source code for Location.Inline or url for Location.Remote
-	secrets  []byte // Encrypted secrets blob for Location.Inline or url for Location.Remote
-	args     []string
+func callFunction(pub Publish, reqRawDataMap map[string]interface{}) error {
+	fnUrl := fmt.Sprintf("http://127.0.0.1:31112/funtion/%v", reqRawDataMap["source"])
+	fnBodyMap := map[string]string{}
+	err := mapstructure.Decode(reqRawDataMap["args"], &fnBodyMap)
+	if err != nil {
+		logger.Error("failed to decode request args to map", "err", err)
+		return err
+	}
+
+	fr := FunctionRequest{
+		FunctionUrl: fnUrl,
+		Body:        fnBodyMap,
+	}
+	bodyBytes, err := json.Marshal(fr)
+	if err != nil {
+		logger.Error("failed to decode request args to map", "err", err)
+		return err
+	}
+	_ = pub.Send(bodyBytes)
+	return nil
 }
