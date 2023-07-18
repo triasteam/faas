@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/openfaas/faas/gateway/chain/logger"
+
 	"github.com/gorilla/mux"
 	"github.com/openfaas/faas-provider/auth"
 	"github.com/openfaas/faas/gateway/handlers"
@@ -31,10 +33,10 @@ func main() {
 	config, configErr := readConfig.Read(osEnv)
 
 	if configErr != nil {
-		log.Fatalln(configErr)
+		logger.Fatal(configErr.Error())
 	}
 	if !config.UseExternalProvider() {
-		log.Fatalln("You must provide an external provider via 'functions_provider_url' env-var.")
+		logger.Fatal("You must provide an external provider via 'functions_provider_url' env-var.")
 	}
 
 	fmt.Printf("OpenFaaS Gateway - Community Edition (CE)\n"+
@@ -57,7 +59,7 @@ func main() {
 		credentials, readErr = reader.Read()
 
 		if readErr != nil {
-			log.Panicf(readErr.Error())
+			logger.Fatal(readErr.Error())
 		}
 	}
 
@@ -70,6 +72,7 @@ func main() {
 	exporter.StartServiceWatcher(*config.FunctionsProviderURL, metricsOptions, "func", servicePollInterval)
 	metrics.RegisterExporter(exporter)
 
+	logger.Debug("config", "FunctionsProviderURL", config.FunctionsProviderURL.String())
 	reverseProxy := types.NewHTTPClientReverseProxy(config.FunctionsProviderURL,
 		config.UpstreamTimeout,
 		config.MaxIdleConns,
@@ -148,8 +151,8 @@ func main() {
 	}
 
 	if config.UseNATS() {
-		log.Println("Async enabled: Using NATS Streaming")
-		log.Println("Deprecation Notice: NATS Streaming is no longer maintained and won't receive updates from June 2023")
+		logger.Info("Async enabled: Using NATS Streaming")
+		logger.Info("Deprecation Notice: NATS Streaming is no longer maintained and won't receive updates from June 2023")
 
 		maxReconnect := 60
 		interval := time.Second * 2
@@ -158,7 +161,7 @@ func main() {
 
 		natsQueue, queueErr := natsHandler.CreateNATSQueue(*config.NATSAddress, *config.NATSPort, *config.NATSClusterName, *config.NATSChannel, defaultNATSConfig)
 		if queueErr != nil {
-			log.Fatalln(queueErr)
+			logger.Fatal(queueErr.Error())
 		}
 
 		faasHandlers.QueuedProxy = handlers.MakeNotifierWrapper(

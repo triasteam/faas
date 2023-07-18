@@ -12,7 +12,6 @@ import (
 
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
-	"gorm.io/gorm/logger"
 )
 
 var (
@@ -102,7 +101,7 @@ func exampleServer() {
 
 		_, _ = MakeOutgoingRequest(ctx, r, tpP, "new request")
 		tLogger.For(ctx).Error("haha2", "msg3", "this is s test")
-		logger.Info(r.Header)
+		log.Println(r.Header)
 	}))
 	defer ts.Close()
 

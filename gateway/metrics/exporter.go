@@ -14,10 +14,9 @@ import (
 	"path"
 	"time"
 
-	"log"
-
 	"github.com/openfaas/faas-provider/auth"
 	types "github.com/openfaas/faas-provider/types"
+	"github.com/openfaas/faas/gateway/chain/logger"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
@@ -86,7 +85,7 @@ func (e *Exporter) StartServiceWatcher(endpointURL url.URL, metricsOptions Metri
 
 				namespaces, err := e.getNamespaces(endpointURL)
 				if err != nil {
-					log.Println(err)
+					logger.Info(err.Error())
 				}
 
 				services := []types.FunctionStatus{}
@@ -95,7 +94,7 @@ func (e *Exporter) StartServiceWatcher(endpointURL url.URL, metricsOptions Metri
 				if len(namespaces) == 0 {
 					services, err = e.getFunctions(endpointURL, e.FunctionNamespace)
 					if err != nil {
-						log.Println(err)
+						logger.Info(err.Error())
 						continue
 					}
 					e.services = services
@@ -103,7 +102,7 @@ func (e *Exporter) StartServiceWatcher(endpointURL url.URL, metricsOptions Metri
 					for _, namespace := range namespaces {
 						nsServices, err := e.getFunctions(endpointURL, namespace)
 						if err != nil {
-							log.Println(err)
+							logger.Info(err.Error())
 							continue
 						}
 						services = append(services, nsServices...)

@@ -9,6 +9,7 @@ require (
 	github.com/fxamacker/cbor/v2 v2.4.0
 	github.com/gorilla/mux v1.8.0
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
+	github.com/mitchellh/mapstructure v1.4.1
 	github.com/openfaas/faas-provider v0.24.0
 	github.com/openfaas/nats-queue-worker v0.0.0-20230303171817-9dfe6fa61387
 	github.com/pkg/errors v0.9.1

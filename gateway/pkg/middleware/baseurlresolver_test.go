@@ -5,11 +5,12 @@ package middleware
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"strings"
 	"testing"
+
+	"github.com/openfaas/faas/gateway/chain/logger"
 )
 
 func Test_SingleHostBaseURLResolver_BuildURL(t *testing.T) {
@@ -117,7 +118,7 @@ func TestFunctionAsHostBaseURLResolver_WithNamespaceOverride(t *testing.T) {
 	newSuffix := strings.Replace(suffix, namespace, newNS, -1)
 
 	want := fmt.Sprintf("http://hello.%s:%d", newSuffix, watchdogPort)
-	log.Println(want)
+	logger.Info(want)
 	if resolved != want {
 		t.Logf("r.Resolve failed, want: %s got: %s", want, resolved)
 		t.Fail()
@@ -132,7 +133,7 @@ func TestFunctionAsHostBaseURLResolver_WithSuffix(t *testing.T) {
 
 	resolved := r.Resolve(req)
 	want := fmt.Sprintf("http://hello.%s:%d", suffix, watchdogPort)
-	log.Println(want)
+	logger.Info(want)
 	if resolved != want {
 		t.Logf("r.Resolve failed, want: %s got: %s", want, resolved)
 		t.Fail()

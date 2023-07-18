@@ -1,8 +1,9 @@
 package scaling
 
 import (
-	"log"
 	"sync"
+
+	"github.com/openfaas/faas/gateway/chain/logger"
 )
 
 type Call struct {
@@ -51,7 +52,7 @@ func (s *SingleFlight) Do(key string, f func() (interface{}, error)) (interface{
 	s.lock.Unlock()
 
 	go func() {
-		log.Printf("Miss, so running: %s", key)
+		logger.Info("Miss, so running", "key", key)
 		res, err := f()
 
 		s.lock.Lock()

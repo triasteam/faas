@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"strconv"
 
 	types "github.com/openfaas/faas-provider/types"
+	"github.com/openfaas/faas/gateway/chain/logger"
 )
 
 // AddMetricsHandler wraps a http.HandlerFunc with Prometheus metrics
@@ -23,7 +23,7 @@ func AddMetricsHandler(handler http.HandlerFunc, prometheusQuery PrometheusQuery
 		upstreamCall := recorder.Result()
 
 		if upstreamCall.Body == nil {
-			log.Println("Upstream call had empty body.")
+			logger.Info("Upstream call had empty body.")
 			return
 		}
 
@@ -31,9 +31,9 @@ func AddMetricsHandler(handler http.HandlerFunc, prometheusQuery PrometheusQuery
 		upstreamBody, _ := ioutil.ReadAll(upstreamCall.Body)
 
 		if recorder.Code != http.StatusOK {
-			log.Printf("List functions responded with code %d, body: %s",
+			logger.Info("List functions responded", "code",
 				recorder.Code,
-				string(upstreamBody))
+				"body", string(upstreamBody))
 			http.Error(w, string(upstreamBody), recorder.Code)
 			return
 		}
@@ -42,7 +42,7 @@ func AddMetricsHandler(handler http.HandlerFunc, prometheusQuery PrometheusQuery
 
 		err := json.Unmarshal(upstreamBody, &functions)
 		if err != nil {
-			log.Printf("Metrics upstream error: %s, value: %s", err, string(upstreamBody))
+			logger.Info("Metrics upstream error", "error", err, "value", string(upstreamBody))
 
 			http.Error(w, "Unable to parse list of functions from provider", http.StatusInternalServerError)
 			return
@@ -62,14 +62,14 @@ func AddMetricsHandler(handler http.HandlerFunc, prometheusQuery PrometheusQuery
 			results, err := prometheusQuery.Fetch(url.QueryEscape(q))
 			if err != nil {
 				// log the error but continue, the mixIn will correctly handle the empty results.
-				log.Printf("Error querying Prometheus: %s\n", err.Error())
+				logger.Info("Error querying Prometheus", "err", err.Error())
 			}
 			mixIn(&functions, results)
 		}
 
 		bytesOut, err := json.Marshal(functions)
 		if err != nil {
-			log.Printf("Error serializing functions: %s", err)
+			logger.Info("Error serializing functions", "err", err)
 			http.Error(w, "Error writing response after adding metrics", http.StatusInternalServerError)
 			return
 		}
@@ -95,7 +95,7 @@ func mixIn(functions *[]types.FunctionStatus, metrics *VectorQueryResponse) {
 				case string:
 					f, err := strconv.ParseFloat(value, 64)
 					if err != nil {
-						log.Printf("add_metrics: unable to convert value %q for metric: %s", value, err)
+						logger.Info("add_metrics: unable to convert value for metric:", "value", value, "metric", err)
 						continue
 					}
 					(*functions)[i].InvocationCount += f

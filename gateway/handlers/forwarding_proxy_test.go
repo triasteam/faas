@@ -96,13 +96,14 @@ func Test_buildUpstreamRequest_XForwardedHostHeader_Empty_WhenNotSet(t *testing.
 
 	reader := bytes.NewReader(srcBytes)
 	request, err := http.NewRequest(http.MethodPost, "/function", reader)
-
+	fmt.Println("request.host ", request.Host)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	upstream := buildUpstreamRequest(request, "/", "/")
 
+	fmt.Println("request.host ", request.Host, " Forwarded host ", upstream.Header.Get("X-Forwarded-Host"))
 	if request.Host != upstream.Header.Get("X-Forwarded-Host") {
 		t.Errorf("Host - want: %s, got: %s", request.Host, upstream.Header.Get("X-Forwarded-Host"))
 	}
@@ -120,6 +121,8 @@ func Test_buildUpstreamRequest_XForwardedHostHeader_WhenAlreadyPresent(t *testin
 
 	request.Header.Set("X-Forwarded-Host", headerValue)
 	upstream := buildUpstreamRequest(request, "/", "/")
+
+	fmt.Println("request.host ", request.Host, " Forwarded host ", upstream.Header.Get("X-Forwarded-Host"))
 
 	if upstream.Header.Get("X-Forwarded-Host") != headerValue {
 		t.Errorf("X-Forwarded-Host - want: %s, got: %s", headerValue, upstream.Header.Get("X-Forwarded-Host"))

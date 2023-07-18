@@ -6,13 +6,13 @@ package handlers
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"strings"
 
 	"github.com/gorilla/mux"
 	ftypes "github.com/openfaas/faas-provider/types"
+	"github.com/openfaas/faas/gateway/chain/logger"
 	"github.com/openfaas/faas/gateway/metrics"
 	"github.com/openfaas/faas/gateway/pkg/middleware"
 
@@ -55,7 +55,7 @@ func MakeQueuedProxy(metrics metrics.MetricOptions, queuer ftypes.RequestQueuer,
 		}
 
 		if err = queuer.Queue(req); err != nil {
-			log.Printf("Error queuing request: %v", err)
+			logger.Info("Error queuing request", "err", err)
 			http.Error(w, fmt.Sprintf("Error queuing request: %s", err.Error()),
 				http.StatusInternalServerError)
 			return

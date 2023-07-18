@@ -7,10 +7,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"math"
 	"net/http"
 
+	"github.com/openfaas/faas/gateway/chain/logger"
 	"github.com/openfaas/faas/gateway/pkg/middleware"
 	"github.com/openfaas/faas/gateway/requests"
 	"github.com/openfaas/faas/gateway/scaling"
@@ -32,7 +32,7 @@ func MakeAlertHandler(service scaling.ServiceQuery, defaultNamespace string) htt
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("Unable to read alert."))
 
-			log.Println(err)
+			logger.Info(err.Error())
 			return
 		}
 
@@ -40,13 +40,13 @@ func MakeAlertHandler(service scaling.ServiceQuery, defaultNamespace string) htt
 		if err := json.Unmarshal(body, &req); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("Unable to parse alert, bad format."))
-			log.Println(err)
+			logger.Info(err.Error())
 			return
 		}
 
 		errors := handleAlerts(req, service, defaultNamespace)
 		if len(errors) > 0 {
-			log.Println(errors)
+			logger.Info("gen errors", "err", errors)
 			var errorOutput string
 			for d, err := range errors {
 				errorOutput += fmt.Sprintf("[%d] %s\n", d, err)
@@ -64,7 +64,7 @@ func handleAlerts(req requests.PrometheusAlert, service scaling.ServiceQuery, de
 	var errors []error
 	for _, alert := range req.Alerts {
 		if err := scaleService(alert, service, defaultNamespace); err != nil {
-			log.Println(err)
+			logger.Info(err.Error())
 			errors = append(errors, err)
 		}
 	}
@@ -84,7 +84,7 @@ func scaleService(alert requests.PrometheusInnerAlert, service scaling.ServiceQu
 
 			newReplicas := CalculateReplicas(status, queryResponse.Replicas, uint64(queryResponse.MaxReplicas), queryResponse.MinReplicas, queryResponse.ScalingFactor)
 
-			log.Printf("[Scale] function=%s %d => %d.\n", serviceName, queryResponse.Replicas, newReplicas)
+			logger.Info("[Scale]", "function", serviceName, "old replicas", queryResponse.Replicas, "new replicas", newReplicas)
 			if newReplicas == queryResponse.Replicas {
 				return nil
 			}
