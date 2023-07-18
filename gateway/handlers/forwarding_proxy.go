@@ -16,6 +16,8 @@ import (
 	"github.com/openfaas/faas/gateway/types"
 )
 
+const CallID = "X-Call-Id"
+
 // MakeForwardingProxyHandler create a handler which forwards HTTP requests
 func MakeForwardingProxyHandler(proxy *types.HTTPClientReverseProxy,
 	notifiers []HTTPNotifier,
@@ -36,14 +38,14 @@ func MakeForwardingProxyHandler(proxy *types.HTTPClientReverseProxy,
 		for _, notifier := range notifiers {
 			notifier.Notify(r.Method, requestURL, originalURL, http.StatusProcessing, "started", time.Second*0)
 		}
-
+		logger.Info("proxy handler", "uid", r.Header.Get(CallID), "requestURL", requestURL, "originalURL", originalURL, "baseURL")
 		start := time.Now()
 
 		statusCode, err := forwardRequest(w, r, proxy.Client, baseURL, requestURL, proxy.Timeout, writeRequestURI, serviceAuthInjector)
 
 		seconds := time.Since(start)
 		if err != nil {
-			logger.Info("error with upstream request to", "url", requestURL, "err", err.Error())
+			logger.Error("error with upstream request to", "uid", r.Header.Get(CallID), "url", requestURL, "err", err.Error())
 		}
 
 		for _, notifier := range notifiers {
@@ -87,6 +89,8 @@ func forwardRequest(w http.ResponseWriter,
 	timeout time.Duration,
 	writeRequestURI bool,
 	serviceAuthInjector middleware.AuthInjector) (int, error) {
+
+	logger.Info("forward request", "uid", r.Header.Get(CallID), "baseURL", requestURL, "requestURL", requestURL)
 
 	upstreamReq := buildUpstreamRequest(r, baseURL, requestURL)
 	if upstreamReq.Body != nil {
