@@ -4,12 +4,13 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/openfaas/faas/gateway/chain/logger"
 )
 
 const crlf = "\r\n"
@@ -39,20 +40,20 @@ func NewLogHandlerFunc(logProvider url.URL, timeout time.Duration) http.HandlerF
 
 		cn, ok := w.(http.CloseNotifier)
 		if !ok {
-			log.Println("LogHandler: response is not a CloseNotifier, required for streaming response")
+			logger.Info("LogHandler: response is not a CloseNotifier, required for streaming response")
 			http.NotFound(w, r)
 			return
 		}
 
 		wf, ok := w.(writerFlusher)
 		if !ok {
-			log.Println("LogHandler: response is not a Flusher, required for streaming response")
+			logger.Info("LogHandler: response is not a Flusher, required for streaming response")
 			http.NotFound(w, r)
 			return
 		}
 
 		if writeRequestURI {
-			log.Printf("LogProxy: proxying request to %s %s\n", logRequest.Host, logRequest.URL.String())
+			logger.Info("LogProxy: proxying request to", "host", logRequest.Host, "url", logRequest.URL.String())
 		}
 
 		ctx, cancel := context.WithCancel(ctx)
@@ -61,7 +62,7 @@ func NewLogHandlerFunc(logProvider url.URL, timeout time.Duration) http.HandlerF
 
 		logResp, err := http.DefaultTransport.RoundTrip(logRequest)
 		if err != nil {
-			log.Printf("LogProxy: forwarding request failed: %s\n", err.Error())
+			logger.Info("LogProxy: forwarding request failed: ", "err", err.Error())
 			http.Error(w, "log request failed", http.StatusInternalServerError)
 			return
 		}
@@ -77,11 +78,11 @@ func NewLogHandlerFunc(logProvider url.URL, timeout time.Duration) http.HandlerF
 			select {
 			case err := <-copyNotify(&unbufferedWriter{wf}, logResp.Body):
 				if err != nil {
-					log.Printf("LogProxy: error while copy: %s", err.Error())
+					logger.Info("LogProxy: error while copy:", "err", err.Error())
 					return
 				}
 			case <-cn.CloseNotify():
-				log.Printf("LogProxy: client connection closed")
+				logger.Info("LogProxy: client connection closed")
 				return
 			}
 		default:

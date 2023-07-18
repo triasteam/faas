@@ -5,8 +5,8 @@ package scaling
 
 import (
 	"fmt"
-	"log"
 
+	"github.com/openfaas/faas/gateway/chain/logger"
 	"golang.org/x/sync/singleflight"
 )
 
@@ -44,7 +44,7 @@ func (c *CachedFunctionQuery) Get(fn string, ns string) (ServiceQueryResponse, e
 	if !hit {
 		key := fmt.Sprintf("GetReplicas-%s.%s", fn, ns)
 		queryResponse, err, _ := c.singleFlight.Do(key, func() (interface{}, error) {
-			log.Printf("Cache miss - run GetReplicas")
+			logger.Info("Cache miss - run GetReplicas")
 			// If there is a cache miss, then fetch the value from the provider API
 			return c.serviceQuery.GetReplicas(fn, ns)
 		})

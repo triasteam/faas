@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net"
 	"net/http"
 	"net/url"
@@ -16,6 +15,7 @@ import (
 	"time"
 
 	types "github.com/openfaas/faas-provider/types"
+	"github.com/openfaas/faas/gateway/chain/logger"
 	middleware "github.com/openfaas/faas/gateway/pkg/middleware"
 	"github.com/openfaas/faas/gateway/scaling"
 )
@@ -82,7 +82,7 @@ func (s ExternalServiceQuery) GetReplicas(serviceName, serviceNamespace string) 
 
 	res, err := s.ProxyClient.Do(req)
 	if err != nil {
-		log.Println(urlPath, err)
+		logger.Info(err.Error(), "url", urlPath)
 		return emptyServiceQueryResponse, err
 
 	}
@@ -95,14 +95,14 @@ func (s ExternalServiceQuery) GetReplicas(serviceName, serviceNamespace string) 
 
 	if res.StatusCode == http.StatusOK {
 		if err := json.Unmarshal(bytesOut, &function); err != nil {
-			log.Printf("Unable to unmarshal: %q, %s", string(bytesOut), err)
+			logger.Info("Unable to unmarshal", "bytes", string(bytesOut), "err", err)
 			return emptyServiceQueryResponse, err
 		}
 
-		// log.Printf("GetReplicas [%s.%s] took: %fs", serviceName, serviceNamespace, time.Since(start).Seconds())
+		// logger.Info("GetReplicas [%s.%s] took: %fs", serviceName, serviceNamespace, time.Since(start).Seconds())
 
 	} else {
-		log.Printf("GetReplicas [%s.%s] took: %.4fs, code: %d\n", serviceName, serviceNamespace, time.Since(start).Seconds(), res.StatusCode)
+		logger.Info("GetReplicas", "serviceName", serviceName, "serviceNamespace", serviceNamespace, "cost time", time.Since(start).Seconds(), "ret code", res.StatusCode)
 		return emptyServiceQueryResponse, fmt.Errorf("server returned non-200 status code (%d) for function, %s, body: %s", res.StatusCode, serviceName, string(bytesOut))
 	}
 
@@ -161,7 +161,7 @@ func (s ExternalServiceQuery) SetReplicas(serviceName, serviceNamespace string, 
 	res, err := s.ProxyClient.Do(req)
 
 	if err != nil {
-		log.Println(urlPath, err)
+		logger.Info(err.Error(), "url", urlPath)
 	} else {
 		if res.Body != nil {
 			defer res.Body.Close()
@@ -172,8 +172,8 @@ func (s ExternalServiceQuery) SetReplicas(serviceName, serviceNamespace string, 
 		err = fmt.Errorf("error scaling HTTP code %d, %s", res.StatusCode, urlPath)
 	}
 
-	log.Printf("SetReplicas [%s.%s] took: %.4fs",
-		serviceName, serviceNamespace, time.Since(start).Seconds())
+	logger.Info("SetReplicas",
+		"serviceName", serviceName, "serviceNamespace", serviceNamespace, "cost time", time.Since(start).Seconds())
 
 	return err
 }
@@ -188,7 +188,7 @@ func extractLabelValue(rawLabelValue string, fallback uint64) uint64 {
 	value, err := strconv.Atoi(rawLabelValue)
 
 	if err != nil {
-		log.Printf("Provided label value %s should be of type uint", rawLabelValue)
+		logger.Info("Provided label value should be of type uint", "value", rawLabelValue)
 		return fallback
 	}
 

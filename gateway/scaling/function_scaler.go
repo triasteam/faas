@@ -2,9 +2,9 @@ package scaling
 
 import (
 	"fmt"
-	"log"
 	"time"
 
+	"github.com/openfaas/faas/gateway/chain/logger"
 	"github.com/openfaas/faas/gateway/types"
 	"golang.org/x/sync/singleflight"
 )
@@ -124,8 +124,8 @@ func (f *FunctionScaler) Scale(functionName, namespace string) FunctionScaleResu
 
 			if _, err, _ := f.SingleFlight.Do(setKey, func() (interface{}, error) {
 
-				log.Printf("[Scale %d/%d] function=%s 0 => %d requested",
-					attempt, int(f.Config.SetScaleRetries), functionName, minReplicas)
+				logger.Info("[Scale]  0 =>",
+					"attempt", attempt, "Retries", int(f.Config.SetScaleRetries), "functionName", functionName, "minReplicas", minReplicas)
 
 				if err := f.Config.ServiceQuery.SetReplicas(functionName, namespace, minReplicas); err != nil {
 					return nil, fmt.Errorf("unable to scale function [%s], err: %s", functionName, err)
@@ -175,7 +175,7 @@ func (f *FunctionScaler) Scale(functionName, namespace string) FunctionScaleResu
 
 		if queryResponse.AvailableReplicas > 0 {
 
-			log.Printf("[Ready] function=%s waited for - %.4fs", functionName, totalTime.Seconds())
+			logger.Info("[Ready]", "function", functionName, "cost time", totalTime.Seconds())
 
 			return FunctionScaleResult{
 				Error:     nil,

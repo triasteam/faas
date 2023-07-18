@@ -1,8 +1,9 @@
 package types
 
 import (
-	"log"
 	"time"
+
+	"github.com/openfaas/faas/gateway/chain/logger"
 )
 
 type routine func(attempt int) error
@@ -14,7 +15,7 @@ func Retry(r routine, label string, attempts int, interval time.Duration) error 
 		res := r(i)
 		if res != nil {
 			err = res
-			log.Printf("[%s]: %d/%d, error: %s\n", label, i, attempts, res)
+			logger.Info("retry times", "label", label, "times", i, "attempts", attempts, "error", res)
 		} else {
 			err = nil
 			break

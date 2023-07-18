@@ -7,11 +7,11 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"time"
 
+	"github.com/openfaas/faas/gateway/chain/logger"
 	"github.com/openfaas/faas/gateway/pkg/middleware"
 	"github.com/openfaas/faas/gateway/types"
 )
@@ -43,7 +43,7 @@ func MakeForwardingProxyHandler(proxy *types.HTTPClientReverseProxy,
 
 		seconds := time.Since(start)
 		if err != nil {
-			log.Printf("error with upstream request to: %s, %s\n", requestURL, err.Error())
+			logger.Info("error with upstream request to", "url", requestURL, "err", err.Error())
 		}
 
 		for _, notifier := range notifiers {
@@ -98,7 +98,7 @@ func forwardRequest(w http.ResponseWriter,
 	}
 
 	if writeRequestURI {
-		log.Printf("forwardRequest: %s %s\n", upstreamReq.Host, upstreamReq.URL.String())
+		logger.Info("forwardRequest", "host", upstreamReq.Host, "url", upstreamReq.URL.String())
 	}
 
 	ctx, cancel := context.WithTimeout(r.Context(), timeout)

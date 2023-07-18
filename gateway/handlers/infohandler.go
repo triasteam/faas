@@ -6,11 +6,11 @@ package handlers
 import (
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 	"net/http/httptest"
 
 	providerTypes "github.com/openfaas/faas-provider/types"
+	"github.com/openfaas/faas/gateway/chain/logger"
 	"github.com/openfaas/faas/gateway/types"
 	"github.com/openfaas/faas/gateway/version"
 )
@@ -29,7 +29,7 @@ func MakeInfoHandler(h http.Handler) http.HandlerFunc {
 		upstreamBody, _ := io.ReadAll(upstreamCall.Body)
 		err := json.Unmarshal(upstreamBody, &provider)
 		if err != nil {
-			log.Printf("Error unmarshalling provider json from body %s. Error %s\n", upstreamBody, err.Error())
+			logger.Info("Error unmarshalling provider json from body", "body", upstreamBody, "err", err.Error())
 		}
 
 		gatewayInfo := &types.GatewayInfo{
@@ -44,7 +44,7 @@ func MakeInfoHandler(h http.Handler) http.HandlerFunc {
 
 		jsonOut, marshalErr := json.Marshal(gatewayInfo)
 		if marshalErr != nil {
-			log.Printf("Error during unmarshal of gateway info request %s\n", marshalErr.Error())
+			logger.Info("Error during unmarshal of gateway info request", "err", marshalErr.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}

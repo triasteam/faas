@@ -5,9 +5,9 @@ package handlers
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
+	"github.com/openfaas/faas/gateway/chain/logger"
 	"github.com/openfaas/faas/gateway/pkg/middleware"
 	"github.com/openfaas/faas/gateway/scaling"
 )
@@ -27,7 +27,7 @@ func MakeScalingHandler(next http.HandlerFunc, scaler scaling.FunctionScaler, co
 
 		if !res.Found {
 			errStr := fmt.Sprintf("error finding function %s.%s: %s", functionName, namespace, res.Error.Error())
-			log.Printf("Scaling: %s\n", errStr)
+			logger.Info("Scaling", "err", errStr)
 
 			w.WriteHeader(http.StatusNotFound)
 			w.Write([]byte(errStr))
@@ -36,7 +36,7 @@ func MakeScalingHandler(next http.HandlerFunc, scaler scaling.FunctionScaler, co
 
 		if res.Error != nil {
 			errStr := fmt.Sprintf("error finding function %s.%s: %s", functionName, namespace, res.Error.Error())
-			log.Printf("Scaling: %s\n", errStr)
+			logger.Info("Scaling", "err", errStr)
 
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(errStr))
@@ -48,7 +48,7 @@ func MakeScalingHandler(next http.HandlerFunc, scaler scaling.FunctionScaler, co
 			return
 		}
 
-		log.Printf("[Scale] function=%s.%s 0=>N timed-out after %.4fs\n",
-			functionName, namespace, res.Duration.Seconds())
+		logger.Info("[Scale]  timed-outs",
+			"functionName", functionName, "namespace", namespace, "timed-out", res.Duration.Seconds())
 	}
 }
