@@ -38,14 +38,14 @@ func MakeForwardingProxyHandler(proxy *types.HTTPClientReverseProxy,
 		for _, notifier := range notifiers {
 			notifier.Notify(r.Method, requestURL, originalURL, http.StatusProcessing, "started", time.Second*0)
 		}
-		logger.Info("proxy handler", "uid", r.Header.Get(CallID), "requestURL", requestURL, "originalURL", originalURL, "baseURL")
+		logger.Info("proxy handler", "uid", r.Header.Get(CallID), "requestURL", requestURL, "originalURL", originalURL, "baseURL", baseURL)
 		start := time.Now()
 
 		statusCode, err := forwardRequest(w, r, proxy.Client, baseURL, requestURL, proxy.Timeout, writeRequestURI, serviceAuthInjector)
 
 		seconds := time.Since(start)
 		if err != nil {
-			logger.Error("error with upstream request to", "uid", r.Header.Get(CallID), "url", requestURL, "err", err.Error())
+			logger.Error("error with upstream request to", "uid", r.Header.Get(CallID), "request_url", requestURL, "err", err.Error())
 		}
 
 		for _, notifier := range notifiers {
@@ -60,7 +60,8 @@ func buildUpstreamRequest(r *http.Request, baseURL string, requestURL string) *h
 	if len(r.URL.RawQuery) > 0 {
 		url = fmt.Sprintf("%s?%s", url, r.URL.RawQuery)
 	}
-
+	logger.Info("build upstream request", "uid", r.Header.Get(CallID), "url", url)
+	logger.Info("build upstream request", "uid", r.Header.Get(CallID), "header", r.Header)
 	upstreamReq, _ := http.NewRequest(r.Method, url, nil)
 
 	copyHeaders(upstreamReq.Header, &r.Header)
@@ -90,7 +91,7 @@ func forwardRequest(w http.ResponseWriter,
 	writeRequestURI bool,
 	serviceAuthInjector middleware.AuthInjector) (int, error) {
 
-	logger.Info("forward request", "uid", r.Header.Get(CallID), "baseURL", requestURL, "requestURL", requestURL)
+	logger.Info("forward request", "uid", r.Header.Get(CallID), "baseURL", baseURL, "requestURL", requestURL)
 
 	upstreamReq := buildUpstreamRequest(r, baseURL, requestURL)
 	if upstreamReq.Body != nil {
