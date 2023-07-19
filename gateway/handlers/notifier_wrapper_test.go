@@ -5,9 +5,11 @@ package handlers
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 )
@@ -91,7 +93,7 @@ func (tf *testNotifier) Notify(method string, URL string, originalURL string, st
 }
 
 func TestLoggingMiddleware(t *testing.T) {
-	t.Skip()
+	//t.Skip()
 	logger := LoggingNotifier{}
 	cases := []struct {
 		name   string
@@ -199,12 +201,12 @@ func TestLoggingMiddleware(t *testing.T) {
 				t.Fatalf("unexpected status code, expected %d, got %d", tc.status, rec.Code)
 			}
 
-			//logs := b.String()
+			logs := b.String()
 
-			//prefix := fmt.Sprintf("Forwarded [%s] to %s - [%d] -", tc.method, tc.path, tc.status)
-			//if !strings.HasPrefix(logs, prefix) {
-			//	t.Fatalf("expected log to start with: %q\ngot: %q", prefix, logs)
-			//}
+			prefix := fmt.Sprintf("Forwarded [%s] to %s - [%d] -", tc.method, tc.path, tc.status)
+			if !strings.HasPrefix(logs, prefix) {
+				t.Fatalf("expected log to start with: %q\ngot: %q", prefix, logs)
+			}
 		})
 	}
 
