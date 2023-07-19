@@ -2,11 +2,11 @@ package handlers
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/openfaas/faas/gateway/chain/logger"
 	"github.com/openfaas/faas/gateway/metrics"
 	"github.com/openfaas/faas/gateway/pkg/middleware"
 	"github.com/prometheus/client_golang/prometheus"
@@ -68,6 +68,7 @@ type LoggingNotifier struct {
 // Notify the LoggingNotifier about a request
 func (LoggingNotifier) Notify(method string, URL string, originalURL string, statusCode int, event string, duration time.Duration) {
 	if event == "completed" {
-		logger.Info("Forwarded", "method", method, "originalURL", originalURL, "statusCode", statusCode, "duration", duration.Seconds())
+		//logger.Info("Forwarded", "method", method, "originalURL", originalURL, "statusCode", statusCode, "duration", duration.Seconds())
+		log.Printf("Forwarded [%s] to %s - [%d] - %.4fs", method, originalURL, statusCode, duration.Seconds())
 	}
 }

@@ -37,6 +37,7 @@ type Subscriber struct {
 	renewChan   chan struct{}
 	dailEthDone chan struct{}
 	locker      sync.RWMutex
+	cleanOnce   sync.Once
 
 	publishChannel chan []byte
 }
@@ -51,6 +52,7 @@ func NewSubscriber(functionClientAddr, functionOracleAddr, nodeAddr string) *Sub
 		dailEthDone:        make(chan struct{}),
 		locker:             sync.RWMutex{},
 		publishChannel:     make(chan []byte, 100),
+		cleanOnce:          sync.Once{},
 	}
 
 	go sub.ConnectLoop()
@@ -60,9 +62,12 @@ func NewSubscriber(functionClientAddr, functionOracleAddr, nodeAddr string) *Sub
 }
 
 func (cs *Subscriber) Clean() {
-	close(cs.renewChan)
-	close(cs.dailEthDone)
-	cs.ethCli.Close()
+	cs.cleanOnce.Do(func() {
+		close(cs.renewChan)
+		close(cs.dailEthDone)
+		cs.ethCli.Close()
+	})
+
 }
 
 func (cs *Subscriber) resetEthCli(cli *ethclient.Client) {
@@ -267,7 +272,8 @@ type FunctionRequest struct {
 }
 
 func callFunction(pub Publish, reqRawDataMap map[string]interface{}) error {
-	fnUrl := fmt.Sprintf("/funtion/%v", reqRawDataMap["source"])
+	//http://127.0.0.1:8081/system/function/get-pod?namespace=openfaas-fn"
+	fnUrl := fmt.Sprintf("/function/%v.openfaas-fn", reqRawDataMap["source"])
 	fnBodyMap := map[string]interface{}{}
 
 	if v, ok := reqRawDataMap["args"]; ok && v != nil {
