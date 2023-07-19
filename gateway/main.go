@@ -265,7 +265,7 @@ func main() {
 	chainHandler := handlers.NewChainHandler(reverseProxy, functionURLResolver, nil, publisher, config.FunctionsProviderURL.String())
 	go chainHandler.Run()
 
-	tcpPort := 8282
+	tcpPort := 8080
 
 	s := &http.Server{
 		Addr:           fmt.Sprintf(":%d", tcpPort),
@@ -274,7 +274,7 @@ func main() {
 		MaxHeaderBytes: http.DefaultMaxHeaderBytes, // 1MB - can be overridden by setting Server.MaxHeaderBytes.
 		Handler:        r,
 	}
-
+	logger.Info("listen port", "tcp port", tcpPort)
 	log.Fatal(s.ListenAndServe())
 }
 
