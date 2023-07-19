@@ -5,9 +5,15 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"math/big"
 	"reflect"
 	"sync"
+
 	"time"
+
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+
+	"github.com/ethereum/go-ethereum/accounts/keystore"
 
 	"github.com/openfaas/faas/gateway/chain/cbor"
 
@@ -19,11 +25,13 @@ import (
 	"github.com/openfaas/faas/gateway/chain/actor"
 	"github.com/openfaas/faas/gateway/chain/logger"
 	"github.com/pkg/errors"
+	"go.uber.org/atomic"
 )
 
 type Publish interface {
 	Send([]byte) error
 	Receive() chan []byte
+	Reply(data *FulFilledRequest)
 }
 
 type Subscriber struct {
@@ -36,26 +44,37 @@ type Subscriber struct {
 
 	renewChan   chan struct{}
 	dailEthDone chan struct{}
-	locker      sync.RWMutex
 	cleanOnce   sync.Once
+	isRenewed   atomic.Bool
 
 	publishChannel chan []byte
+	repliedChan    chan *FulFilledRequest
+
+	key     *keystore.Key //TODO: env config
+	chainId int64         //TODO: env config
 }
 
 func NewSubscriber(functionClientAddr, functionOracleAddr, nodeAddr string) *Subscriber {
-
+	pw := "123456"
+	key, err := keystore.DecryptKey([]byte(rawKey), pw)
+	if err != nil {
+		logger.Fatal("wrong key", "key", string(rawKey), "pw", pw)
+	}
 	sub := &Subscriber{
 		functionClientAddr: functionClientAddr,
 		functionOracleAddr: functionOracleAddr,
 		ethAddr:            nodeAddr,
 		renewChan:          make(chan struct{}),
 		dailEthDone:        make(chan struct{}),
-		locker:             sync.RWMutex{},
 		publishChannel:     make(chan []byte, 100),
+		repliedChan:        make(chan *FulFilledRequest, 100),
 		cleanOnce:          sync.Once{},
+		key:                key,
+		chainId:            12345678,
 	}
 
 	go sub.ConnectLoop()
+	go sub.FulfillRequest()
 	go sub.watch()
 
 	return sub
@@ -71,8 +90,7 @@ func (cs *Subscriber) Clean() {
 }
 
 func (cs *Subscriber) resetEthCli(cli *ethclient.Client) {
-	cs.locker.Lock()
-	defer cs.locker.Unlock()
+
 	cs.ethCli = cli
 	funcCli, err := actor.NewFunctionClient(common.HexToAddress(cs.functionClientAddr), cs.ethCli)
 	if err != nil {
@@ -125,10 +143,76 @@ func (cs *Subscriber) ConnectLoop() {
 	}
 }
 
+type FulFilledRequest struct {
+	RequestId string
+	Resp      []byte
+	Err       []byte
+}
+
+func (cs *Subscriber) FulfillRequest() {
+	timer := time.NewTicker(2 * time.Second)
+	defer timer.Stop()
+	for {
+		var ret *FulFilledRequest
+		select {
+		case <-timer.C:
+			logger.Info("waiting to fulfill request")
+		case ret = <-cs.repliedChan:
+			reqID, err := hex.DecodeString(ret.RequestId)
+			if err != nil {
+				logger.Error("failed to decode request id", "requestId", ret.RequestId)
+				continue
+			}
+			auth, err := bind.NewKeyedTransactorWithChainID(cs.key.PrivateKey, new(big.Int).SetInt64(cs.chainId))
+			if err != nil {
+				logger.Error("failed to new keyed tx", "err", err)
+				continue
+			}
+			if len(reqID) != 32 {
+				logger.Error("unexpected requestId", "requestId", string(reqID))
+				continue
+			}
+			requestId := [32]byte(reqID)
+			err = retry.Do(
+				func() error {
+					if !cs.isRenewed.Load() {
+						return errors.New("subscriber is resubscribing, isRenewed is false")
+					}
+					tx, err := cs.functionClient.HandleOracleFulfillment(&bind.TransactOpts{
+						From:   auth.From,
+						Signer: auth.Signer,
+					}, requestId, ret.Resp, ret.Err)
+					if err != nil {
+						logger.Error("failed to call HandleOracleFulfillment", "err", err)
+						return err
+					}
+					logger.Info("fulfilled request", "tx hash", tx.Hash().String())
+					return nil
+				},
+				retry.Attempts(5),
+				retry.Delay(100*time.Millisecond),
+				retry.MaxDelay(300*time.Millisecond))
+
+			if err != nil {
+				logger.Error("failed to call HandleOracleFulfillment", "err", err)
+				continue
+			}
+
+		}
+
+	}
+
+}
+
+func (cs *Subscriber) Reply(data *FulFilledRequest) {
+	cs.repliedChan <- data
+}
+
 func (cs *Subscriber) Send(data []byte) error {
 	cs.publishChannel <- data
 	return nil
 }
+
 func (cs *Subscriber) Receive() chan []byte {
 	return cs.publishChannel
 }
@@ -140,16 +224,16 @@ func (cs *Subscriber) watch() {
 	}
 	logs := make(chan types.Log)
 	var (
-		sub       ethereum.Subscription
-		err       error
-		isRenewed bool
+		sub ethereum.Subscription
+		err error
 	)
 
 	timer := time.NewTicker(2 * time.Second)
 	defer timer.Stop()
 	for {
-		for !isRenewed {
+		for !cs.isRenewed.Load() {
 			logger.Info("############# not found chain log event subscriber, resubscribe")
+
 			cs.renewChan <- struct{}{}
 			select {
 			case <-cs.dailEthDone:
@@ -162,7 +246,7 @@ func (cs *Subscriber) watch() {
 							return err
 						}
 						logger.Info("finish to subscribe")
-						isRenewed = true
+						cs.isRenewed.CAS(false, true)
 						return nil
 					},
 					retry.Attempts(5),
@@ -184,7 +268,7 @@ func (cs *Subscriber) watch() {
 			logger.Error("failed to watch eth", "err", err)
 			sub.Unsubscribe()
 			sub = nil
-			isRenewed = false
+			cs.isRenewed.CAS(true, false)
 		case vLog := <-logs:
 			data, err := cs.selectEvent(vLog)
 			if err != nil {
@@ -223,7 +307,7 @@ func (cs *Subscriber) selectEvent(vLog types.Log) (interface{}, error) {
 			return nil, err
 		}
 		logger.Info("receive request event",
-			"requestId", sent.RequestId,
+			"requestId", hex.EncodeToString(sent.RequestId[:]),
 			"requestContract", sent.RequestingContract,
 			"requestInitiator", sent.RequestInitiator)
 
@@ -237,7 +321,7 @@ func (cs *Subscriber) selectEvent(vLog types.Log) (interface{}, error) {
 		}
 
 		logger.Info("decode requested data", "raw args ", reqRawDataMap)
-		err = callFunction(cs, reqRawDataMap)
+		err = callFunction(cs, hex.EncodeToString(sent.RequestId[:]), reqRawDataMap)
 		if err != nil {
 			logger.Error("failed to call function", "err", err)
 			return nil, err
@@ -268,10 +352,11 @@ func (cs *Subscriber) selectEvent(vLog types.Log) (interface{}, error) {
 type FunctionRequest struct {
 	FunctionName string
 	RequestURL   string
+	ReqId        string
 	Body         map[string]interface{}
 }
 
-func callFunction(pub Publish, reqRawDataMap map[string]interface{}) error {
+func callFunction(pub Publish, reqID string, reqRawDataMap map[string]interface{}) error {
 	//http://127.0.0.1:8081/system/function/get-pod?namespace=openfaas-fn"
 	fnUrl := fmt.Sprintf("/function/%v.openfaas-fn", reqRawDataMap["source"])
 	fnBodyMap := map[string]interface{}{}
@@ -297,6 +382,7 @@ func callFunction(pub Publish, reqRawDataMap map[string]interface{}) error {
 
 	fr := FunctionRequest{
 		RequestURL: fnUrl,
+		ReqId:      reqID,
 		Body:       fnBodyMap,
 	}
 	bodyBytes, err := json.Marshal(fr)

@@ -53,7 +53,7 @@ func forwardRequestFromChain(
 	requestURL string,
 	timeout time.Duration,
 	writeRequestURI bool,
-	serviceAuthInjector middleware.AuthInjector) (int, error) {
+	serviceAuthInjector middleware.AuthInjector) *chain.FulFilledRequest {
 
 	logger.Info("forward request", "uid", r.Header.Get(CallID), "baseURL", baseURL, "requestURL", requestURL)
 
@@ -73,10 +73,14 @@ func forwardRequestFromChain(
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
+	ffReq := &chain.FulFilledRequest{
+		RequestId: r.Header.Get("requestId"),
+	}
 	res, resErr := proxyClient.Do(upstreamReq.WithContext(ctx))
 	if resErr != nil {
-		badStatus := http.StatusBadGateway
-		return badStatus, resErr
+		//badStatus := http.StatusBadGateway
+		ffReq.Err = []byte(fmt.Sprintf("code: %d, err: %v ", http.StatusBadGateway, resErr))
+		return ffReq
 	}
 
 	if res.Body != nil {
@@ -85,10 +89,13 @@ func forwardRequestFromChain(
 	//TODO: process function result
 	all, err := io.ReadAll(res.Body)
 	if err != nil {
-		return 0, err
+		ffReq.Err = []byte(fmt.Sprintf("code: %d,status: %s, err: %v ", res.StatusCode, res.Status, err.Error()))
+		return ffReq
 	}
+
+	ffReq.Resp = all
 	logger.Info("get result from function", "res", string(all))
-	return res.StatusCode, nil
+	return ffReq
 }
 
 type ChainHandler struct {
@@ -139,18 +146,21 @@ func (ch ChainHandler) Run() {
 			logger.Error("failed to new http request", "err", err)
 			continue
 		}
-
+		reqHttp.Header.Set("requestId", reqData.ReqId)
 		baseURL := ch.FunctionsProviderURL
 		if strings.HasSuffix(baseURL, "/") {
 			baseURL = baseURL[0 : len(baseURL)-1]
 		}
-		code, err := forwardRequestFromChain(reqHttp, ch.proxy.Client,
+		ret := forwardRequestFromChain(reqHttp, ch.proxy.Client,
 			baseURL, reqData.RequestURL, ch.proxy.Timeout, false, ch.serviceAuthInjector)
-		if err != nil {
-			logger.Error("failed to execute function", "err", err)
+		ret.RequestId = reqData.ReqId
+		ch.publisher.Reply(ret)
+		if ret.Err != nil {
+			logger.Error("failed to execute function", "err", string(ret.Err))
 			continue
 		}
-		logger.Info("get result from function", "code", code)
+
+		logger.Info("get result from function", "ret", ret)
 	}
 
 }
