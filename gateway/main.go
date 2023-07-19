@@ -265,7 +265,7 @@ func main() {
 	chainHandler := handlers.NewChainHandler(reverseProxy, functionURLResolver, nil, publisher, config.FunctionsProviderURL.String())
 	go chainHandler.Run()
 
-	tcpPort := 8080
+	tcpPort := 8282
 
 	s := &http.Server{
 		Addr:           fmt.Sprintf(":%d", tcpPort),

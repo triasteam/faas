@@ -1,8 +1,15 @@
 package chain
 
 import (
+	"context"
+	"encoding/hex"
 	"testing"
 	"time"
+
+	"github.com/openfaas/faas/gateway/chain/logger"
+
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/openfaas/faas/gateway/chain/actor"
 )
 
 func TestParseLog(t *testing.T) {
@@ -23,4 +30,28 @@ func TestParseLog(t *testing.T) {
 	go sub.watch()
 
 	time.Sleep(time.Second * 6000)
+}
+
+func TestSubscriber_Send(t *testing.T) {
+	ChainAddr := "ws://127.0.0.1:9546"
+
+	functionClientAddr, functionOracleAddr := "0xe98a2cBE781B4275aFd985E895E92Aea48B235C7", "0x4B9f0303352a80550455b8323bc9A3D9690ccbDF"
+
+	sub := NewSubscriber(functionClientAddr, functionOracleAddr, ChainAddr)
+	sink := make(chan *actor.FunctionClientRequestFulfilled)
+	defer close(sink)
+	time.Sleep(time.Second * 2)
+	sent, err := sub.functionClient.WatchRequestFulfilled(&bind.WatchOpts{Context: context.Background()}, sink, nil)
+	if err != nil {
+		return
+	}
+	defer sent.Unsubscribe()
+	data := &actor.FunctionClientRequestFulfilled{}
+	select {
+	case data = <-sink:
+	case err = <-sent.Err():
+		t.Error(err.Error())
+		return
+	}
+	logger.Info("receive tx ", "tx hash", data.Raw.TxHash.String(), "reqId", hex.EncodeToString(data.Id[:]))
 }
