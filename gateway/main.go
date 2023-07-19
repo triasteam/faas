@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/openfaas/faas/gateway/chain"
+
 	"github.com/openfaas/faas/gateway/chain/logger"
 
 	"github.com/gorilla/mux"
@@ -255,7 +257,15 @@ func main() {
 
 	r.Handle("/", http.RedirectHandler("/ui/", http.StatusMovedPermanently)).Methods(http.MethodGet)
 
-	tcpPort := 8080
+	ChainAddr := "ws://127.0.0.1:9546"
+	functionClientAddr, functionOracleAddr := "0xe98a2cBE781B4275aFd985E895E92Aea48B235C7", "0x4B9f0303352a80550455b8323bc9A3D9690ccbDF"
+	publisher := chain.NewSubscriber(functionClientAddr, functionOracleAddr, ChainAddr)
+	defer publisher.Clean()
+
+	chainHandler := handlers.NewChainHandler(reverseProxy, functionURLResolver, nil, publisher, config.FunctionsProviderURL.String())
+	chainHandler.Run()
+
+	tcpPort := 8282
 
 	s := &http.Server{
 		Addr:           fmt.Sprintf(":%d", tcpPort),

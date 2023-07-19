@@ -5,10 +5,10 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"reflect"
 	"sync"
 	"time"
 
-	"github.com/mitchellh/mapstructure"
 	"github.com/openfaas/faas/gateway/chain/cbor"
 
 	"github.com/avast/retry-go/v4"
@@ -43,7 +43,7 @@ type Subscriber struct {
 
 func NewSubscriber(functionClientAddr, functionOracleAddr, nodeAddr string) *Subscriber {
 
-	return &Subscriber{
+	sub := &Subscriber{
 		functionClientAddr: functionClientAddr,
 		functionOracleAddr: functionOracleAddr,
 		ethAddr:            nodeAddr,
@@ -52,6 +52,11 @@ func NewSubscriber(functionClientAddr, functionOracleAddr, nodeAddr string) *Sub
 		locker:             sync.RWMutex{},
 		publishChannel:     make(chan []byte, 100),
 	}
+
+	go sub.ConnectLoop()
+	go sub.watch()
+
+	return sub
 }
 
 func (cs *Subscriber) Clean() {
@@ -101,20 +106,18 @@ func (cs *Subscriber) retryDailEth(addr string) {
 }
 
 func (cs *Subscriber) ConnectLoop() {
-	go func() {
-		for {
-			select {
-			case _, ok := <-cs.renewChan:
-				if !ok {
-					logger.Error("resubscribe channel is closed")
-					panic("resubscribe channel is closed")
-				}
-				cs.retryDailEth(cs.ethAddr)
-				cs.dailEthDone <- struct{}{}
-
+	for {
+		select {
+		case _, ok := <-cs.renewChan:
+			if !ok {
+				logger.Error("resubscribe channel is closed")
+				panic("resubscribe channel is closed")
 			}
+			cs.retryDailEth(cs.ethAddr)
+			cs.dailEthDone <- struct{}{}
+
 		}
-	}()
+	}
 }
 
 func (cs *Subscriber) Send(data []byte) error {
@@ -137,7 +140,7 @@ func (cs *Subscriber) watch() {
 		isRenewed bool
 	)
 
-	timer := time.NewTicker(time.Second)
+	timer := time.NewTicker(2 * time.Second)
 	defer timer.Stop()
 	for {
 		for !isRenewed {
@@ -170,6 +173,8 @@ func (cs *Subscriber) watch() {
 		}
 
 		select {
+		case <-timer.C:
+			logger.Info("watching event from the chain")
 		case err = <-sub.Err():
 			logger.Error("failed to watch eth", "err", err)
 			sub.Unsubscribe()
@@ -217,7 +222,7 @@ func (cs *Subscriber) selectEvent(vLog types.Log) (interface{}, error) {
 			"requestContract", sent.RequestingContract,
 			"requestInitiator", sent.RequestInitiator)
 
-		logger.Debug("request raw data", "log data", string(sent.Data), "hex req data", hex.EncodeToString(sent.Data))
+		logger.Debug("request raw data", "hex req data", hex.EncodeToString(sent.Data))
 
 		data = sent
 		reqRawDataMap, err := cbor.ParseDietCBOR(sent.Data)
@@ -225,7 +230,8 @@ func (cs *Subscriber) selectEvent(vLog types.Log) (interface{}, error) {
 			logger.Error("failed to decode contract request", "err", err)
 			return nil, err
 		}
-		logger.Info("decode requested data", "raw ", reqRawDataMap)
+
+		logger.Info("decode requested data", "raw args ", reqRawDataMap)
 		err = callFunction(cs, reqRawDataMap)
 		if err != nil {
 			logger.Error("failed to call function", "err", err)
@@ -256,22 +262,36 @@ func (cs *Subscriber) selectEvent(vLog types.Log) (interface{}, error) {
 
 type FunctionRequest struct {
 	FunctionName string
-	FunctionUrl  string
-	Body         map[string]string
+	RequestURL   string
+	Body         map[string]interface{}
 }
 
 func callFunction(pub Publish, reqRawDataMap map[string]interface{}) error {
-	fnUrl := fmt.Sprintf("http://127.0.0.1:31112/funtion/%v", reqRawDataMap["source"])
-	fnBodyMap := map[string]string{}
-	err := mapstructure.Decode(reqRawDataMap["args"], &fnBodyMap)
-	if err != nil {
-		logger.Error("failed to decode request args to map", "err", err)
-		return err
+	fnUrl := fmt.Sprintf("/funtion/%v", reqRawDataMap["source"])
+	fnBodyMap := map[string]interface{}{}
+
+	if v, ok := reqRawDataMap["args"]; ok && v != nil {
+
+		var sets []interface{}
+		switch v.(type) {
+		case []interface{}:
+			sets = v.([]interface{})
+		default:
+			logger.Error("request body has wrong format", "args", v, "type", reflect.TypeOf(v))
+		}
+
+		if !ok {
+			logger.Error("request args format is wrong", "args", v, "type", reflect.TypeOf(v).Name())
+			return errors.Errorf("request args format is wrong, aegs: %v", v)
+		}
+		for i := 0; i+1 < len(sets); i += 2 {
+			fnBodyMap[fmt.Sprintf("%v", sets[i])] = sets[i+1]
+		}
 	}
 
 	fr := FunctionRequest{
-		FunctionUrl: fnUrl,
-		Body:        fnBodyMap,
+		RequestURL: fnUrl,
+		Body:       fnBodyMap,
 	}
 	bodyBytes, err := json.Marshal(fr)
 	if err != nil {
