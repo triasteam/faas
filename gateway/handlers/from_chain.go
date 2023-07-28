@@ -72,7 +72,8 @@ func forwardRequestFromChain(
 
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
-
+	// 合约-> bsc -> gateway.chain -> chainHandler -> function -> chainHandler -> gateway.chain -> resp
+	// ui-> gateway.proxyHandler -> function -> gateway -> resp
 	ffReq := &chain.FulFilledRequest{
 		RequestId: r.Header.Get("requestId"),
 	}

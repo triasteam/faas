@@ -33,7 +33,7 @@ func TestParseLog(t *testing.T) {
 }
 
 func TestSubscriber_Send(t *testing.T) {
-	t.Skip()
+	//t.Skip()
 	ChainAddr := "ws://127.0.0.1:9546"
 
 	functionClientAddr, functionOracleAddr := "0xe98a2cBE781B4275aFd985E895E92Aea48B235C7", "0x4B9f0303352a80550455b8323bc9A3D9690ccbDF"
