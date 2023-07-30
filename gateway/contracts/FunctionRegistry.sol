@@ -4,13 +4,12 @@ pragma solidity >=0.8.4;
 import "./registry.sol";
 
 /**
- * The ENS registry contract.
+ * The Function registry contract.
  */
 contract FunctionRegistry is Registry {
     struct Record {
         address owner;
-        address resolver;
-        uint64 ttl;
+        address manager;
     }
 
     mapping(bytes32 => Record) records;
@@ -34,7 +33,7 @@ contract FunctionRegistry is Registry {
      * @dev Sets the record for a node.
      * @param node The node to update.
      * @param _owner The address of the new owner.
-     * @param _resolver The address of the resolver.
+     * @param _resolver The address of the manager.
      */
     function setRecord(
         bytes32 node,
@@ -42,7 +41,7 @@ contract FunctionRegistry is Registry {
         address _resolver
     ) external virtual override {
         setOwner(node,_owner);
-        _setResolver(node, _resolver);
+        _setManager(node, _resolver);
     }
 
     /**
@@ -50,7 +49,7 @@ contract FunctionRegistry is Registry {
      * @param node The parent node.
      * @param label The hash of the label specifying the subnode.
      * @param _owner The address of the new owner.
-     * @param _resolver The address of the resolver.
+     * @param _resolver The address of the manager.
      */
     function setSubnodeRecord(
         bytes32 node,
@@ -59,7 +58,7 @@ contract FunctionRegistry is Registry {
         address _resolver
     ) external virtual override {
         bytes32 subnode = setSubnodeOwner(node, label, _owner);
-        _setResolver(subnode, _resolver);
+        _setManager(subnode, _resolver);
     }
 
     /**
@@ -93,16 +92,16 @@ contract FunctionRegistry is Registry {
     }
 
     /**
-     * @dev Sets the resolver address for the specified node.
+     * @dev Sets the manager address for the specified node.
      * @param node The node to update.
-     * @param _resolver The address of the resolver.
+     * @param _resolver The address of the manager.
      */
-    function setResolver(
+    function setManager(
         bytes32 node,
         address _resolver
     ) public virtual override authorised(node) {
-        emit NewResolver(node, _resolver);
-        records[node].resolver = _resolver;
+        emit NewManager(node, _resolver);
+        records[node].manager = _resolver;
     }
 
 
@@ -137,14 +136,14 @@ contract FunctionRegistry is Registry {
     }
 
     /**
-     * @dev Returns the address of the resolver for the specified node.
+     * @dev Returns the address of the manager for the specified node.
      * @param node The specified node.
-     * @return address of the resolver.
+     * @return address of the manager.
      */
-    function resolver(
+    function manager(
         bytes32 node
     ) public view virtual override returns (address) {
-        return records[node].resolver;
+        return records[node].manager;
     }
 
 
@@ -177,13 +176,13 @@ contract FunctionRegistry is Registry {
         records[node].owner = _owner;
     }
 
-    function _setResolver(
+    function _setManager(
         bytes32 node,
         address _resolver
     ) internal {
-        if (_resolver != records[node].resolver) {
-            records[node].resolver = _resolver;
-            emit NewResolver(node, _resolver);
+        if (_resolver != records[node].manager) {
+            records[node].manager = _resolver;
+            emit NewManager(node, _resolver);
         }
 
      

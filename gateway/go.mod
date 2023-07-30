@@ -9,7 +9,6 @@ require (
 	github.com/fxamacker/cbor/v2 v2.4.0
 	github.com/gorilla/mux v1.8.0
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
-	github.com/mitchellh/mapstructure v1.4.1
 	github.com/openfaas/faas-provider v0.24.0
 	github.com/openfaas/nats-queue-worker v0.0.0-20230303171817-9dfe6fa61387
 	github.com/pkg/errors v0.9.1
@@ -20,6 +19,7 @@ require (
 	go.opentelemetry.io/otel/exporters/jaeger v1.16.0
 	go.opentelemetry.io/otel/sdk v1.16.0
 	go.opentelemetry.io/otel/trace v1.16.0
+	go.uber.org/atomic v1.7.0
 	go.uber.org/goleak v1.2.1
 	go.uber.org/zap v1.24.0
 	golang.org/x/sync v0.3.0
@@ -62,7 +62,6 @@ require (
 	github.com/tklauser/numcpus v0.2.2 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	go.opentelemetry.io/otel/metric v1.16.0 // indirect
-	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	golang.org/x/crypto v0.5.0 // indirect
 	golang.org/x/sys v0.8.0 // indirect
