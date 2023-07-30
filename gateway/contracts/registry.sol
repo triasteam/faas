@@ -8,8 +8,8 @@ interface Registry {
     // Logged when the owner of a node transfers ownership to a new account.
     event Transfer(bytes32 indexed node, address _owner);
 
-    // Logged when the resolver for a node changes.
-    event NewResolver(bytes32 indexed node, address resolver);
+    // Logged when the manager for a node changes.
+    event NewManager(bytes32 indexed node, address manager);
 
     // Logged when an operator is added or removed.
     event ApprovalForAll(
@@ -37,7 +37,7 @@ interface Registry {
         address _owner
     ) external returns (bytes32);
 
-    function setResolver(bytes32 node, address _resolver) external;
+    function setManager(bytes32 node, address _resolver) external;
 
     function setOwner(bytes32 node, address _owner) external;
 
@@ -45,7 +45,7 @@ interface Registry {
 
     function owner(bytes32 node) external view returns (address);
 
-    function resolver(bytes32 node) external view returns (address);
+    function manager(bytes32 node) external view returns (address);
 
 
     function recordExists(bytes32 node) external view returns (bool);
