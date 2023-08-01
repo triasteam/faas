@@ -5,7 +5,7 @@ import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./registry.sol";
 import "./baseManager.sol";
 
-contract BaseRegistrarImplementation is BaseRegistrar, ERC721 {
+contract BaseManagerImplementation is BaseManager, ERC721 {
     // A map of expiry times
     mapping(uint256=>uint) expiries;
 
