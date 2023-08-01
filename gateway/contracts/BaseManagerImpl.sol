@@ -87,34 +87,29 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
      * @dev Register a name.
      * @param id The token ID (keccak256 of the label).
      * @param owner The address that should own the registration.
-     * @param duration Duration in seconds for the registration.
      */
     function register(
         uint256 id,
         address owner,
-        uint256 duration
     ) external override returns (uint256) {
-        return _register(id, owner, duration, true);
+        return _register(id, owner, true);
     }
 
     /**
      * @dev Register a name, without modifying the registry.
      * @param id The token ID (keccak256 of the label).
      * @param owner The address that should own the registration.
-     * @param duration Duration in seconds for the registration.
      */
     function registerOnly(
         uint256 id,
-        address owner,
-        uint256 duration
+        address owner
     ) external returns (uint256) {
-        return _register(id, owner, duration, false);
+        return _register(id, owner, false);
     }
 
     function _register(
         uint256 id,
         address owner,
-        uint256 duration,
         bool updateRegistry
     ) internal live onlyController returns (uint256) {
        
@@ -123,9 +118,9 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
             reg.setSubnodeOwner(baseNode, bytes32(id), owner);
         }
 
-        emit NameRegistered(id, owner, block.timestamp + duration);
+        emit NameRegistered(id, owner, block.timestamp);
 
-        return block.timestamp + duration;
+        return block.timestamp;
     }
 
     /**
