@@ -6,7 +6,13 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
+				"inputs": [
+					{
+						"internalType": "contract Selector",
+						"name": "_selector",
+						"type": "address"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "constructor"
 			},
@@ -430,11 +436,11 @@
 	},
 	"sources": {
 		"FunctionRegistry.sol": {
-			"keccak256": "0x682afc92351b47aceeb557bed4b257d2108dbdd258290dd2c8e99c74ef25b36d",
+			"keccak256": "0xdb597e355b986b9bcd6649b102f9de26bd885f5f4bbec23405c08ddd50a073f9",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://52241e6b0efc6966dc5d1492699dc5f80eca436dae84f8e76d7d082d24e78064",
-				"dweb:/ipfs/QmTTJNUsayZRHRccqLXZyVm2AvpEEUCd1ErAhohp59t18a"
+				"bzz-raw://63e17c6df60f5a97e34adde6da6954daf29998c81f483d42250f764cc57a637e",
+				"dweb:/ipfs/QmXsvo8QbH2UtaDPySv7RR2Wy1quSiAhrnjP3UMnPauxPz"
 			]
 		},
 		"registry.sol": {
@@ -443,6 +449,14 @@
 			"urls": [
 				"bzz-raw://1bdf7737085beae214c95de6b16f763b3f1734bbca7dc088dd65a3a11e6ce4af",
 				"dweb:/ipfs/QmQQeqCKNbJ5wprnCjAYEDkwxRZQm1wNeL4DyFQKLr7R2P"
+			]
+		},
+		"selector.sol": {
+			"keccak256": "0xbdb8d6f76637cb411701e40e4d289e9f00ca6ec42f13c4f60cac42d8ff004784",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://fa656d564307e4858a416899e2f6269cd07b603ab278f696342895a32d3d1a65",
+				"dweb:/ipfs/QmZ2aEZMdd4Q5z6B8rkA8NDJ3aU1ZGBVep5Up5AcW15MAj"
 			]
 		}
 	},

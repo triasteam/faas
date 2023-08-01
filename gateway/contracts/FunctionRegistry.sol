@@ -2,7 +2,7 @@
 pragma solidity >=0.8.4;
 
 import "./registry.sol";
-
+import "./selector.sol";
 /**
  * The Function registry contract.
  */
@@ -11,6 +11,8 @@ contract FunctionRegistry is Registry {
         address owner;
         address manager;
     }
+
+    Selector selector;
 
     mapping(bytes32 => Record) records;
     mapping(address => mapping(address => bool)) operators;
@@ -25,8 +27,9 @@ contract FunctionRegistry is Registry {
     /**
      * @dev Constructs a new ENS registry.
      */
-    constructor()  {
+    constructor(Selector _selector)  {
         records[0x0].owner = msg.sender;
+        selector = _selector;
     }
 
     /**
@@ -40,7 +43,7 @@ contract FunctionRegistry is Registry {
         address _owner,
         address _resolver
     ) external virtual override {
-        setOwner(node,_owner);
+        setOwner(node, _owner);
         _setManager(node, _resolver);
     }
 
@@ -174,6 +177,7 @@ contract FunctionRegistry is Registry {
 
     function _setOwner(bytes32 node, address _owner) internal virtual {
         records[node].owner = _owner;
+        selector.setFunction(node, _owner);
     }
 
     function _setManager(
@@ -184,7 +188,5 @@ contract FunctionRegistry is Registry {
             records[node].manager = _resolver;
             emit NewManager(node, _resolver);
         }
-
-     
     }
 }
