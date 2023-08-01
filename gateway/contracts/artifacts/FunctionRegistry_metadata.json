@@ -45,6 +45,25 @@
 						"type": "bytes32"
 					},
 					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "manager",
+						"type": "address"
+					}
+				],
+				"name": "NewManager",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "node",
+						"type": "bytes32"
+					},
+					{
 						"indexed": true,
 						"internalType": "bytes32",
 						"name": "label",
@@ -58,25 +77,6 @@
 					}
 				],
 				"name": "NewOwner",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": true,
-						"internalType": "bytes32",
-						"name": "node",
-						"type": "bytes32"
-					},
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "resolver",
-						"type": "address"
-					}
-				],
-				"name": "NewResolver",
 				"type": "event"
 			},
 			{
@@ -130,6 +130,25 @@
 						"type": "bytes32"
 					}
 				],
+				"name": "manager",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "node",
+						"type": "bytes32"
+					}
+				],
 				"name": "owner",
 				"outputs": [
 					{
@@ -163,25 +182,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "bytes32",
-						"name": "node",
-						"type": "bytes32"
-					}
-				],
-				"name": "resolver",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "address",
 						"name": "operator",
 						"type": "address"
@@ -193,6 +193,24 @@
 					}
 				],
 				"name": "setApprovalForAll",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "node",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "_resolver",
+						"type": "address"
+					}
+				],
+				"name": "setManager",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -234,24 +252,6 @@
 					}
 				],
 				"name": "setRecord",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes32",
-						"name": "node",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "address",
-						"name": "_resolver",
-						"type": "address"
-					}
-				],
-				"name": "setResolver",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -330,6 +330,15 @@
 						"_0": "True if `operator` is an approved operator for `owner`, false otherwise."
 					}
 				},
+				"manager(bytes32)": {
+					"details": "Returns the address of the manager for the specified node.",
+					"params": {
+						"node": "The specified node."
+					},
+					"returns": {
+						"_0": "address of the manager."
+					}
+				},
 				"owner(bytes32)": {
 					"details": "Returns the address that owns the specified node.",
 					"params": {
@@ -348,20 +357,18 @@
 						"_0": "Bool if record exists"
 					}
 				},
-				"resolver(bytes32)": {
-					"details": "Returns the address of the resolver for the specified node.",
-					"params": {
-						"node": "The specified node."
-					},
-					"returns": {
-						"_0": "address of the resolver."
-					}
-				},
 				"setApprovalForAll(address,bool)": {
 					"details": "Enable or disable approval for a third party (\"operator\") to manage  all of `msg.sender`'s ENS records. Emits the ApprovalForAll event.",
 					"params": {
 						"approved": "True if the operator is approved, false to revoke approval.",
 						"operator": "Address to add to the set of authorized operators."
+					}
+				},
+				"setManager(bytes32,address)": {
+					"details": "Sets the manager address for the specified node.",
+					"params": {
+						"_resolver": "The address of the manager.",
+						"node": "The node to update."
 					}
 				},
 				"setOwner(bytes32,address)": {
@@ -375,14 +382,7 @@
 					"details": "Sets the record for a node.",
 					"params": {
 						"_owner": "The address of the new owner.",
-						"_resolver": "The address of the resolver.",
-						"node": "The node to update."
-					}
-				},
-				"setResolver(bytes32,address)": {
-					"details": "Sets the resolver address for the specified node.",
-					"params": {
-						"_resolver": "The address of the resolver.",
+						"_resolver": "The address of the manager.",
 						"node": "The node to update."
 					}
 				},
@@ -398,7 +398,7 @@
 					"details": "Sets the record for a subnode.",
 					"params": {
 						"_owner": "The address of the new owner.",
-						"_resolver": "The address of the resolver.",
+						"_resolver": "The address of the manager.",
 						"label": "The hash of the label specifying the subnode.",
 						"node": "The parent node."
 					}
@@ -409,7 +409,7 @@
 		"userdoc": {
 			"kind": "user",
 			"methods": {},
-			"notice": "The ENS registry contract.",
+			"notice": "The Function registry contract.",
 			"version": 1
 		}
 	},
@@ -430,19 +430,19 @@
 	},
 	"sources": {
 		"FunctionRegistry.sol": {
-			"keccak256": "0x5ddf736b6e3eec7435a5a11239f3793fea889cb9530aad7b9e352f500e48e8e4",
+			"keccak256": "0x682afc92351b47aceeb557bed4b257d2108dbdd258290dd2c8e99c74ef25b36d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d018fd0a7e06bb8e91dbdcc4055bec7c3627514866bc824928fee3d031ab15da",
-				"dweb:/ipfs/QmVRt7E4edHUK4CrKAQFBwizSbhLcdxF8uwDcR6TG4Ztr7"
+				"bzz-raw://52241e6b0efc6966dc5d1492699dc5f80eca436dae84f8e76d7d082d24e78064",
+				"dweb:/ipfs/QmTTJNUsayZRHRccqLXZyVm2AvpEEUCd1ErAhohp59t18a"
 			]
 		},
 		"registry.sol": {
-			"keccak256": "0x50afd416395f2d3e0a747fe1bb8ed2721485fa4ec4ae893638aad5a3a36dc138",
+			"keccak256": "0x0aebdbbf0b7b4f0a9ec96c9278d223ae541482fc28cd116baf90942c3a0fc6bd",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e1922e5bf521dc9d31aec6e6de2b2b8b2bee1804874a90d07f9035961a16eb32",
-				"dweb:/ipfs/QmRqJvtAoZTbLAgCD7cDHDUtsRPPYi4XMwPNXCQFCStUCJ"
+				"bzz-raw://1bdf7737085beae214c95de6b16f763b3f1734bbca7dc088dd65a3a11e6ce4af",
+				"dweb:/ipfs/QmQQeqCKNbJ5wprnCjAYEDkwxRZQm1wNeL4DyFQKLr7R2P"
 			]
 		}
 	},
