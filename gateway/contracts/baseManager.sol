@@ -6,7 +6,7 @@ import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import "./registry.sol";
 
-contract BaseRegistrar is IERC721, Ownable {
+contract BaseManager is IERC721, Ownable {
     uint constant public GRACE_PERIOD = 90 days;
 
     event ControllerAdded(address indexed controller);
