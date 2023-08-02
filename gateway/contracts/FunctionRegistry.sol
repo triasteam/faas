@@ -15,21 +15,31 @@ contract FunctionRegistry is Registry {
     Selector selector;
 
     mapping(bytes32 => Record) records;
+    // function manager => node address => bool
     mapping(address => mapping(address => bool)) operators;
-
+    mapping(address => bool) public controllers;
     // Permits modifications only by the owner of the specified node.
     modifier authorised(bytes32 node) {
         address _owner = records[node].owner;
-        require(_owner == msg.sender || operators[_owner][msg.sender]);
+        require(_owner == msg.sender || controllers[msg.sender] || operators[_owner][msg.sender]);
         _;
     }
 
+    modifier onlyController() {
+        require(controllers[msg.sender]);
+        _;
+    }
     /**
      * @dev Constructs a new ENS registry.
      */
     constructor(Selector _selector)  {
         records[0x0].owner = msg.sender;
+        controllers[msg.sender]=true;
         selector = _selector;
+    }
+
+    function SetController(address _owner) public {
+        controllers[_owner]=true;
     }
 
     /**
@@ -188,5 +198,9 @@ contract FunctionRegistry is Registry {
             records[node].manager = _resolver;
             emit NewManager(node, _resolver);
         }
+    }
+
+    function getSelector() public view returns(address){
+        return address(selector);
     }
 }

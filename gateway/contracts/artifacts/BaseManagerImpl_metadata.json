@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.21+commit.d9974bed"
+		"version": "0.8.6+commit.11564f7e"
 	},
 	"language": "Solidity",
 	"output": {
@@ -203,19 +203,6 @@
 				],
 				"name": "Transfer",
 				"type": "event"
-			},
-			{
-				"inputs": [],
-				"name": "GRACE_PERIOD",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
 			},
 			{
 				"inputs": [
@@ -429,11 +416,6 @@
 						"internalType": "address",
 						"name": "owner",
 						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "duration",
-						"type": "uint256"
 					}
 				],
 				"name": "register",
@@ -458,11 +440,6 @@
 						"internalType": "address",
 						"name": "owner",
 						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "duration",
-						"type": "uint256"
 					}
 				],
 				"name": "registerOnly",
@@ -680,17 +657,6 @@
 			}
 		],
 		"devdoc": {
-			"events": {
-				"Approval(address,address,uint256)": {
-					"details": "Emitted when `owner` enables `approved` to manage the `tokenId` token."
-				},
-				"ApprovalForAll(address,address,bool)": {
-					"details": "Emitted when `owner` enables or disables (`approved`) `operator` to manage all of its assets."
-				},
-				"Transfer(address,address,uint256)": {
-					"details": "Emitted when `tokenId` token is transferred from `from` to `to`."
-				}
-			},
 			"kind": "dev",
 			"methods": {
 				"approve(address,uint256)": {
@@ -723,18 +689,16 @@
 				"reclaim(uint256,address)": {
 					"details": "Reclaim ownership of a name in ENS, if you own it in the registrar."
 				},
-				"register(uint256,address,uint256)": {
+				"register(uint256,address)": {
 					"details": "Register a name.",
 					"params": {
-						"duration": "Duration in seconds for the registration.",
 						"id": "The token ID (keccak256 of the label).",
 						"owner": "The address that should own the registration."
 					}
 				},
-				"registerOnly(uint256,address,uint256)": {
+				"registerOnly(uint256,address)": {
 					"details": "Register a name, without modifying the registry.",
 					"params": {
-						"duration": "Duration in seconds for the registration.",
 						"id": "The token ID (keccak256 of the label).",
 						"owner": "The address that should own the registration."
 					}
@@ -779,7 +743,7 @@
 		"compilationTarget": {
 			"BaseManagerImpl.sol": "BaseManagerImpl"
 		},
-		"evmVersion": "shanghai",
+		"evmVersion": "berlin",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -888,19 +852,19 @@
 			]
 		},
 		"BaseManagerImpl.sol": {
-			"keccak256": "0x8c986e8ab7ae32bced7388e602c195cf79ddd767d671c19722c76184904fe2eb",
+			"keccak256": "0xc53e79f23dd6a0bc61b35352cce0a34333c345f07dcec67d79d94df5b155c128",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://03f6586eb4af4ccab98795d19a488a8ebd0d12d71ea08d97c1d66538974aaed9",
-				"dweb:/ipfs/Qme4MayRhQbWLh5nMj7wcXAcEyuG3vQmefYhozZUeJVN39"
+				"bzz-raw://4a40ee7e151b82851bfaa43baa82e2d1db7e2ec6d310e80405fc6f24670bb566",
+				"dweb:/ipfs/QmZqRULtZ22GvYEjXfvmm68Y9YT2S3rMeByWD8RGAg33oY"
 			]
 		},
 		"baseManager.sol": {
-			"keccak256": "0xa290ffd6acf8ba9bbbf3aa3144e19c17d1299324dfbeee8e3326e1e18324e543",
+			"keccak256": "0x570f384fd105734bccbe847461c882e5a90ead35616e541785a8c56dd1803a92",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://43a6d93b8a3c3fd03fa18f4e489e2743c0b1e7fc14b0bf99f53afe5f0301c37c",
-				"dweb:/ipfs/QmWHCRTazKrsxix41vAJUiYzfg1zPae1oQ9HUeJnysNSip"
+				"bzz-raw://d23519ec5805d442092569aa6dedc9c04eed523037b7c8bbd9f792f45085d5ff",
+				"dweb:/ipfs/QmW4hmLXZYD81WpekTxKVpemtkTtZKhKro2AFygZmBLiFg"
 			]
 		},
 		"registry.sol": {

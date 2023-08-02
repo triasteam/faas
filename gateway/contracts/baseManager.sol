@@ -35,7 +35,7 @@ interface BaseManager is IERC721 {
      */
     function register(
         uint256 id,
-        address owner,
+        address owner
     ) external returns (uint256);
 
     /**
@@ -45,4 +45,3 @@ interface BaseManager is IERC721 {
 
     function updateMetaData(bytes memory func) external;
 }
-
