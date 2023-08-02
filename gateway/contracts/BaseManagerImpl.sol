@@ -40,6 +40,7 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
     constructor(Registry _reg, bytes32 _baseNode) ERC721("", "") {
         reg = _reg;
         baseNode = _baseNode;
+        controllers[msg.sender] = true;
     }
 
     modifier live() {
@@ -90,7 +91,7 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
      */
     function register(
         uint256 id,
-        address owner,
+        address owner
     ) external override returns (uint256) {
         return _register(id, owner, true);
     }
@@ -131,11 +132,10 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
         reg.setSubnodeOwner(baseNode, bytes32(id), owner);
     }
 
-    function updateMetaData(bytes memory funcBytes) external {
+    function updateMetaData(bytes memory funcBytes) external override{
         functionMetaData = funcBytes;
         emit MetaDataUpdated(funcBytes);
         return;
     }
-
   
 }

@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.21+commit.d9974bed"
+		"version": "0.8.6+commit.11564f7e"
 	},
 	"language": "Solidity",
 	"output": {
@@ -103,6 +103,51 @@
 				],
 				"name": "Transfer",
 				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_owner",
+						"type": "address"
+					}
+				],
+				"name": "SetController",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "controllers",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getSelector",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
 			},
 			{
 				"inputs": [
@@ -423,7 +468,7 @@
 		"compilationTarget": {
 			"FunctionRegistry.sol": "FunctionRegistry"
 		},
-		"evmVersion": "shanghai",
+		"evmVersion": "berlin",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -436,11 +481,11 @@
 	},
 	"sources": {
 		"FunctionRegistry.sol": {
-			"keccak256": "0xdb597e355b986b9bcd6649b102f9de26bd885f5f4bbec23405c08ddd50a073f9",
+			"keccak256": "0xd8ed75e5ce0bb432bae28a11604a11dfbd5eb2c361833846db9c989a350d105b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://63e17c6df60f5a97e34adde6da6954daf29998c81f483d42250f764cc57a637e",
-				"dweb:/ipfs/QmXsvo8QbH2UtaDPySv7RR2Wy1quSiAhrnjP3UMnPauxPz"
+				"bzz-raw://598ac3183d89b926532911ef961df1a00ec0bce33b684d286739dd2fa625f33d",
+				"dweb:/ipfs/QmNWgy1CP4ftx9h5Ktnty4unL8Ah3ZPK9eGoYegznbtBQB"
 			]
 		},
 		"registry.sol": {
@@ -452,11 +497,11 @@
 			]
 		},
 		"selector.sol": {
-			"keccak256": "0xbdb8d6f76637cb411701e40e4d289e9f00ca6ec42f13c4f60cac42d8ff004784",
+			"keccak256": "0x3a890cdc4c86666c0d58b00659d3d67761ec2b4688dbfd3f16536f1ac172a611",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://fa656d564307e4858a416899e2f6269cd07b603ab278f696342895a32d3d1a65",
-				"dweb:/ipfs/QmZ2aEZMdd4Q5z6B8rkA8NDJ3aU1ZGBVep5Up5AcW15MAj"
+				"bzz-raw://90f1400db313ff794532a35f000d78251ab3b543e998af73eea4364f62b15683",
+				"dweb:/ipfs/QmP5forniHSiiFwXbVdXewNDf8vyNWTKBVP1nFbTJSV8L1"
 			]
 		}
 	},

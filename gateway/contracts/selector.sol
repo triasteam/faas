@@ -24,6 +24,11 @@ contract Selector {
         functions[node]=owner;
     }
 
+    function getFunctionOwner(bytes32 node) public view returns(address){
+
+            return  functions[node];
+    }
+
     function setVRF(bytes memory v) public {
         if (!vrfLock){
             vrfValue=v;
