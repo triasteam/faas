@@ -12,12 +12,12 @@ contract FunctionRegistry is Registry {
         address manager;
     }
 
-    Selector selector;
-
+    // function name => {node address, _}
     mapping(bytes32 => Record) records;
     // function manager => node address => bool
     mapping(address => mapping(address => bool)) operators;
     mapping(address => bool) public controllers;
+    
     // Permits modifications only by the owner of the specified node.
     modifier authorised(bytes32 node) {
         address _owner = records[node].owner;
@@ -46,15 +46,15 @@ contract FunctionRegistry is Registry {
      * @dev Sets the record for a node.
      * @param node The node to update.
      * @param _owner The address of the new owner.
-     * @param _resolver The address of the manager.
+     * @param _manager The address of the manager contract.
      */
     function setRecord(
         bytes32 node,
         address _owner,
-        address _resolver
+        address _manager
     ) external virtual override {
         setOwner(node, _owner);
-        _setManager(node, _resolver);
+        _setManager(node, _manager);
     }
 
     /**
@@ -107,14 +107,14 @@ contract FunctionRegistry is Registry {
     /**
      * @dev Sets the manager address for the specified node.
      * @param node The node to update.
-     * @param _resolver The address of the manager.
+     * @param _manager The address of the manager.
      */
     function setManager(
         bytes32 node,
-        address _resolver
+        address _manager
     ) public virtual override authorised(node) {
-        emit NewManager(node, _resolver);
-        records[node].manager = _resolver;
+        emit NewManager(node, _manager);
+        records[node].manager = _manager;
     }
 
 
@@ -187,16 +187,17 @@ contract FunctionRegistry is Registry {
 
     function _setOwner(bytes32 node, address _owner) internal virtual {
         records[node].owner = _owner;
-        selector.setFunction(node, _owner);
+        // selector.setFunction(node, _owner);
     }
 
     function _setManager(
         bytes32 node,
-        address _resolver
+        address _manager
     ) internal {
-        if (_resolver != records[node].manager) {
-            records[node].manager = _resolver;
-            emit NewManager(node, _resolver);
+        if (_manager != records[node].manager) {
+            records[node].manager = _manager;
+            // selector.setManager(node, _manager);
+            emit NewManager(node, _manager);
         }
     }
 

@@ -1,39 +1,34 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.4;
 
+import "./baseManager.sol";
+
 contract Selector {
      
-
-    event vrf(bytes v);
-    mapping(string => string) nodeLevel;
-    mapping (bytes32 => address) functions;
-    bool vrfLock;
-    bytes vrfValue;
-
-    function setLevel(string[] memory addrToLevel) public {
-     
-        require(addrToLevel.length%2==0,"arg is wrong");
-
-        for(uint i = 0; i + 1 < addrToLevel.length;){
-            nodeLevel[addrToLevel[i]]=addrToLevel[i+1];
-            i=i+2;
-        }
+     struct LastVRFInfo {
+        uint vrf;
+        uint blockNum;
+        string blockHash;
     }
 
-    function setFunction(bytes32 node, address owner) public {
-        functions[node]=owner;
+    LastVRFInfo _lastVrfInfo;
+
+    mapping(address => bool) generators;
+
+    event functionExecutor(address indexed node, bytes indexed vrfValue,  uint nodeCounts, uint nodeIndex, bytes trustInfo);
+
+    function setVRF(uint vrf, uint blockNum, string blockHash) public{
+        _lastVrfInfo.blockHash=blockHash;
+        _lastVrfInfo.blockNum=blockNum;
+        _lastVrfInfo.vrf=vrf;
     }
+    function getFunctionOwner(bytes32 node, bytes memory vrfValue,  bytes trustInfo, address[] nodes) public view returns(address){
 
-    function getFunctionOwner(bytes32 node) public view returns(address){
-
-            return  functions[node];
-    }
-
-    function setVRF(bytes memory v) public {
-        if (!vrfLock){
-            vrfValue=v;
-            vrfLock = true;
-            emit vrf(v);
-        }
+            uint256 num = uint256(bytes32(vrfValue));
+            uint256 nodeCounts = nodes.length;
+            uint nodeIndex = num % nodeCounts;
+            address addr = nodes[nodeIndex];
+            emit functionExecutor(addr, vrfValue,  nodes.length, nodeIndex, trustInfo);
+            return  nodes[nodeIndex];
     }
 }
