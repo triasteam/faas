@@ -21,14 +21,14 @@ interface Registry {
     function setRecord(
         bytes32 node,
         address _owner,
-        address _resolver
+        address _manager
     ) external;
 
     function setSubnodeRecord(
         bytes32 node,
         bytes32 label,
         address _owner,
-        address _resolver
+        address _manager
     ) external;
 
     function setSubnodeOwner(
@@ -37,7 +37,7 @@ interface Registry {
         address _owner
     ) external returns (bytes32);
 
-    function setManager(bytes32 node, address _resolver) external;
+    function setManager(bytes32 node, address _manager) external;
 
     function setOwner(bytes32 node, address _owner) external;
 

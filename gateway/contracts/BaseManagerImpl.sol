@@ -3,10 +3,12 @@ pragma solidity >=0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 import "./registry.sol";
 import "./baseManager.sol";
 
 contract BaseManagerImpl is ERC721, BaseManager, Ownable{
+    using Counters for Counters.Counter;
  // A map of expiry times
     mapping(uint256 => uint256) expiries;
     // The funtion registry
@@ -15,8 +17,11 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
     bytes32 public baseNode;
     // A map of addresses that are authorised to register and renew names.
     mapping(address => bool) public controllers;
+    // node address => true or false
+    mapping(address => bool) public consumers;
 
     bytes functionMetaData;
+    Counters.Counter private controllerCounts;
 
     /**
      * v2.1.3 version of _isApprovedOrOwner which calls ownerOf(tokenId) and takes grace period into consideration instead of ERC721.ownerOf(tokenId);
@@ -69,12 +74,14 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
     // Authorises a controller, who can register and renew domains.
     function addController(address controller) external override onlyOwner {
         controllers[controller] = true;
+        controllerCounts.increment();
         emit ControllerAdded(controller);
     }
 
     // Revoke controller permission for an address.
     function removeController(address controller) external override onlyOwner {
         controllers[controller] = false;
+        controllerCounts.decrement();
         emit ControllerRemoved(controller);
     }
 
@@ -87,7 +94,7 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
     /**
      * @dev Register a name.
      * @param id The token ID (keccak256 of the label).
-     * @param owner The address that should own the registration.
+     * @param owner The address that should deploy the function.
      */
     function register(
         uint256 id,
@@ -99,7 +106,7 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
     /**
      * @dev Register a name, without modifying the registry.
      * @param id The token ID (keccak256 of the label).
-     * @param owner The address that should own the registration.
+     * @param owner The address that should deploy the function.
      */
     function registerOnly(
         uint256 id,
@@ -125,7 +132,7 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
     }
 
     /**
-     * @dev Reclaim ownership of a name in ENS, if you own it in the registrar.
+     * @dev Reclaim ownership of a name in registry, if you own it in the registrar.
      */
     function reclaim(uint256 id, address owner) external override live {
         require(_isApprovedOrOwner(msg.sender, id));
@@ -138,4 +145,9 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
         return;
     }
   
+    // 
+    function getControllerCounts()public returns(uint){
+         uint num = controllerCounts.current();
+         return num;
+    }
 }
