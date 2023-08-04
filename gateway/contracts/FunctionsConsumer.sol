@@ -20,12 +20,11 @@ contract FunctionsConsumer is FunctionsClient {
 
   constructor(address oracle) FunctionsClient(oracle)  {}
   /**
-   * @notice Send a simple request
+   * @notice Send a simple request, 
    *
    * @param source JavaScript source code
    * @param secrets Encrypted secrets payload
    * @param args List of arguments accessible from within the source code
-   * @param subscriptionId Funtions billing subscription ID
    * @param gasLimit Maximum amount of gas used to call the client contract's `handleOracleFulfillment` function
    * @return Functions request ID
    */
@@ -33,9 +32,10 @@ contract FunctionsConsumer is FunctionsClient {
     string calldata source,
     bytes calldata secrets,
     string[] calldata args,
-    uint64 subscriptionId,
+    // uint64 subscriptionId,
     uint32 gasLimit
   ) public returns (bytes32) {
+    // TODO: 调用registry合约，判断函数是否存在
     Functions.Request memory req;
     req.initializeRequest(Functions.Location.Inline, Functions.CodeLanguage.JavaScript, source);
     if (secrets.length > 0) {
@@ -43,7 +43,8 @@ contract FunctionsConsumer is FunctionsClient {
     }
     if (args.length > 0) req.addArgs(args);
 
-    bytes32 assignedReqID = sendRequest(req, subscriptionId, gasLimit);(req, subscriptionId, gasLimit);
+    bytes32 assignedReqID = sendRequest(req, gasLimit);
+
     latestRequestId = assignedReqID;
     return assignedReqID;
   }

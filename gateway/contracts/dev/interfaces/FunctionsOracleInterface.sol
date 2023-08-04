@@ -13,5 +13,5 @@ interface FunctionsOracleInterface {
    * @param gasLimit Gas limit for the fulfillment callback
    * @return requestId A unique request identifier (unique per DON)
    */
-  function sendRequest(uint64 subscriptionId, bytes calldata data, uint32 gasLimit) external returns (bytes32);
+  function sendRequest(bytes32 subscriptionId, bytes calldata data, uint32 gasLimit) external returns (bytes32);
 }

@@ -13,7 +13,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
     bytes32 indexed requestId,
     address requestingContract,
     address requestInitiator,
-    uint64 subscriptionId,
+    bytes32 indexed subscriptionId,
     address subscriptionOwner,
     bytes data
   );
@@ -29,11 +29,8 @@ contract FunctionsOracle is FunctionsOracleInterface {
   error UnauthorizedPublicKeyChange();
 
 
-  /**
-   *  
-   */
   function sendRequest(
-    uint64 subscriptionId,
+    bytes32 subscriptionId,
     bytes calldata data,
     uint32 gasLimit
   ) external override returns (bytes32) {
@@ -41,8 +38,10 @@ contract FunctionsOracle is FunctionsOracleInterface {
     if (data.length == 0) {
       revert EmptyRequestData();
     }
-  // msg.sender, tx.origin 反了
-    bytes32 requestId = computeRequestId(msg.sender, tx.origin, subscriptionId,0);
+
+    // msg.sender, tx.origin 反了
+  
+    bytes32 requestId = computeRequestId( tx.origin,msg.sender, subscriptionId,0);
 
     emit OracleRequest(
       requestId,
@@ -58,7 +57,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
   function computeRequestId(
     address nodeAddr,
     address client,
-    uint64 subscriptionId,
+    bytes32 subscriptionId,
     uint64 nonce
   ) private pure returns (bytes32) {
     return keccak256(abi.encode(nodeAddr, client, subscriptionId, nonce));
