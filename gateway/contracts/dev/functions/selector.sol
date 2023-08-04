@@ -17,18 +17,13 @@ contract Selector {
 
     event functionExecutor(address indexed node, bytes indexed vrfValue,  uint nodeCounts, uint nodeIndex, bytes trustInfo);
 
-    function setVRF(uint vrf, uint blockNum, string blockHash) public{
+    function setVRF(uint vrf, uint blockNum, string memory blockHash) public{
         _lastVrfInfo.blockHash=blockHash;
         _lastVrfInfo.blockNum=blockNum;
         _lastVrfInfo.vrf=vrf;
     }
-    function getFunctionOwner(bytes32 node, bytes memory vrfValue,  bytes trustInfo, address[] nodes) public view returns(address){
-
-            uint256 num = uint256(bytes32(vrfValue));
-            uint256 nodeCounts = nodes.length;
-            uint nodeIndex = num % nodeCounts;
-            address addr = nodes[nodeIndex];
-            emit functionExecutor(addr, vrfValue,  nodes.length, nodeIndex, trustInfo);
-            return  nodes[nodeIndex];
+    
+     function getVRF() public view returns(uint){
+      return _lastVrfInfo.vrf;
     }
 }

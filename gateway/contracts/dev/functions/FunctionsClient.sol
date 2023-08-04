@@ -4,7 +4,9 @@ pragma solidity ^0.8.6;
 import "./Functions.sol";
 import "../interfaces/FunctionsClientInterface.sol";
 import "../interfaces/FunctionsOracleInterface.sol";
-
+import "./registry.sol";
+import "./baseManager.sol";
+import "./selector.sol";
 /**
  * @title The Chainlink Functions client contract
  * @notice Contract writers can inherit this contract in order to create Chainlink Functions requests
@@ -20,8 +22,13 @@ abstract contract FunctionsClient is FunctionsClientInterface{
   error EmptyRequestData();
   error RequestIsAlreadyPending();
 
-  constructor(address oracle) {
+  Selector private selector;
+  Registry private reg;
+
+  constructor(address oracle,Selector _selector ,Registry _reg) {
     setOracle(oracle);
+        reg = _reg;
+        selector = _selector;
   }
 
   /**
@@ -35,19 +42,32 @@ abstract contract FunctionsClient is FunctionsClientInterface{
   /**
    * @notice Sends a Chainlink Functions request to the stored oracle address
    * @param req The initialized Functions.Request
-   * @param subscriptionId The subscription ID
    * @param gasLimit gas limit for the fulfillment callback
    * @return requestId The generated request ID
    */
   function sendRequest(
     Functions.Request memory req,
-    uint64 subscriptionId,
     uint32 gasLimit
   ) internal returns (bytes32) {
 
-    bytes32 requestId = s_oracle.sendRequest(subscriptionId, Functions.encodeCBOR(req), gasLimit);
+    uint vrfValue = selector.getVRF();
+  
+    address managerAddr = reg.manager(req.functionname);
+
+    require(managerAddr != address(0x0),"not found manager");
+
+    BaseManager m = BaseManager(managerAddr);
+
+    address[] memory members = m.getBestMember();
+
+    uint functionIndex = vrfValue % members.length;
+    bytes32 name=   m.getName(members[functionIndex]);
+    bytes32 requestId = s_oracle.sendRequest(name, Functions.encodeCBOR(req), gasLimit);
+    
     s_pendingRequests[requestId] = tx.origin;
+    
     emit RequestSent(requestId);
+    
     return requestId;
   }
 

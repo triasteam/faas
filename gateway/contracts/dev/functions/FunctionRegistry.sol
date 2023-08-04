@@ -12,10 +12,11 @@ contract FunctionRegistry is Registry {
         address manager;
     }
 
-    // function name => {node address, _}
+    // function full name => {node address, _}
     mapping(bytes32 => Record) records;
     // function manager => node address => bool
     mapping(address => mapping(address => bool)) operators;
+
     mapping(address => bool) public controllers;
     
     // Permits modifications only by the owner of the specified node.

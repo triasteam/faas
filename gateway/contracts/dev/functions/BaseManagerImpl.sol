@@ -9,18 +9,20 @@ import "./baseManager.sol";
 
 contract BaseManagerImpl is ERC721, BaseManager, Ownable{
     using Counters for Counters.Counter;
- // A map of expiry times
-    mapping(uint256 => uint256) expiries;
+
     // The funtion registry
     Registry public reg;
     // The namehash of the TLD this registrar owns (eg, .eth)
     bytes32 public baseNode;
     // A map of addresses that are authorised to register and renew names.
     mapping(address => bool) public controllers;
-    // node address => true or false
-    mapping(address => bool) public consumers;
+    
+    mapping(address => bytes32) public memberNames;
+
+    address[] bestMember;
 
     bytes functionMetaData;
+
     Counters.Counter private controllerCounts;
 
     /**
@@ -67,7 +69,6 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
     function ownerOf(
         uint256 tokenId
     ) public view override(IERC721, ERC721) returns (address) {
-        require(expiries[tokenId] > block.timestamp);
         return super.ownerOf(tokenId);
     }
 
@@ -90,6 +91,17 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
         reg.setManager(baseNode, resolver);
     }
 
+    function setBestMember(address[] memory members) external override onlyOwner {
+       bestMember = members;
+    }
+
+    function getBestMember() public view override returns(address[] memory) {
+      return bestMember;
+    }
+
+     function getName(address m) public view override returns(bytes32) {
+      return memberNames[m];
+    }
 
     /**
      * @dev Register a name.
@@ -100,9 +112,10 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
         uint256 id,
         address owner
     ) external override returns (uint256) {
+        
         return _register(id, owner, true);
     }
-
+   
     /**
      * @dev Register a name, without modifying the registry.
      * @param id The token ID (keccak256 of the label).
@@ -125,7 +138,7 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
         if (updateRegistry) {
             reg.setSubnodeOwner(baseNode, bytes32(id), owner);
         }
-
+       
         emit NameRegistered(id, owner, block.timestamp);
 
         return block.timestamp;
@@ -145,8 +158,8 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
         return;
     }
   
-    // 
-    function getControllerCounts()public returns(uint){
+    
+    function getControllerCounts() public view override returns(uint){
          uint num = controllerCounts.current();
          return num;
     }

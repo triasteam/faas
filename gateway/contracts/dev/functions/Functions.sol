@@ -25,6 +25,7 @@ library Functions {
     Location codeLocation;
     Location secretsLocation;
     CodeLanguage language;
+    bytes32 functionname;
     string source; // Source code for Location.Inline or url for Location.Remote
     bytes secrets; // Encrypted secrets blob for Location.Inline or url for Location.Remote
     string[] args;

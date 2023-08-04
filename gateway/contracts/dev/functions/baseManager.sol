@@ -26,10 +26,14 @@ interface BaseManager is IERC721 {
     // Revoke controller permission for an address.
     function removeController(address controller) external;
 
+    function getControllerCounts() external returns(uint);
+
     // Set the resolver for the TLD this registrar manages.
     function setManager(address resolver) external;
 
-
+    function setBestMember(address[] memory members)external;
+    function getBestMember() external returns(address[] memory);
+    function getName(address m) external view  returns(bytes32) ;
     /**
      * @dev Register a name.
      */
