@@ -1,0 +1,158 @@
+{
+	"compiler": {
+		"version": "0.8.6+commit.11564f7e"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "node",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "bytes",
+						"name": "vrfValue",
+						"type": "bytes"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "nodeCounts",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "nodeIndex",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "trustInfo",
+						"type": "bytes"
+					}
+				],
+				"name": "functionExecutor",
+				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "getVRF",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "init",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "vrf",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "blockNum",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "blockHash",
+						"type": "string"
+					}
+				],
+				"name": "setVRF",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"dev/functions/selector.sol": "Selector"
+		},
+		"evmVersion": "berlin",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"@openzeppelin/contracts/token/ERC721/IERC721.sol": {
+			"keccak256": "0x5bce51e11f7d194b79ea59fe00c9e8de9fa2c5530124960f29a24d4c740a3266",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://7e66dfde185df46104c11bc89d08fa0760737aa59a2b8546a656473d810a8ea4",
+				"dweb:/ipfs/QmXvyqtXPaPss2PD7eqPoSao5Szm2n6UMoiG8TZZDjmChR"
+			]
+		},
+		"@openzeppelin/contracts/utils/introspection/IERC165.sol": {
+			"keccak256": "0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f",
+				"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy"
+			]
+		},
+		"dev/functions/baseManager.sol": {
+			"keccak256": "0xffa40a8c682ef041c4bb01212623deb2db8c0354575b9127558b1ac3d82cc027",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://963ea9aea859e3fe82f5c47fb77048b0c88ac64185b85420fdec6fdb75c91185",
+				"dweb:/ipfs/QmPQDUYtWSFmFR8ykrKdgENAeQnzuRyuEkWBESQCZhb8we"
+			]
+		},
+		"dev/functions/registry.sol": {
+			"keccak256": "0x36feeac85c09923c68791802ca070c92949291bf04ba2d205227d56d011b7ff6",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c81e838e6273141a5fd534d891c1643fcb18d4f47b4bc098fe03b116f6dee49a",
+				"dweb:/ipfs/QmQe1DhNYxAZSc6Z527D3v82WV7ny516DeQHrdnZNUmWYr"
+			]
+		},
+		"dev/functions/selector.sol": {
+			"keccak256": "0x4b34bfe32f30fb885dfe0da428918089a25a7181c3a0510b7e044819ddc23d4e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://04aab22fe275920375551339d75ea6f7fcdea670f8de0b14bebdba09c955a3ab",
+				"dweb:/ipfs/QmRSbedakJ2qrosnh955n8xFAgMcN1PK3WyC28eDgdfix4"
+			]
+		}
+	},
+	"version": 1
+}
