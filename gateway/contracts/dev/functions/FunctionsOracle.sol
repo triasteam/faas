@@ -28,11 +28,11 @@ contract FunctionsOracle is FunctionsOracleInterface {
   error EmptyBillingRegistry();
   error UnauthorizedPublicKeyChange();
 
-
+  function init() public {}
+  
   function sendRequest(
     bytes32 subscriptionId,
-    bytes calldata data,
-    uint32 gasLimit
+    bytes calldata data
   ) external override returns (bytes32) {
 
     if (data.length == 0) {

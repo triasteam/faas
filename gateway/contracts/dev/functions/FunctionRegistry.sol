@@ -12,6 +12,8 @@ contract FunctionRegistry is Registry {
         address manager;
     }
 
+    Selector selector;
+    bool IsInit;
     // function full name => {node address, _}
     mapping(bytes32 => Record) records;
     // function manager => node address => bool
@@ -31,12 +33,21 @@ contract FunctionRegistry is Registry {
         _;
     }
     /**
-     * @dev Constructs a new ENS registry.
+     *  Constructs a new ENS registry.
      */
-    constructor(Selector _selector)  {
-        records[0x0].owner = msg.sender;
-        controllers[msg.sender]=true;
-        selector = _selector;
+    // constructor(Selector _selector)  {
+    //     records[0x0].owner = msg.sender;
+    //     controllers[msg.sender]=true;
+    //     selector = _selector;
+    // }
+
+    function init() public {
+        if (!IsInit){
+            records[0x0].owner = msg.sender;
+            controllers[msg.sender]=true;
+            selector = Selector(0x0000000000000000000000000000000000002005);
+            IsInit=true;
+        }
     }
 
     function SetController(address _owner) public {

@@ -17,6 +17,8 @@ contract Selector {
 
     event functionExecutor(address indexed node, bytes indexed vrfValue,  uint nodeCounts, uint nodeIndex, bytes trustInfo);
 
+    function init() public {}
+
     function setVRF(uint vrf, uint blockNum, string memory blockHash) public{
         _lastVrfInfo.blockHash=blockHash;
         _lastVrfInfo.blockNum=blockNum;

@@ -52,10 +52,10 @@
 						"type": "address"
 					},
 					{
-						"indexed": false,
-						"internalType": "uint64",
+						"indexed": true,
+						"internalType": "bytes32",
 						"name": "subscriptionId",
-						"type": "uint64"
+						"type": "bytes32"
 					},
 					{
 						"indexed": false,
@@ -74,21 +74,23 @@
 				"type": "event"
 			},
 			{
+				"inputs": [],
+				"name": "init",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
-						"internalType": "uint64",
+						"internalType": "bytes32",
 						"name": "subscriptionId",
-						"type": "uint64"
+						"type": "bytes32"
 					},
 					{
 						"internalType": "bytes",
 						"name": "data",
 						"type": "bytes"
-					},
-					{
-						"internalType": "uint32",
-						"name": "gasLimit",
-						"type": "uint32"
 					}
 				],
 				"name": "sendRequest",
@@ -106,7 +108,14 @@
 		"devdoc": {
 			"details": "THIS CONTRACT HAS NOT GONE THROUGH ANY SECURITY REVIEW. DO NOT USE IN PROD.",
 			"kind": "dev",
-			"methods": {},
+			"methods": {
+				"sendRequest(bytes32,bytes)": {
+					"params": {
+						"data": "Encoded Chainlink Functions request data, use FunctionsClient API to encode a request",
+						"subscriptionId": "A unique subscription ID allocated by billing system, a client can make requests from different contracts referencing the same subscription"
+					}
+				}
+			},
 			"stateVariables": {
 				"__gap": {
 					"details": "This empty reserved space is put in place to allow future versions to add new variables without shifting down storage in the inheritance chain. See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps"
@@ -117,7 +126,11 @@
 		},
 		"userdoc": {
 			"kind": "user",
-			"methods": {},
+			"methods": {
+				"sendRequest(bytes32,bytes)": {
+					"notice": "Sends a request (encoded as data) using the provided subscriptionId"
+				}
+			},
 			"notice": "Contract that nodes of a Decentralized Oracle Network (DON) interact with",
 			"version": 1
 		}
@@ -139,19 +152,19 @@
 	},
 	"sources": {
 		"dev/functions/FunctionsOracle.sol": {
-			"keccak256": "0xa5f42767809d8cfa4841e7ab777de0cd7ceac7e6d9aa345838cb701832f0d4c6",
+			"keccak256": "0x7abbd650b8ac4f569307e4456416d9b3e3bb63de9f9738a3d456121ae4eaab72",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://24f181921c0689c4871e0af58bf8af583b9e77fd78c2e4978e72122452d3c422",
-				"dweb:/ipfs/QmZQXiMFnNy7DTCHXjNeg7wY9Ty3HHxzpEiLtKDkCpLqM1"
+				"bzz-raw://ce706d2a8c001e448e3b256a92d924a8dbe2bd34a1f604eb0fdf951698e2cfd1",
+				"dweb:/ipfs/QmaAAZQGqewpJjZnxEgGDQtB5LYqeqTTEQJX8a174rY9RF"
 			]
 		},
 		"dev/interfaces/FunctionsOracleInterface.sol": {
-			"keccak256": "0xdf718c57d58ce28df47079e675a9b94afd7f69879583c7404bd8400bd1755865",
+			"keccak256": "0x496c9bb49a5ee551213eb1aaee3eed749882d6deaca55770ca8bed0c97f3613c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://956dbfc276a9b0330a85f496d4291818bbf5602922882cf5283b68c6fb9d4d43",
-				"dweb:/ipfs/QmZRbzRrbZXK7Q5kP2VRHUyFYBCEKyByHShFXHvTa6F3xD"
+				"bzz-raw://1a3c3eb178096b5e0a815cb1891921b87c25568f47ee1e6cfe00b20f5c511ee4",
+				"dweb:/ipfs/QmZDu2gtgcwqd7ryh5ZV8DavvqwuwVtLZUYX78ujvHecoz"
 			]
 		}
 	},
