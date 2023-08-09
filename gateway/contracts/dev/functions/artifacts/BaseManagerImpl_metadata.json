@@ -472,9 +472,9 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
+						"internalType": "bytes32",
 						"name": "id",
-						"type": "uint256"
+						"type": "bytes32"
 					},
 					{
 						"internalType": "address",
@@ -766,7 +766,7 @@
 				"reclaim(uint256,address)": {
 					"details": "Reclaim ownership of a name in registry, if you own it in the registrar."
 				},
-				"register(uint256,address)": {
+				"register(bytes32,address)": {
 					"details": "Register a name.",
 					"params": {
 						"id": "The token ID (keccak256 of the label).",
@@ -937,19 +937,19 @@
 			]
 		},
 		"dev/functions/BaseManagerImpl.sol": {
-			"keccak256": "0xea9908fc4d70c627c7ccdd6d3c95e1a59e3c2122f54f6367340a713182644039",
+			"keccak256": "0xc933bb7d367933e36ef4543614f19af2fddb67980ca6ae8719721509c00f46c3",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6e151b4c64dbcd0da9bcb0249510f1856c123ba718335caab4f37093b0f125de",
-				"dweb:/ipfs/QmcpfTuFFtk4XyjmhL2b8bGNtEH6yJ55yeYoRp6ydUtZc7"
+				"bzz-raw://00c94e6d3606cac7bce82b4f4f4e65a4d2dade221d484e6543b8f76fc15a3fb6",
+				"dweb:/ipfs/QmTxUoKgj9i2ELP35zxBTxSqjbFzd2eiWrWXcpStYusS9d"
 			]
 		},
 		"dev/functions/baseManager.sol": {
-			"keccak256": "0xffa40a8c682ef041c4bb01212623deb2db8c0354575b9127558b1ac3d82cc027",
+			"keccak256": "0x53c548f5212c53303046e832d77649f8552a567e8d120190b709cf554f646d7a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://963ea9aea859e3fe82f5c47fb77048b0c88ac64185b85420fdec6fdb75c91185",
-				"dweb:/ipfs/QmPQDUYtWSFmFR8ykrKdgENAeQnzuRyuEkWBESQCZhb8we"
+				"bzz-raw://1e0e13b0c5eaa41b09d44acd99518a1ef87e493bb6847c46a88facc76a2d0940",
+				"dweb:/ipfs/QmSxXdsnSn7eztT5mGPDq7XGYyFseZoP18PtzgQhcs8iB5"
 			]
 		},
 		"dev/functions/registry.sol": {

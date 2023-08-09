@@ -109,11 +109,11 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
      * @param owner The address that should deploy the function.
      */
     function register(
-        uint256 id,
+        bytes32 id,
         address owner
     ) external override returns (uint256) {
         
-        return _register(id, owner, true);
+        return _register(uint256(id), owner, true);
     }
    
     /**
@@ -139,6 +139,8 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
             reg.setSubnodeOwner(baseNode, bytes32(id), owner);
         }
        
+        memberNames[owner]=bytes32(id);
+
         emit NameRegistered(id, owner, block.timestamp);
 
         return block.timestamp;
