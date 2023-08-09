@@ -70,14 +70,14 @@
 						"type": "uint256"
 					},
 					{
+						"internalType": "bytes",
+						"name": "proof",
+						"type": "bytes"
+					},
+					{
 						"internalType": "uint256",
 						"name": "blockNum",
 						"type": "uint256"
-					},
-					{
-						"internalType": "string",
-						"name": "blockHash",
-						"type": "string"
 					}
 				],
 				"name": "setVRF",
@@ -146,11 +146,11 @@
 			]
 		},
 		"dev/functions/selector.sol": {
-			"keccak256": "0x4b34bfe32f30fb885dfe0da428918089a25a7181c3a0510b7e044819ddc23d4e",
+			"keccak256": "0xfe61f53601b17bbb1c9036c42d3c6c9bcedefc0a0fd9e4d417eb480c0166c276",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://04aab22fe275920375551339d75ea6f7fcdea670f8de0b14bebdba09c955a3ab",
-				"dweb:/ipfs/QmRSbedakJ2qrosnh955n8xFAgMcN1PK3WyC28eDgdfix4"
+				"bzz-raw://19642c1fa44b64d4995de0d9bb9d32afba4e47552f4faebd08630e812c4d5fe2",
+				"dweb:/ipfs/QmX6TL7ddYeK5yhp8ifuh3qdXBED28EhwPxVAWQV41T1z3"
 			]
 		}
 	},

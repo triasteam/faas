@@ -3,6 +3,7 @@ package chain
 import (
 	"context"
 	"encoding/hex"
+	"fmt"
 	"testing"
 	"time"
 
@@ -55,4 +56,15 @@ func TestSubscriber_Send(t *testing.T) {
 		return
 	}
 	logger.Info("receive tx ", "tx hash", data.Raw.TxHash.String(), "reqId", hex.EncodeToString(data.Id[:]))
+}
+
+func TestNewSubscriber(t *testing.T) {
+	a, b := 1, 2
+	testSet := []*int{&a, &b}
+	testSetPoint := &testSet
+	*testSetPoint = (*testSetPoint)[1:]
+
+	fmt.Println(len(*testSetPoint), *testSetPoint)
+	*testSetPoint = (*testSetPoint)[1:]
+	fmt.Println(len(*testSetPoint), *testSetPoint)
 }
