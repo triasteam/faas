@@ -38,7 +38,7 @@ interface BaseManager is IERC721 {
      * @dev Register a name.
      */
     function register(
-        uint256 id,
+        bytes32 id,
         address owner
     ) external returns (uint256);
 

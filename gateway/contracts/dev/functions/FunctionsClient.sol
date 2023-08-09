@@ -61,7 +61,7 @@ abstract contract FunctionsClient is FunctionsClientInterface{
     address[] memory members = m.getBestMember();
 
     uint functionIndex = vrfValue % members.length;
-    bytes32 name=   m.getName(members[functionIndex]);
+    bytes32 name =   m.getName(members[functionIndex]);
     bytes32 requestId = s_oracle.sendRequest(name, Functions.encodeCBOR(req), gasLimit);
     
     s_pendingRequests[requestId] = tx.origin;
