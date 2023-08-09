@@ -8,7 +8,7 @@ contract Selector {
      struct LastVRFInfo {
         uint vrf;
         uint blockNum;
-        string blockHash;
+        bytes proof;
     }
 
     LastVRFInfo _lastVrfInfo;
@@ -19,10 +19,15 @@ contract Selector {
 
     function init() public {}
 
-    function setVRF(uint vrf, uint blockNum, string memory blockHash) public{
-        _lastVrfInfo.blockHash=blockHash;
+    function setVRF(uint vrf, bytes memory proof, uint blockNum) public{
+        _lastVrfInfo.proof=proof;
         _lastVrfInfo.blockNum=blockNum;
         _lastVrfInfo.vrf=vrf;
+    }
+
+     function getProof(uint blockNum) public view returns(bytes memory){
+        require(blockNum==_lastVrfInfo.blockNum," not found block num");
+        return  _lastVrfInfo.proof;
     }
     
      function getVRF() public view returns(uint){
