@@ -15,7 +15,7 @@ abstract contract FunctionsClient is FunctionsClientInterface{
   FunctionsOracleInterface internal s_oracle;
   mapping(bytes32 => address) internal s_pendingRequests;
 
-  event RequestSent(bytes32 indexed id);
+  event RequestSent(bytes32 indexed id, address indexed node);
   event RequestFulfilled(bytes32 indexed id,bytes result, bytes err);
 
   error SenderIsNotRegistry();
@@ -42,14 +42,12 @@ abstract contract FunctionsClient is FunctionsClientInterface{
   /**
    * @notice Sends a Chainlink Functions request to the stored oracle address
    * @param req The initialized Functions.Request
-   * @param gasLimit gas limit for the fulfillment callback
    * @return requestId The generated request ID
    */
   function sendRequest(
-    Functions.Request memory req,
-    uint32 gasLimit
+    Functions.Request memory req
   ) internal returns (bytes32) {
-
+//TODO: check req
     uint vrfValue = selector.getVRF();
   
     address managerAddr = reg.manager(req.functionname);
@@ -61,12 +59,14 @@ abstract contract FunctionsClient is FunctionsClientInterface{
     address[] memory members = m.getBestMember();
 
     uint functionIndex = vrfValue % members.length;
-    bytes32 name =   m.getName(members[functionIndex]);
-    bytes32 requestId = s_oracle.sendRequest(name, Functions.encodeCBOR(req), gasLimit);
+    address addr = members[functionIndex];
+    bytes32 name =   m.getName(addr);
+    
+    bytes32 requestId = s_oracle.sendRequest(name, Functions.encodeCBOR(req));
     
     s_pendingRequests[requestId] = tx.origin;
     
-    emit RequestSent(requestId);
+    emit RequestSent(requestId, addr);
     
     return requestId;
   }

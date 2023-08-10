@@ -11,8 +11,6 @@ contract FunctionRegistry is Registry {
         address owner;
         address manager;
     }
-
-    Selector selector;
     bool IsInit;
     // function full name => {node address, _}
     mapping(bytes32 => Record) records;
@@ -23,29 +21,20 @@ contract FunctionRegistry is Registry {
     
     // Permits modifications only by the owner of the specified node.
     modifier authorised(bytes32 node) {
-        address _owner = records[node].owner;
-        require(_owner == msg.sender || controllers[msg.sender] || operators[_owner][msg.sender]);
+        // address _owner = records[node].owner;
+        // require(_owner == msg.sender || controllers[msg.sender] || operators[_owner][msg.sender]);
         _;
     }
 
     modifier onlyController() {
-        require(controllers[msg.sender]);
+        // require(controllers[msg.sender]);
         _;
     }
-    /**
-     *  Constructs a new ENS registry.
-     */
-    // constructor(Selector _selector)  {
-    //     records[0x0].owner = msg.sender;
-    //     controllers[msg.sender]=true;
-    //     selector = _selector;
-    // }
 
     function init() public {
         if (!IsInit){
             records[0x0].owner = msg.sender;
             controllers[msg.sender]=true;
-            selector = Selector(0x0000000000000000000000000000000000002005);
             IsInit=true;
         }
     }
@@ -125,8 +114,8 @@ contract FunctionRegistry is Registry {
         bytes32 node,
         address _manager
     ) public virtual override authorised(node) {
-        emit NewManager(node, _manager);
         records[node].manager = _manager;
+        emit NewManager(node, _manager);
     }
 
 
@@ -199,7 +188,6 @@ contract FunctionRegistry is Registry {
 
     function _setOwner(bytes32 node, address _owner) internal virtual {
         records[node].owner = _owner;
-        // selector.setFunction(node, _owner);
     }
 
     function _setManager(
@@ -208,12 +196,7 @@ contract FunctionRegistry is Registry {
     ) internal {
         if (_manager != records[node].manager) {
             records[node].manager = _manager;
-            // selector.setManager(node, _manager);
             emit NewManager(node, _manager);
         }
-    }
-
-    function getSelector() public view returns(address){
-        return address(selector);
     }
 }

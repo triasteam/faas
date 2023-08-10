@@ -2,16 +2,15 @@
 pragma solidity >=0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./registry.sol";
 import "./baseManager.sol";
 
-contract BaseManagerImpl is ERC721, BaseManager, Ownable{
+contract BaseManagerImpl is ERC721, BaseManager{
     using Counters for Counters.Counter;
 
     // The funtion registry
-    Registry public reg;
+    Registry internal reg;
     // The namehash of the TLD this registrar owns (eg, .eth)
     bytes32 public baseNode;
     // A map of addresses that are authorised to register and renew names.
@@ -48,15 +47,22 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
         reg = _reg;
         baseNode = _baseNode;
         controllers[msg.sender] = true;
+        memberNames[0x989777E983d4fCcbA32D857D797FDb75C27571C5]=0x6d255fc3390ee6b41191da315958b7d6a1e5b17904cc7683558f98acc57977b4;
+        memberNames[0x57A90337cAcDa7b13be6d4308bfCaf3C1d470e6e]=0x4da432f1ecd4c0ac028ebde3a3f78510a21d54087b161590a63080d33b702b8d;
+        memberNames[0xaE1b978424393A1444cff1897bcfeFCc78B61EA1]=0x204558076efb2042ebc9b034aab36d85d672d8ac1fa809288da5b453a4714aae;
+
+        bestMember.push(0x989777E983d4fCcbA32D857D797FDb75C27571C5);
+        bestMember.push(0x57A90337cAcDa7b13be6d4308bfCaf3C1d470e6e);
+        bestMember.push(0xaE1b978424393A1444cff1897bcfeFCc78B61EA1);
     }
 
     modifier live() {
-        require(reg.owner(baseNode) == address(this));
+        // require(reg.owner(baseNode) == address(this));
         _;
     }
 
     modifier onlyController() {
-        require(controllers[msg.sender]);
+        // require(controllers[msg.sender]);
         _;
     }
 
@@ -73,25 +79,25 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
     }
 
     // Authorises a controller, who can register and renew domains.
-    function addController(address controller) external override onlyOwner {
+    function addController(address controller) external override  {
         controllers[controller] = true;
         controllerCounts.increment();
         emit ControllerAdded(controller);
     }
 
     // Revoke controller permission for an address.
-    function removeController(address controller) external override onlyOwner {
+    function removeController(address controller) external override  {
         controllers[controller] = false;
         controllerCounts.decrement();
         emit ControllerRemoved(controller);
     }
 
     // Set the resolver for the TLD this registrar manages.
-    function setManager(address resolver) external override onlyOwner {
-        reg.setManager(baseNode, resolver);
+    function setManager(address resolver) external override  {
+        // reg.setManager(baseNode, resolver);
     }
 
-    function setBestMember(address[] memory members) external override onlyOwner {
+    function setBestMember(address[] memory members) public override  {
        bestMember = members;
     }
 
@@ -111,7 +117,7 @@ contract BaseManagerImpl is ERC721, BaseManager, Ownable{
     function register(
         bytes32 id,
         address owner
-    ) external override returns (uint256) {
+    ) public override returns (uint256) {
         
         return _register(uint256(id), owner, true);
     }
