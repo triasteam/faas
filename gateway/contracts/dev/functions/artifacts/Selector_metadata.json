@@ -43,6 +43,25 @@
 				"type": "event"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "blockNum",
+						"type": "uint256"
+					}
+				],
+				"name": "getProof",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "",
+						"type": "bytes"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "getVRF",
 				"outputs": [
@@ -130,11 +149,11 @@
 			]
 		},
 		"dev/functions/baseManager.sol": {
-			"keccak256": "0xffa40a8c682ef041c4bb01212623deb2db8c0354575b9127558b1ac3d82cc027",
+			"keccak256": "0x53c548f5212c53303046e832d77649f8552a567e8d120190b709cf554f646d7a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://963ea9aea859e3fe82f5c47fb77048b0c88ac64185b85420fdec6fdb75c91185",
-				"dweb:/ipfs/QmPQDUYtWSFmFR8ykrKdgENAeQnzuRyuEkWBESQCZhb8we"
+				"bzz-raw://1e0e13b0c5eaa41b09d44acd99518a1ef87e493bb6847c46a88facc76a2d0940",
+				"dweb:/ipfs/QmSxXdsnSn7eztT5mGPDq7XGYyFseZoP18PtzgQhcs8iB5"
 			]
 		},
 		"dev/functions/registry.sol": {
@@ -146,11 +165,11 @@
 			]
 		},
 		"dev/functions/selector.sol": {
-			"keccak256": "0xfe61f53601b17bbb1c9036c42d3c6c9bcedefc0a0fd9e4d417eb480c0166c276",
+			"keccak256": "0x1c43dfc57015d04884421610e155b0bec384315a5f9a99624d3eca3adb24edd2",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://19642c1fa44b64d4995de0d9bb9d32afba4e47552f4faebd08630e812c4d5fe2",
-				"dweb:/ipfs/QmX6TL7ddYeK5yhp8ifuh3qdXBED28EhwPxVAWQV41T1z3"
+				"bzz-raw://bdc6b7c63b966133a25e36b9582ebc73250af129dd6deab664ca14203830d38f",
+				"dweb:/ipfs/QmTesKvKFYT1zcDjLWHQCX6LqxgEFRyekZuc1WebWba75F"
 			]
 		}
 	},

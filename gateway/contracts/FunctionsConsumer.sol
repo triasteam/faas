@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.4;
 
 import {Functions, FunctionsClient} from "./dev/functions/FunctionsClient.sol";
-
+import "./dev/functions/registry.sol";
+import "./dev/functions/selector.sol";
 
 /**
  * @title Functions Consumer contract
@@ -18,32 +19,34 @@ contract FunctionsConsumer is FunctionsClient {
 
   event FuncResponse(bytes32 indexed requestId, bytes result, bytes err);
 
-  constructor(address oracle) FunctionsClient(oracle)  {}
+  constructor(address oracle,Selector _selector ,Registry _reg)FunctionsClient(oracle,_selector,_reg)  {}
   /**
    * @notice Send a simple request, 
    *
    * @param source JavaScript source code
    * @param secrets Encrypted secrets payload
    * @param args List of arguments accessible from within the source code
-   * @param gasLimit Maximum amount of gas used to call the client contract's `handleOracleFulfillment` function
    * @return Functions request ID
    */
   function executeRequest(
+    bytes32 name,
     string calldata source,
     bytes calldata secrets,
-    string[] calldata args,
-    // uint64 subscriptionId,
-    uint32 gasLimit
+    string[] calldata args
   ) public returns (bytes32) {
     // TODO: 调用registry合约，判断函数是否存在
     Functions.Request memory req;
-    req.initializeRequest(Functions.Location.Inline, Functions.CodeLanguage.JavaScript, source);
+    req.initializeRequest(Functions.Location.Inline, Functions.CodeLanguage.JavaScript, source,name);
+   
     if (secrets.length > 0) {
       req.addRemoteSecrets(secrets);
     }
-    if (args.length > 0) req.addArgs(args);
+    
+    if (args.length > 0) {
+        req.addArgs(args);
+    }
 
-    bytes32 assignedReqID = sendRequest(req, gasLimit);
+    bytes32 assignedReqID = sendRequest(req);
 
     latestRequestId = assignedReqID;
     return assignedReqID;

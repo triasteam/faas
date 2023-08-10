@@ -166,25 +166,6 @@
 					{
 						"indexed": true,
 						"internalType": "address",
-						"name": "previousOwner",
-						"type": "address"
-					},
-					{
-						"indexed": true,
-						"internalType": "address",
-						"name": "newOwner",
-						"type": "address"
-					}
-				],
-				"name": "OwnershipTransferred",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": true,
-						"internalType": "address",
 						"name": "from",
 						"type": "address"
 					},
@@ -407,19 +388,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "owner",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -454,19 +422,6 @@
 				"name": "reclaim",
 				"outputs": [],
 				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "reg",
-				"outputs": [
-					{
-						"internalType": "contract Registry",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -526,13 +481,6 @@
 					}
 				],
 				"name": "removeController",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "renounceOwnership",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -709,19 +657,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "newOwner",
-						"type": "address"
-					}
-				],
-				"name": "transferOwnership",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "bytes",
 						"name": "funcBytes",
 						"type": "bytes"
@@ -751,9 +686,6 @@
 				"name()": {
 					"details": "See {IERC721Metadata-name}."
 				},
-				"owner()": {
-					"details": "Returns the address of the current owner."
-				},
 				"ownerOf(uint256)": {
 					"details": "Gets the owner of the specified token ID. Names become unowned      when their registration expires.",
 					"params": {
@@ -780,9 +712,6 @@
 						"owner": "The address that should deploy the function."
 					}
 				},
-				"renounceOwnership()": {
-					"details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
-				},
 				"safeTransferFrom(address,address,uint256)": {
 					"details": "See {IERC721-safeTransferFrom}."
 				},
@@ -803,9 +732,6 @@
 				},
 				"transferFrom(address,address,uint256)": {
 					"details": "See {IERC721-transferFrom}."
-				},
-				"transferOwnership(address)": {
-					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
 				}
 			},
 			"version": 1
@@ -832,14 +758,6 @@
 		"remappings": []
 	},
 	"sources": {
-		"@openzeppelin/contracts/access/Ownable.sol": {
-			"keccak256": "0xba43b97fba0d32eb4254f6a5a297b39a19a247082a02d6e69349e071e2946218",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://fc980984badf3984b6303b377711220e067722bbd6a135b24669ff5069ef9f32",
-				"dweb:/ipfs/QmPHXMSXj99XjSVM21YsY6aNtLLjLVXDbyN76J5HQYvvrz"
-			]
-		},
 		"@openzeppelin/contracts/token/ERC721/ERC721.sol": {
 			"keccak256": "0x2c309e7df9e05e6ce15bedfe74f3c61b467fc37e0fae9eab496acf5ea0bbd7ff",
 			"license": "MIT",
@@ -937,11 +855,11 @@
 			]
 		},
 		"dev/functions/BaseManagerImpl.sol": {
-			"keccak256": "0xc933bb7d367933e36ef4543614f19af2fddb67980ca6ae8719721509c00f46c3",
+			"keccak256": "0xe1a3eeb2a761c58231f5813a183d144769fc0d17577d71d347420a6bb1fc939f",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://00c94e6d3606cac7bce82b4f4f4e65a4d2dade221d484e6543b8f76fc15a3fb6",
-				"dweb:/ipfs/QmTxUoKgj9i2ELP35zxBTxSqjbFzd2eiWrWXcpStYusS9d"
+				"bzz-raw://307125909852762e6aa853277d61ec4b63cd26ec73fde5fc30429114535b667f",
+				"dweb:/ipfs/QmQiNXQm4RwfGrT19UpqTrXQfjNneNxmzjm7xh45HkzTF1"
 			]
 		},
 		"dev/functions/baseManager.sol": {
