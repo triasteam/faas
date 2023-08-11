@@ -85,7 +85,7 @@ abstract contract FunctionsClient is FunctionsClientInterface{
     bytes32 requestId,
     bytes memory response,
     bytes memory err
-  ) external override recordFulfillment(requestId) {
+  ) public override recordFulfillment(requestId) {
     fulfillRequest(requestId, response, err);
     emit RequestFulfilled(requestId, response, err);
   }
