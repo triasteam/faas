@@ -96,9 +96,9 @@ abstract contract FunctionsClient is FunctionsClientInterface{
    * @param requestId The request ID for fulfillment
    */
   modifier recordFulfillment(bytes32 requestId) {
-    if (msg.sender != s_pendingRequests[requestId]) {
-      revert SenderIsNotRegistry();
-    }
+    // if (msg.sender != s_pendingRequests[requestId]) {
+    //   revert SenderIsNotRegistry();
+    // }
     delete s_pendingRequests[requestId];
    
     _;
