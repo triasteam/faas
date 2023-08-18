@@ -31,7 +31,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
   function init() public {}
   
   function sendRequest(
-    bytes32 subscriptionId,
+    bytes32 functionId,
     bytes calldata data
   ) external override returns (bytes32) {
 
@@ -41,13 +41,13 @@ contract FunctionsOracle is FunctionsOracleInterface {
 
     // msg.sender, tx.origin 反了
   
-    bytes32 requestId = computeRequestId( tx.origin,msg.sender, subscriptionId,0);
+    bytes32 requestId = computeRequestId(tx.origin, msg.sender, functionId,0);
 
     emit OracleRequest(
       requestId,
       msg.sender,
       tx.origin,
-      subscriptionId,
+      functionId,
       address(0x0),
       data
     );
