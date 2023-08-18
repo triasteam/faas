@@ -99,7 +99,7 @@
 					}
 				}
 			},
-			"title": "The Chainlink Functions client contract",
+			"title": "The Functions client contract",
 			"version": 1
 		},
 		"userdoc": {
@@ -109,7 +109,7 @@
 					"notice": "Chainlink Functions response handler called by the designated transmitter node in an OCR round."
 				}
 			},
-			"notice": "Contract writers can inherit this contract in order to create Chainlink Functions requests",
+			"notice": "Contract writers can inherit this contract in order to create Functions requests",
 			"version": 1
 		}
 	},
@@ -146,19 +146,19 @@
 			]
 		},
 		"dev/functions/Functions.sol": {
-			"keccak256": "0x34fc01262464b29006e78df23979b862c4f974c0656cda47b312dab36434c07d",
+			"keccak256": "0x015d4375832c88679e03a808020d2e9a04289153a6da10d74cea2aa8523cf6f0",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://23235c43b4c9329266fb14b2e70f8fbd094346044a3a9d0ca7a979df7eebdd8b",
-				"dweb:/ipfs/QmecezLm8TtrWt8Vz8D6CHDGGzNA3hYHvCKPi3ezoHpxJK"
+				"bzz-raw://630c3e8322142becc56153acc9f5f9eda4ab44f7b22a47b785e6d190f64f2ac7",
+				"dweb:/ipfs/QmXKqtF9gFDNkEnchauevrRPwtFeJSqQcDVKeV6JFxMf2Q"
 			]
 		},
 		"dev/functions/FunctionsClient.sol": {
-			"keccak256": "0xfb9e4cc8670fcc5f68cd4e53a65ab2f5ed612ec96913696c0143ee4a7b673702",
+			"keccak256": "0x49642f59cb6844900cb88d544681a6d4d56de87748994345779eb9b8f54d585f",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d91fb617ee6d07f0a94696d538119f976439a2fc9b3fdd1fcb8aea514aaa931d",
-				"dweb:/ipfs/QmRMthrkMYoDXPgExr3frjfpx9whXqzh7i5ht7WNC2eBVo"
+				"bzz-raw://5c24ded5e3a17af6f4355cb916dec95cb32ecb189f5d2015cb247f291cd2b07b",
+				"dweb:/ipfs/QmYurTDymJES8T5muf5WXKrk1c2zoF1HYG2NGicMA1fwTF"
 			]
 		},
 		"dev/functions/baseManager.sol": {
@@ -194,11 +194,11 @@
 			]
 		},
 		"dev/interfaces/FunctionsOracleInterface.sol": {
-			"keccak256": "0x496c9bb49a5ee551213eb1aaee3eed749882d6deaca55770ca8bed0c97f3613c",
+			"keccak256": "0x1c9e3bf8c3116fd78a374206df07d192d11249b8888f1e46ffac3fc4266b9bed",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1a3c3eb178096b5e0a815cb1891921b87c25568f47ee1e6cfe00b20f5c511ee4",
-				"dweb:/ipfs/QmZDu2gtgcwqd7ryh5ZV8DavvqwuwVtLZUYX78ujvHecoz"
+				"bzz-raw://b49fb83cb4cbf1fd50358bdad8b729da65b5c65b08caf3d22f2ad0b375fd3e8a",
+				"dweb:/ipfs/QmZpbJgJjrVVyxd7dQxgCwYTxhcQCBFvpvZY6QBxMvFb5Y"
 			]
 		},
 		"dev/vendor/@ensdomains/buffer/0.1.0/Buffer.sol": {

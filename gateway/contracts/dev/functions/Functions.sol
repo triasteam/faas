@@ -53,7 +53,7 @@ library Functions {
     CBOR.writeUInt256(buffer, uint256(self.language));
 
     CBOR.writeString(buffer, "functionName");
-    CBOR.writeBytes(buffer, self.functionName);
+    CBOR.writeUInt256(buffer, uint256(self.functionName));
 
     CBOR.writeString(buffer, "source");
     CBOR.writeString(buffer, self.source);
