@@ -8,8 +8,8 @@ import "./registry.sol";
 import "./baseManager.sol";
 import "./selector.sol";
 /**
- * @title The Chainlink Functions client contract
- * @notice Contract writers can inherit this contract in order to create Chainlink Functions requests
+ * @title The Functions client contract
+ * @notice Contract writers can inherit this contract in order to create Functions requests
  */
 abstract contract FunctionsClient is FunctionsClientInterface{
   FunctionsOracleInterface internal s_oracle;
@@ -40,7 +40,7 @@ abstract contract FunctionsClient is FunctionsClientInterface{
   }
 
   /**
-   * @notice Sends a Chainlink Functions request to the stored oracle address
+   * @notice Sends a Functions request to the stored oracle address
    * @param req The initialized Functions.Request
    * @return requestId The generated request ID
    */
@@ -50,9 +50,9 @@ abstract contract FunctionsClient is FunctionsClientInterface{
 //TODO: check req
     uint vrfValue = selector.getVRF();
   
-    address managerAddr = reg.manager(req.functionname);
+    address managerAddr = reg.manager(req.functionName);
 
-    require(managerAddr != address(0x0),"not found manager");
+    require(managerAddr != address(0x0), "not found manager");
 
     BaseManager m = BaseManager(managerAddr);
 
@@ -64,7 +64,7 @@ abstract contract FunctionsClient is FunctionsClientInterface{
     
     bytes32 requestId = s_oracle.sendRequest(name, Functions.encodeCBOR(req));
     
-    s_pendingRequests[requestId] = tx.origin;
+    s_pendingRequests[requestId] = addr;
     
     emit RequestSent(requestId, addr);
     
@@ -96,9 +96,9 @@ abstract contract FunctionsClient is FunctionsClientInterface{
    * @param requestId The request ID for fulfillment
    */
   modifier recordFulfillment(bytes32 requestId) {
-    // if (msg.sender != s_pendingRequests[requestId]) {
-    //   revert SenderIsNotRegistry();
-    // }
+     if (msg.sender != s_pendingRequests[requestId]) {
+       revert SenderIsNotRegistry();
+     }
     delete s_pendingRequests[requestId];
    
     _;

@@ -25,7 +25,7 @@ library Functions {
     Location codeLocation;
     Location secretsLocation;
     CodeLanguage language;
-    bytes32 functionname;
+    bytes32 functionName;
     string source; // Source code for Location.Inline or url for Location.Remote
     bytes secrets; // Encrypted secrets blob for Location.Inline or url for Location.Remote
     string[] args;
@@ -51,6 +51,9 @@ library Functions {
 
     CBOR.writeString(buffer, "language");
     CBOR.writeUInt256(buffer, uint256(self.language));
+
+    CBOR.writeString(buffer, "functionName");
+    CBOR.writeBytes(buffer, self.functionName);
 
     CBOR.writeString(buffer, "source");
     CBOR.writeString(buffer, self.source);
@@ -97,7 +100,7 @@ library Functions {
     self.codeLocation = location;
     self.language = language;
     self.source = source;
-    self.functionname=name;
+    self.functionName = name;
   }
 
   /**
@@ -107,7 +110,7 @@ library Functions {
    * @param javaScriptSource The user provided JS code (must not be empty)
    */
   function initializeRequestForInlineJavaScript(Request memory self, string memory javaScriptSource) internal pure {
-    initializeRequest(self, Location.Inline, CodeLanguage.JavaScript, javaScriptSource,bytes32(0x0));
+    initializeRequest(self, Location.Inline, CodeLanguage.JavaScript, javaScriptSource, bytes32(0x0));
   }
 
   /**
