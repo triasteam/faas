@@ -84,7 +84,7 @@
 				"inputs": [
 					{
 						"internalType": "bytes32",
-						"name": "subscriptionId",
+						"name": "functionId",
 						"type": "bytes32"
 					},
 					{
@@ -111,8 +111,8 @@
 			"methods": {
 				"sendRequest(bytes32,bytes)": {
 					"params": {
-						"data": "Encoded Chainlink Functions request data, use FunctionsClient API to encode a request",
-						"subscriptionId": "A unique subscription ID allocated by billing system, a client can make requests from different contracts referencing the same subscription"
+						"data": "Encoded Functions request data, use FunctionsClient API to encode a request",
+						"functionId": "A unique subscription ID allocated by billing system, a client can make requests from different contracts referencing the same subscription"
 					}
 				}
 			},
@@ -152,19 +152,19 @@
 	},
 	"sources": {
 		"dev/functions/FunctionsOracle.sol": {
-			"keccak256": "0x7abbd650b8ac4f569307e4456416d9b3e3bb63de9f9738a3d456121ae4eaab72",
+			"keccak256": "0xd4b49950789df7e0729a20a041bae5a2247e0ca72114380141e659f1b634e2b7",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://ce706d2a8c001e448e3b256a92d924a8dbe2bd34a1f604eb0fdf951698e2cfd1",
-				"dweb:/ipfs/QmaAAZQGqewpJjZnxEgGDQtB5LYqeqTTEQJX8a174rY9RF"
+				"bzz-raw://5d398791534d18b800dea222b26829848b9cd5a11bff4d6ffd5d0262f404a260",
+				"dweb:/ipfs/QmRuojL2dYWLQWof1DtNfWyGXVKNpqgeLaQNMvNERYVS5Z"
 			]
 		},
 		"dev/interfaces/FunctionsOracleInterface.sol": {
-			"keccak256": "0x496c9bb49a5ee551213eb1aaee3eed749882d6deaca55770ca8bed0c97f3613c",
+			"keccak256": "0x1c9e3bf8c3116fd78a374206df07d192d11249b8888f1e46ffac3fc4266b9bed",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1a3c3eb178096b5e0a815cb1891921b87c25568f47ee1e6cfe00b20f5c511ee4",
-				"dweb:/ipfs/QmZDu2gtgcwqd7ryh5ZV8DavvqwuwVtLZUYX78ujvHecoz"
+				"bzz-raw://b49fb83cb4cbf1fd50358bdad8b729da65b5c65b08caf3d22f2ad0b375fd3e8a",
+				"dweb:/ipfs/QmZpbJgJjrVVyxd7dQxgCwYTxhcQCBFvpvZY6QBxMvFb5Y"
 			]
 		}
 	},
