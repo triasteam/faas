@@ -49,7 +49,7 @@ type Config struct {
 }
 
 const (
-	defaultLogFileName = "artist.log"
+	defaultLogFileName = "defaas.log"
 	loggerSkip         = 2
 )
 
@@ -72,7 +72,7 @@ func init() {
 
 // Info logs an info msg with fields
 func (l logger) Info(msg string, fields ...interface{}) {
-
+	fmt.Println(fields)
 	l.zapSugaredLogger.Infow(msg, fields...)
 }
 
