@@ -3,7 +3,7 @@ package types
 import (
 	"time"
 
-	"github.com/openfaas/faas/gateway/chain/logger"
+	"github.com/openfaas/faas/gateway/logger"
 )
 
 type routine func(attempt int) error

@@ -10,10 +10,10 @@ import (
 	"math"
 	"net/http"
 
-	"github.com/openfaas/faas/gateway/chain/logger"
 	"github.com/openfaas/faas/gateway/pkg/middleware"
 	"github.com/openfaas/faas/gateway/requests"
 	"github.com/openfaas/faas/gateway/scaling"
+	"gorm.io/gorm/logger"
 )
 
 // MakeAlertHandler handles alerts from Prometheus Alertmanager

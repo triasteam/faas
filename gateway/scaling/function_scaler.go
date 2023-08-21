@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/openfaas/faas/gateway/chain/logger"
 	"github.com/openfaas/faas/gateway/types"
 	"golang.org/x/sync/singleflight"
+	"gorm.io/gorm/logger"
 )
 
 // NewFunctionScaler create a new scaler with the specified
