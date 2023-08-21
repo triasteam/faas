@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"gorm.io/gorm/logger"
+	"github.com/openfaas/faas/gateway/logger"
 )
 
 const crlf = "\r\n"

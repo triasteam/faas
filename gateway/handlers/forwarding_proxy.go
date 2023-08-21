@@ -11,9 +11,9 @@ import (
 	"os"
 	"time"
 
+	"github.com/openfaas/faas/gateway/logger"
 	"github.com/openfaas/faas/gateway/pkg/middleware"
 	"github.com/openfaas/faas/gateway/types"
-	"gorm.io/gorm/logger"
 )
 
 const CallID = "X-Call-Id"

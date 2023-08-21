@@ -4,14 +4,14 @@ PLATFORM := "linux/amd64,linux/arm/v7,linux/arm64"
 
 TAG?=latest
 SERVER?=docker.io
-OWNER?=alexellis2
+OWNER?=jiang762507357
 NAME=gateway
 
 .PHONY: local-docker
 build-local:
 	@echo $(SERVER)/$(OWNER)/$(NAME):$(TAG) \
 	&& docker buildx create --use --name=multiarch --node multiarch \
-	&& docker buildx build \
+	&& docker buildx build --no-cache \
 		--progress=plain \
 		--platform linux/amd64 \
 		--output "type=docker,push=false" \

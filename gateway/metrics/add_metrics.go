@@ -10,7 +10,7 @@ import (
 	"strconv"
 
 	types "github.com/openfaas/faas-provider/types"
-	"gorm.io/gorm/logger"
+	"github.com/openfaas/faas/gateway/logger"
 )
 
 // AddMetricsHandler wraps a http.HandlerFunc with Prometheus metrics

@@ -16,8 +16,8 @@ import (
 
 	"github.com/openfaas/faas-provider/auth"
 	types "github.com/openfaas/faas-provider/types"
+	"github.com/openfaas/faas/gateway/logger"
 	"github.com/prometheus/client_golang/prometheus"
-	"gorm.io/gorm/logger"
 )
 
 // Exporter is a prometheus exporter
@@ -110,7 +110,7 @@ func (e *Exporter) StartServiceWatcher(endpointURL url.URL, metricsOptions Metri
 				}
 
 				e.services = services
-
+				logger.Info("get all services", "values", services)
 				break
 			case <-quit:
 				return

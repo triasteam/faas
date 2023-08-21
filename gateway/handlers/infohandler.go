@@ -10,9 +10,9 @@ import (
 	"net/http/httptest"
 
 	providerTypes "github.com/openfaas/faas-provider/types"
+	"github.com/openfaas/faas/gateway/logger"
 	"github.com/openfaas/faas/gateway/types"
 	"github.com/openfaas/faas/gateway/version"
-	"gorm.io/gorm/logger"
 )
 
 // MakeInfoHandler is responsible for display component version information
