@@ -1,8 +1,0 @@
-# art_service
-
-
-## Build Go Client
-
-abigen --abi ./abi_assets/FunctionsClient.json  --pkg actor --type FunctionClient  --out function_cli.go
-
-abigen --abi ./abi_assets/FunctionOracle.json  --pkg actor --type FunctionOracle  --out oracle_cli.go

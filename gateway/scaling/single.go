@@ -3,7 +3,7 @@ package scaling
 import (
 	"sync"
 
-	"github.com/openfaas/faas/gateway/chain/logger"
+	"gorm.io/gorm/logger"
 )
 
 type Call struct {

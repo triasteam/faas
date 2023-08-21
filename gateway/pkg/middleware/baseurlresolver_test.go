@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/openfaas/faas/gateway/chain/logger"
+	"gorm.io/gorm/logger"
 )
 
 func Test_SingleHostBaseURLResolver_BuildURL(t *testing.T) {

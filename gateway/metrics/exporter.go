@@ -16,8 +16,8 @@ import (
 
 	"github.com/openfaas/faas-provider/auth"
 	types "github.com/openfaas/faas-provider/types"
-	"github.com/openfaas/faas/gateway/chain/logger"
 	"github.com/prometheus/client_golang/prometheus"
+	"gorm.io/gorm/logger"
 )
 
 // Exporter is a prometheus exporter
