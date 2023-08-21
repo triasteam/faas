@@ -6,8 +6,8 @@ package scaling
 import (
 	"fmt"
 
+	"github.com/openfaas/faas/gateway/logger"
 	"golang.org/x/sync/singleflight"
-	"gorm.io/gorm/logger"
 )
 
 type CachedFunctionQuery struct {

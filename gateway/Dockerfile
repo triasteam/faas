@@ -24,7 +24,7 @@ COPY go.sum         go.sum
 COPY handlers       handlers
 COPY metrics        metrics
 COPY requests       requests
-COPY chain          chain
+COPY logger         logger
 COPY contracts      contracts
 
 COPY types          types

@@ -15,9 +15,9 @@ import (
 	"time"
 
 	types "github.com/openfaas/faas-provider/types"
+	"github.com/openfaas/faas/gateway/logger"
 	middleware "github.com/openfaas/faas/gateway/pkg/middleware"
 	"github.com/openfaas/faas/gateway/scaling"
-	"gorm.io/gorm/logger"
 )
 
 // ExternalServiceQuery proxies service queries to external plugin via HTTP

@@ -13,9 +13,9 @@ import (
 
 	"github.com/gorilla/mux"
 	ftypes "github.com/openfaas/faas-provider/types"
+	"github.com/openfaas/faas/gateway/logger"
 	"github.com/openfaas/faas/gateway/metrics"
 	"github.com/openfaas/faas/gateway/pkg/middleware"
-	"gorm.io/gorm/logger"
 
 	"github.com/openfaas/faas/gateway/scaling"
 )

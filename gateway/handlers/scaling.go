@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/openfaas/faas/gateway/logger"
 	"github.com/openfaas/faas/gateway/pkg/middleware"
 	"github.com/openfaas/faas/gateway/scaling"
-	"gorm.io/gorm/logger"
 )
 
 // MakeScalingHandler creates handler which can scale a function from
