@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/docker/distribution v2.8.2+incompatible
 	github.com/gorilla/mux v1.8.0
+	github.com/hashicorp/go-retryablehttp v0.7.4
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/openfaas/faas-provider v0.24.0
 	github.com/openfaas/nats-queue-worker v0.0.0-20230303171817-9dfe6fa61387
@@ -29,6 +30,8 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
+	github.com/hashicorp/go-hclog v1.1.0 // indirect
 	github.com/jonboulle/clockwork v0.4.0 // indirect
 	github.com/klauspost/compress v1.15.15 // indirect
 	github.com/lestrrat-go/strftime v1.0.6 // indirect

@@ -26,15 +26,21 @@ type Exporter struct {
 	services          []types.FunctionStatus
 	credentials       *auth.BasicAuthCredentials
 	FunctionNamespace string
+	functionReporter  FunctionReporter
 }
 
 // NewExporter creates a new exporter for the OpenFaaS gateway metrics
 func NewExporter(options MetricOptions, credentials *auth.BasicAuthCredentials, namespace string) *Exporter {
+	reporter, err := NewVerifierReporter()
+	if err != nil {
+		logger.Fatal("cannot start verifier reporter", "err", err)
+	}
 	return &Exporter{
 		metricOptions:     options,
 		services:          []types.FunctionStatus{},
 		credentials:       credentials,
 		FunctionNamespace: namespace,
+		functionReporter:  reporter,
 	}
 }
 
@@ -106,11 +112,15 @@ func (e *Exporter) StartServiceWatcher(endpointURL url.URL, metricsOptions Metri
 							continue
 						}
 						services = append(services, nsServices...)
+
 					}
 				}
 
 				e.services = services
 				logger.Info("get all services", "values", services)
+
+				e.functionReporter.SendFunctions(e.services)
+
 				break
 			case <-quit:
 				return
