@@ -18,11 +18,10 @@ contract BaseManagerImpl is ERC721, BaseManager{
     
     mapping(address => bytes32) public memberNames;
 
-    address[] bestMember;
-
     bytes functionMetaData;
 
     Counters.Counter private controllerCounts;
+    Counters.Counter private membersCounts;
 
     /**
      * v2.1.3 version of _isApprovedOrOwner which calls ownerOf(tokenId) and takes grace period into consideration instead of ERC721.ownerOf(tokenId);
@@ -93,19 +92,13 @@ contract BaseManagerImpl is ERC721, BaseManager{
     }
 
     // Set the resolver for the TLD this registrar manages.
-    function setManager(address resolver) external override  {
-        // reg.setManager(baseNode, resolver);
+    function setManager(address resolver) external override  {}
+
+    function getMembersCounts() public view override returns(uint)  {
+        return membersCounts.current();
     }
 
-    function setBestMember(address[] memory members) public override  {
-       bestMember = members;
-    }
-
-    function getBestMember() public view override returns(address[] memory) {
-      return bestMember;
-    }
-
-     function getName(address m) public view override returns(bytes32) {
+    function getName(address m) public view override returns(bytes32) {
       return memberNames[m];
     }
 
@@ -148,7 +141,7 @@ contract BaseManagerImpl is ERC721, BaseManager{
         memberNames[owner]=bytes32(id);
 
         emit NameRegistered(id, owner, block.timestamp);
-
+        membersCounts.increment();
         return block.timestamp;
     }
 

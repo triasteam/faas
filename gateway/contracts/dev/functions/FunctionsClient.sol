@@ -47,22 +47,18 @@ abstract contract FunctionsClient is FunctionsClientInterface{
   function sendRequest(
     Functions.Request memory req
   ) internal returns (bytes32) {
-//TODO: check req
-    uint vrfValue = selector.getVRF();
-  
+    //TODO: check req
     address managerAddr = reg.manager(req.functionName);
 
     require(managerAddr != address(0x0), "not found manager");
 
     BaseManager m = BaseManager(managerAddr);
 
-    address[] memory members = m.getBestMember();
-
-    uint functionIndex = vrfValue % members.length;
-    address addr = members[functionIndex];
-    bytes32 name =   m.getName(addr);
+    uint memberCounts = m.getMembersCounts();
     
-    bytes32 requestId = s_oracle.sendRequest(name, Functions.encodeCBOR(req));
+    require(memberCounts != 0, "selected node unregistered");
+
+    bytes32 requestId = s_oracle.sendRequest(req.functionName, Functions.encodeCBOR(req));
     
     s_pendingRequests[requestId] = addr;
     
@@ -83,10 +79,17 @@ abstract contract FunctionsClient is FunctionsClientInterface{
 
   function handleOracleFulfillment(
     bytes32 requestId,
+    uint score,
     bytes memory response,
     bytes memory err
   ) public override recordFulfillment(requestId) {
     fulfillRequest(requestId, response, err);
+
+    Functions.Response memory resp;
+    resp.initializeResponse( response, err);
+
+    s_oracle.fulfillRequestByNode(requestId,score,Functions.encodeResponse(resp));
+    
     emit RequestFulfilled(requestId, response, err);
   }
 

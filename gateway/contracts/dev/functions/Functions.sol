@@ -30,12 +30,17 @@ library Functions {
     bytes secrets; // Encrypted secrets blob for Location.Inline or url for Location.Remote
     string[] args;
   }
+  struct Response {
+    bytes response;
+    bytes err;
+  }
 
   error EmptySource();
   error EmptyUrl();
   error EmptySecrets();
   error EmptyArgs();
   error NoInlineSecrets();
+  error EmptyArg();
 
   /**
    * @notice Encodes a Request to CBOR encoded bytes
@@ -80,6 +85,7 @@ library Functions {
     return buffer.buf.buf;
   }
 
+
   /**
    * @notice Initializes a Chainlink Functions Request
    * @dev Sets the codeLocation and code on the request
@@ -103,8 +109,36 @@ library Functions {
     self.functionName = name;
   }
 
+  function initializeResponse(
+  Response memory self,
+  bytes memory resp,
+  bytes memory err
+  ) internal pure {
+    if (resp.length == 0) revert EmptyArg();
+    if (err.length == 0) revert EmptyArg();
+
+    self.response = resp;
+    self.err = err;
+  }
+
+  function encodeResponse(Response memory self) internal pure returns (bytes memory) {
+    CBOR.CBORBuffer memory buffer;
+    Buffer.init(buffer.buf, DEFAULT_BUFFER_SIZE);
+
+    if (self.response.length > 0) {
+      CBOR.writeString(buffer, "response");
+      CBOR.writeBytes(buffer, self.response);
+    }
+    if (self.err.length > 0) {
+      CBOR.writeString(buffer, "err");
+      CBOR.writeBytes(buffer, self.err);
+    }
+
+    return buffer.buf.buf;
+  }
+
   /**
-   * @notice Initializes a Chainlink Functions Request
+   * @notice Initializes a  Functions Request
    * @dev Simplified version of initializeRequest for PoC
    * @param self The uninitialized request
    * @param javaScriptSource The user provided JS code (must not be empty)
