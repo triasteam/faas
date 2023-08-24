@@ -4,6 +4,7 @@ pragma solidity ^0.8.6;
 import "../interfaces/FunctionsOracleInterface.sol";
 import "./selector.sol";
 import "./registry.sol";
+import "../interfaces/FunctionsClientInterface.sol";
 /**
  * @title Functions Oracle contract
  * @notice Contract that nodes of a Decentralized Oracle Network (DON) interact with
@@ -19,6 +20,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
     bytes data
   );
   event OracleResponse(bytes32 indexed requestId);
+  event OracleRequestTimeout(bytes32 indexed requestId, string reason);
   // event UserCallbackError(bytes32 indexed requestId, string reason);
   // event UserCallbackRawError(bytes32 indexed requestId, bytes lowLevelData);
   // event InvalidRequestID(bytes32 indexed requestId);
@@ -31,24 +33,34 @@ contract FunctionsOracle is FunctionsOracleInterface {
 
   struct responseInfo {
     address node;
+    address oracleAddress;
     uint score;
     bytes resp;
+    bytes err;
+  }
+
+  struct requestBirth {
+    bytes32 requestId;
+    bytes32 functionId;
+    uint birth;
   }
 
   uint256 constant public EXPIRY_TIME = 5 minutes;
   mapping(bytes32 => mapping(address => bool)) private allowedOracles;
   //  mapping(bytes32 => Callback) private callbacks;//requestId
-  mapping(bytes32 => mapping(address => responseInfo)) private functionResponse;//requestId => node address => responseInfo
-  mapping(bytes32 => uint) private requestBirth; // request birth
+  mapping(bytes32 => responseInfo[]) private functionResponse;//requestId => node address => responseInfo
+  requestBirth[] public reqBirthBuffer; // request birth
+  mapping(uint256 => requestBirth) reqMap;
+
+  uint256[] public respSelector;
 
   Selector private selector;
   Registry private reg;
 
 
   function init() public {
-    selector = 0x0000000000000000000000000000000000002005;
-    reg = 0x0000000000000000000000000000000000002003;
-
+    selector = Selector(0x0000000000000000000000000000000000002005);
+    reg = Registry(0x0000000000000000000000000000000000002003);
   }
   
   function sendRequest(
@@ -70,7 +82,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
       address(0x0),
       data
     );
-    requestBirth[requestId]=block.timestamp;
+    reqBirthBuffer.push(requestBirth(requestId,functionId,block.timestamp));
     return requestId;
   }
 
@@ -79,31 +91,81 @@ contract FunctionsOracle is FunctionsOracleInterface {
    * @dev Response must have a valid callback, and will delete the associated callback storage
    * before calling the external contract.
    * @param _requestId The fulfillment request ID that must match the requester's
-   * @param _data The data to return to the consuming contract
+   * @param oracleAddress oracle contract address
+   * @param score node score that the execute function
+   * @param resp node response
+   * @param err node occurs error when to execute function
    * @return Status if the external call was successful
    */
-
   function fulfillRequestByNode(
     bytes32 _requestId,
+    address oracleAddress,
     uint score,
-    bytes _data
-  ) external isValidRequest(_requestId) returns (bool) {
-    uint birth = requestBirth[_requestId];
+    bytes calldata resp,
+    bytes calldata err
+  ) external override isValidRequest(_requestId) returns (bool) {
+    uint id = uint256(_requestId);
+    uint birth = reqMap[id].birth;
 
     if (birth + EXPIRY_TIME < block.timestamp){
       revert("function request timeout");
     }
 
-    responseInfo memory resp = responseInfo(msg.sender,score,_data);
+    responseInfo memory respA = responseInfo(tx.origin,oracleAddress,score,resp,err);
 
-    functionResponse[_requestId][tx.origin]=resp;
+    functionResponse[_requestId].push(respA);
 
     return true;
   }
 
   function fulfillOracleRequest() public  returns (bool) {
+    uint length = reqBirthBuffer.length;
+    uint256 vtfValue = selector.getVRF();
+     respSelector = new uint[](5);
+    for (uint i = length - 1; i >=0; i--) {
+      bool isTimeout =reqBirthBuffer[i].birth + EXPIRY_TIME < block.timestamp;
+      responseInfo[] memory respArr =functionResponse[reqBirthBuffer[i].requestId];
 
-   //TODO:
+      if ( !isTimeout && respArr.length < 2) {
+          continue;
+      }
+
+      if (isTimeout && respArr.length == 0) {
+        emit OracleRequestTimeout(reqBirthBuffer[i].requestId,"not found response");
+        continue;
+      }
+
+      if (isTimeout && respArr.length > 0) {
+        for (uint ir = 0; ir < respArr.length; ir++) {
+          bool isRight = respArr[ir].resp.length != 0;
+          if (respSelector.length == 0 && isRight){
+            respSelector.push(ir);
+            continue;
+          }
+
+          if(respArr[respSelector[0]].score > respArr[ir].score) {
+            continue;
+          }
+
+          if(respArr[respSelector[0]].score < respArr[ir].score && isRight) {
+            respSelector = [ir];
+          }
+
+          if(respArr[respSelector[0]].score == respArr[ir].score && isRight) {
+            respSelector.push(ir);
+          }
+        }
+      }
+
+      if(respSelector.length > 1) {
+        responseInfo memory ret = respArr[respSelector[vtfValue % respSelector.length]];
+
+        FunctionsClientInterface(ret.oracleAddress).handleOracleFulfillment(reqBirthBuffer[i].requestId,ret.node,ret.score,ret.resp,ret.err);
+      }else{
+        //TODO:
+      }
+
+    }
 
     return true;
   }
@@ -113,16 +175,17 @@ contract FunctionsOracle is FunctionsOracleInterface {
    * @param _requestId The given request ID to check in stored `callbacks`
    */
   modifier isValidRequest(bytes32 _requestId) {
-    require(requestBirth[_requestId] != 0, "Must have a valid requestId");
+    uint id = uint256(_requestId);
+    require(reqMap[id].requestId != 0, "Must have a valid requestId");
 
-    address managerAddr = reg.manager(req.functionName);
-
-    require(managerAddr != address(0x0), "not found manager");
-
-    BaseManager m = BaseManager(managerAddr);
-    bytes32 name =   m.getName(addr);
-
-    require(name != bytes32(0x0), "selected node unregistered");
+//    address managerAddr = reg.manager(req.functionName);
+//
+//    require(managerAddr != address(0x0), "not found manager");
+//
+//    BaseManager m = BaseManager(managerAddr);
+//    bytes32 name =   m.getName(msg.sender);
+//
+//    require(name != bytes32(0x0), "selected node unregistered");
     _;
   }
 

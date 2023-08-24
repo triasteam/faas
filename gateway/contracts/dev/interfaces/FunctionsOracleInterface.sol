@@ -12,9 +12,11 @@ interface FunctionsOracleInterface {
    * @param data Encoded Functions request data, use FunctionsClient API to encode a request
    */
   function sendRequest(bytes32 functionId, bytes calldata data) external returns (bytes32);
+
   function fulfillRequestByNode(
     bytes32 _requestId,
+    address oracleAddress,
     uint score,
-    bytes _data
-  ) external returns (bool);
+    bytes calldata resp,
+    bytes calldata err) external returns (bool);
 }

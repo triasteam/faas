@@ -16,7 +16,7 @@ abstract contract FunctionsClient is FunctionsClientInterface{
   mapping(bytes32 => address) internal s_pendingRequests;
 
   event RequestSent(bytes32 indexed id, address indexed node);
-  event RequestFulfilled(bytes32 indexed id,bytes result, bytes err);
+  event RequestFulfilled(bytes32 indexed id,address indexed node, uint score,bytes result, bytes err);
 
   error SenderIsNotRegistry();
   error EmptyRequestData();
@@ -56,7 +56,7 @@ abstract contract FunctionsClient is FunctionsClientInterface{
 
     uint memberCounts = m.getMembersCounts();
     
-    require(memberCounts != 0, "selected node unregistered");
+    require(memberCounts != 0, "member count is 0");
 
     bytes32 requestId = s_oracle.sendRequest(req.functionName, Functions.encodeCBOR(req));
     
@@ -79,18 +79,19 @@ abstract contract FunctionsClient is FunctionsClientInterface{
 
   function handleOracleFulfillment(
     bytes32 requestId,
+    address node,
     uint score,
     bytes memory response,
     bytes memory err
   ) public override recordFulfillment(requestId) {
     fulfillRequest(requestId, response, err);
 
-    Functions.Response memory resp;
-    resp.initializeResponse( response, err);
+//    Functions.Response memory resp;
+//    resp.initializeResponse( response, err);
 
-    s_oracle.fulfillRequestByNode(requestId,score,Functions.encodeResponse(resp));
+//    s_oracle.fulfillRequestByNode(requestId,score,resp,err);
     
-    emit RequestFulfilled(requestId, response, err);
+    emit RequestFulfilled(requestId, node,score,response, err);
   }
 
   /**
