@@ -19,7 +19,7 @@ contract FunctionsConsumer is FunctionsClient {
 
   event FuncResponse(bytes32 indexed requestId, bytes result, bytes err);
 
-  constructor(address oracle,Selector _selector ,Registry _reg)FunctionsClient(oracle,_selector,_reg)  {}
+  constructor(address oracle,Registry _reg)FunctionsClient(oracle,_reg)  {}
   /**
    * @notice Send a simple request, 
    *
