@@ -20,14 +20,6 @@ interface BaseManager is IERC721 {
     );
     event MetaDataUpdated(bytes funcMeta);
 
-    // Authorises a controller, who can register and renew domains.
-    function addController(address controller) external;
-
-    // Revoke controller permission for an address.
-    function removeController(address controller) external;
-
-    function getControllerCounts() external returns(uint);
-
     // Set the resolver for the TLD this registrar manages.
     function setManager(address resolver) external;
 
@@ -40,11 +32,6 @@ interface BaseManager is IERC721 {
         bytes32 id,
         address owner
     ) external returns (uint256);
-
-    /**
-     * @dev Reclaim ownership of a name in ENS, if you own it in the registrar.
-     */
-    function reclaim(uint256 id, address owner) external;
 
     function updateMetaData(bytes memory func) external;
 }

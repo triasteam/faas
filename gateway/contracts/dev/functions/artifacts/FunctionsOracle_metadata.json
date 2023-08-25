@@ -7,6 +7,11 @@
 		"abi": [
 			{
 				"inputs": [],
+				"name": "Empty",
+				"type": "error"
+			},
+			{
+				"inputs": [],
 				"name": "EmptyBillingRegistry",
 				"type": "error"
 			},
@@ -185,35 +190,6 @@
 						"type": "uint256"
 					}
 				],
-				"name": "reqBirthBuffer",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "requestId",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "bytes32",
-						"name": "functionId",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "uint256",
-						"name": "birth",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
 				"name": "respSelector",
 				"outputs": [
 					{
@@ -252,6 +228,13 @@
 		],
 		"devdoc": {
 			"details": "THIS CONTRACT HAS NOT GONE THROUGH ANY SECURITY REVIEW. DO NOT USE IN PROD.",
+			"errors": {
+				"Empty()": [
+					{
+						"details": "An operation (e.g. {front}) couldn't be completed due to the queue being empty."
+					}
+				]
+			},
 			"kind": "dev",
 			"methods": {
 				"fulfillRequestByNode(bytes32,address,uint256,bytes,bytes)": {
@@ -323,12 +306,28 @@
 				"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy"
 			]
 		},
-		"dev/functions/FunctionsOracle.sol": {
-			"keccak256": "0x9796d1ba678bac8543c1e51e7b731acf726ed9bd867968f36357676c8a4bcb97",
+		"@openzeppelin/contracts/utils/math/SafeCast.sol": {
+			"keccak256": "0x52a8cfb0f5239d11b457dcdd1b326992ef672714ca8da71a157255bddd13f3ad",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://5d30557e4473b98c92e2411b5bde8adb783a5e701efaa6e9c9244f2c7773cf79",
-				"dweb:/ipfs/QmQpqcDYYm7GH9CM5GKRWnB2ttoCwt9Mqz35nEUT6yK1em"
+				"bzz-raw://495145362c7ff1c9ca88c58bbbbcb412e3c2004406647412394486552ff6c278",
+				"dweb:/ipfs/QmNNCeng6d5eRPDn6tkWSQhjE39XWfQEfjA63rRwHmr1iH"
+			]
+		},
+		"@openzeppelin/contracts/utils/structs/DoubleEndedQueue.sol": {
+			"keccak256": "0xb5fbb623dec53bb9b6c1b738b4ab6540a04ac5dc2ac94d95fa3ebfd22898559c",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://4a6e7f26c0c688a987c19c8b0997c7e47c33f7717b6293a487afe8429d95b8e7",
+				"dweb:/ipfs/QmVrmXcQ7KLM5fw4PWeJ8j4nnmfHkjpFPariMMh5UvsEVD"
+			]
+		},
+		"dev/functions/FunctionsOracle.sol": {
+			"keccak256": "0xdc0fc6383483448930661f3fd8d396db4ad09c74f94745040f5b13e0364ffdd8",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8b5e8634857ad61ba6d63905adf7299be21d00774a5979d5b336345bc094f8b8",
+				"dweb:/ipfs/QmUPzS4WYpfcnUWNqRBeSytxcGpwRRgaYB63zXwLLN2LHR"
 			]
 		},
 		"dev/functions/baseManager.sol": {

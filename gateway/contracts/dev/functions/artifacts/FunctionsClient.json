@@ -49,7 +49,7 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
-			"handleOracleFulfillment(bytes32,bytes,bytes)": "0ca76175"
+			"handleOracleFulfillment(bytes32,address,uint256,bytes,bytes)": "42ba6d28"
 		}
 	},
 	"abi": [
@@ -78,6 +78,18 @@
 					"type": "bytes32"
 				},
 				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "node",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "score",
+					"type": "uint256"
+				},
+				{
 					"indexed": false,
 					"internalType": "bytes",
 					"name": "result",
@@ -104,8 +116,14 @@
 				},
 				{
 					"indexed": true,
+					"internalType": "bytes32",
+					"name": "functionId",
+					"type": "bytes32"
+				},
+				{
+					"indexed": false,
 					"internalType": "address",
-					"name": "node",
+					"name": "func",
 					"type": "address"
 				}
 			],
@@ -118,6 +136,16 @@
 					"internalType": "bytes32",
 					"name": "requestId",
 					"type": "bytes32"
+				},
+				{
+					"internalType": "address",
+					"name": "node",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "score",
+					"type": "uint256"
 				},
 				{
 					"internalType": "bytes",

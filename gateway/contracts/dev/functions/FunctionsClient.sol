@@ -15,20 +15,18 @@ abstract contract FunctionsClient is FunctionsClientInterface{
   FunctionsOracleInterface internal s_oracle;
   mapping(bytes32 => address) internal s_pendingRequests;
 
-  event RequestSent(bytes32 indexed id, address indexed node);
+  event RequestSent(bytes32 indexed id, bytes32 indexed functionId, address func);
   event RequestFulfilled(bytes32 indexed id,address indexed node, uint score,bytes result, bytes err);
 
   error SenderIsNotRegistry();
   error EmptyRequestData();
   error RequestIsAlreadyPending();
 
-  Selector private selector;
   Registry private reg;
 
-  constructor(address oracle,Selector _selector ,Registry _reg) {
+  constructor(address oracle, Registry _reg) {
     setOracle(oracle);
         reg = _reg;
-        selector = _selector;
   }
 
   /**
@@ -60,9 +58,9 @@ abstract contract FunctionsClient is FunctionsClientInterface{
 
     bytes32 requestId = s_oracle.sendRequest(req.functionName, Functions.encodeCBOR(req));
     
-    s_pendingRequests[requestId] = addr;
+    s_pendingRequests[requestId] = managerAddr;
     
-    emit RequestSent(requestId, addr);
+    emit RequestSent(requestId, req.functionName,managerAddr);
     
     return requestId;
   }

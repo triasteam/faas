@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.6;
-
+import "@openzeppelin/contracts/utils/structs/DoubleEndedQueue.sol";
 import "../interfaces/FunctionsOracleInterface.sol";
 import "./selector.sol";
 import "./registry.sol";
 import "../interfaces/FunctionsClientInterface.sol";
+
 /**
  * @title Functions Oracle contract
  * @notice Contract that nodes of a Decentralized Oracle Network (DON) interact with
@@ -49,8 +50,8 @@ contract FunctionsOracle is FunctionsOracleInterface {
   mapping(bytes32 => mapping(address => bool)) private allowedOracles;
   //  mapping(bytes32 => Callback) private callbacks;//requestId
   mapping(bytes32 => responseInfo[]) private functionResponse;//requestId => node address => responseInfo
-  requestBirth[] public reqBirthBuffer; // request birth
-  mapping(uint256 => requestBirth) reqMap;
+  DoubleEndedQueue.Bytes32Deque reqQueen; // request birth
+  mapping(bytes32 => requestBirth) reqMap;
 
   uint256[] public respSelector;
 
@@ -82,7 +83,8 @@ contract FunctionsOracle is FunctionsOracleInterface {
       address(0x0),
       data
     );
-    reqBirthBuffer.push(requestBirth(requestId,functionId,block.timestamp));
+    DoubleEndedQueue.pushBack(reqQueen,requestId);
+    reqMap[requestId]=requestBirth(requestId,functionId,block.timestamp);
     return requestId;
   }
 
@@ -103,9 +105,8 @@ contract FunctionsOracle is FunctionsOracleInterface {
     uint score,
     bytes calldata resp,
     bytes calldata err
-  ) external override isValidRequest(_requestId) returns (bool) {
-    uint id = uint256(_requestId);
-    uint birth = reqMap[id].birth;
+  ) public override isValidRequest(_requestId) returns (bool) {
+    uint birth = reqMap[_requestId].birth;
 
     if (birth + EXPIRY_TIME < block.timestamp){
       revert("function request timeout");
@@ -119,19 +120,24 @@ contract FunctionsOracle is FunctionsOracleInterface {
   }
 
   function fulfillOracleRequest() public  returns (bool) {
-    uint length = reqBirthBuffer.length;
+
     uint256 vtfValue = selector.getVRF();
-     respSelector = new uint[](5);
-    for (uint i = length - 1; i >=0; i--) {
-      bool isTimeout =reqBirthBuffer[i].birth + EXPIRY_TIME < block.timestamp;
-      responseInfo[] memory respArr =functionResponse[reqBirthBuffer[i].requestId];
+    respSelector = new uint[](5);
+
+    while (DoubleEndedQueue.length(reqQueen) != 0) {
+
+      bytes32 reqId = DoubleEndedQueue.popFront(reqQueen);
+
+      requestBirth memory reqInfo = reqMap[reqId];
+      bool isTimeout = reqInfo.birth + EXPIRY_TIME < block.timestamp;
+      responseInfo[] memory respArr =functionResponse[reqId];
 
       if ( !isTimeout && respArr.length < 2) {
           continue;
       }
 
       if (isTimeout && respArr.length == 0) {
-        emit OracleRequestTimeout(reqBirthBuffer[i].requestId,"not found response");
+        emit OracleRequestTimeout(reqId,"not found response");
         continue;
       }
 
@@ -157,13 +163,18 @@ contract FunctionsOracle is FunctionsOracleInterface {
         }
       }
 
-      if(respSelector.length > 1) {
+      if(respSelector.length > 0) {
         responseInfo memory ret = respArr[respSelector[vtfValue % respSelector.length]];
 
-        FunctionsClientInterface(ret.oracleAddress).handleOracleFulfillment(reqBirthBuffer[i].requestId,ret.node,ret.score,ret.resp,ret.err);
+        FunctionsClientInterface(ret.oracleAddress).handleOracleFulfillment(
+          reqId,ret.node,ret.score,ret.resp,ret.err);
       }else{
-        //TODO:
+        responseInfo memory ret = respArr[vtfValue % respArr.length];
+
+        FunctionsClientInterface(ret.oracleAddress).handleOracleFulfillment(
+          reqId,ret.node,ret.score,ret.resp,ret.err);
       }
+      delete reqMap[reqId];
 
     }
 
@@ -175,8 +186,8 @@ contract FunctionsOracle is FunctionsOracleInterface {
    * @param _requestId The given request ID to check in stored `callbacks`
    */
   modifier isValidRequest(bytes32 _requestId) {
-    uint id = uint256(_requestId);
-    require(reqMap[id].requestId != 0, "Must have a valid requestId");
+
+    require(reqMap[_requestId].birth != 0, "Must have a valid requestId");
 
 //    address managerAddr = reg.manager(req.functionName);
 //
