@@ -44,6 +44,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
     bytes32 requestId;
     bytes32 functionId;
     uint birth;
+    address msgSender;
   }
 
   uint256 constant public EXPIRY_TIME = 5 minutes;
@@ -73,7 +74,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
       revert EmptyRequestData();
     }
 
-    bytes32 requestId = computeRequestId(msg.sender,tx.origin, functionId, 0);
+    bytes32 requestId = computeRequestId(msg.sender, tx.origin, functionId, 0);
 
     emit OracleRequest(
       requestId,
@@ -84,10 +85,15 @@ contract FunctionsOracle is FunctionsOracleInterface {
       data
     );
     DoubleEndedQueue.pushBack(reqQueen,requestId);
-    reqMap[requestId]=requestBirth(requestId,functionId,block.timestamp);
+    reqMap[requestId]=requestBirth(requestId, functionId,block.timestamp,msg.sender);
     return requestId;
   }
-
+  function popFrontRequest(
+    bytes32 _requestId
+  ) internal {
+    delete reqMap[_requestId];
+    DoubleEndedQueue.popFront(reqQueen);
+  }
   /**
    * @notice Called by the node to fulfill requests
    * @dev Response must have a valid callback, and will delete the associated callback storage
@@ -122,26 +128,28 @@ contract FunctionsOracle is FunctionsOracleInterface {
   function fulfillOracleRequest() public  returns (bool) {
 
     uint256 vtfValue = selector.getVRF();
-    respSelector = new uint[](5);
+    delete respSelector;
 
     while (DoubleEndedQueue.length(reqQueen) != 0) {
 
-      bytes32 reqId = DoubleEndedQueue.popFront(reqQueen);
+      bytes32 reqId = DoubleEndedQueue.front(reqQueen);
 
       requestBirth memory reqInfo = reqMap[reqId];
-      bool isTimeout = reqInfo.birth + EXPIRY_TIME < block.timestamp;
+      bool isTimeout = reqInfo.birth + EXPIRY_TIME > block.timestamp;
       responseInfo[] memory respArr =functionResponse[reqId];
 
-      if ( !isTimeout && respArr.length < 2) {
+      if ( !isTimeout && respArr.length < 1) {
           continue;
       }
 
       if (isTimeout && respArr.length == 0) {
-        emit OracleRequestTimeout(reqId,"not found response");
+        FunctionsClientInterface(reqInfo.msgSender).handleOracleFulfillment(reqId,address(0x0),0,"","timeout");
+        popFrontRequest(reqId);
+        emit OracleRequestTimeout(reqId, "not found response");
         continue;
       }
 
-      if (isTimeout && respArr.length > 0) {
+      if (respArr.length > 0) {
         for (uint ir = 0; ir < respArr.length; ir++) {
           bool isRight = respArr[ir].resp.length != 0;
           if (respSelector.length == 0 && isRight){
@@ -161,6 +169,8 @@ contract FunctionsOracle is FunctionsOracleInterface {
             respSelector.push(ir);
           }
         }
+      }else{
+        continue;
       }
 
       if(respSelector.length > 0) {
@@ -174,7 +184,8 @@ contract FunctionsOracle is FunctionsOracleInterface {
         FunctionsClientInterface(ret.oracleAddress).handleOracleFulfillment(
           reqId,ret.node,ret.score,ret.resp,ret.err);
       }
-      delete reqMap[reqId];
+
+      popFrontRequest(reqId);
 
     }
 
