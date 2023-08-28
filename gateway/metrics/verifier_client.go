@@ -77,7 +77,7 @@ func loadConfig(envReader types.HasEnv) (*VerifierConfig, error) {
 func (vr VerifierReporter) send() {
 
 	type FunctionInfo struct {
-		Address string   `json:"Address"`
+		Address string   `json:"address"`
 		Funcs   []string `json:"funcs"`
 	}
 
