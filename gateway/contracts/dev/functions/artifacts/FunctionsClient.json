@@ -49,7 +49,8 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
-			"handleOracleFulfillment(bytes32,address,uint256,bytes,bytes)": "42ba6d28"
+			"handleOracleFulfillment(bytes32,address,uint256,bytes,bytes)": "42ba6d28",
+			"setOracle(address)": "7adbf973"
 		}
 	},
 	"abi": [
@@ -159,6 +160,19 @@
 				}
 			],
 			"name": "handleOracleFulfillment",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "oracle",
+					"type": "address"
+				}
+			],
+			"name": "setOracle",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"

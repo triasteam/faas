@@ -33,7 +33,7 @@ abstract contract FunctionsClient is FunctionsClientInterface{
    * @notice Sets the stored Oracle address
    * @param oracle The address of Functions Oracle contract
    */
-  function setOracle(address oracle) internal {
+  function setOracle(address oracle) public {
     s_oracle = FunctionsOracleInterface(oracle);
   }
 
@@ -58,9 +58,9 @@ abstract contract FunctionsClient is FunctionsClientInterface{
 
     bytes32 requestId = s_oracle.sendRequest(req.functionName, Functions.encodeCBOR(req));
     
-    s_pendingRequests[requestId] = managerAddr;
+    s_pendingRequests[requestId] = address(s_oracle);
     
-    emit RequestSent(requestId, req.functionName,managerAddr);
+    emit RequestSent(requestId, req.functionName, managerAddr);
     
     return requestId;
   }
@@ -98,7 +98,7 @@ abstract contract FunctionsClient is FunctionsClientInterface{
    * @param requestId The request ID for fulfillment
    */
   modifier recordFulfillment(bytes32 requestId) {
-     if (msg.sender != s_pendingRequests[requestId]) {
+     if (msg.sender != address(s_oracle)) {
        revert SenderIsNotRegistry();
      }
     delete s_pendingRequests[requestId];

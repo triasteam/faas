@@ -21,7 +21,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
     bytes data
   );
   event OracleResponse(bytes32 indexed requestId);
-  event OracleRequestTimeout(bytes32 indexed requestId, string reason);
+  event OracleRequestTimeout(bytes32 indexed requestId, uint birth, uint blockTime,string reason);
   // event UserCallbackError(bytes32 indexed requestId, string reason);
   // event UserCallbackRawError(bytes32 indexed requestId, bytes lowLevelData);
   // event InvalidRequestID(bytes32 indexed requestId);
@@ -74,7 +74,11 @@ contract FunctionsOracle is FunctionsOracleInterface {
       revert EmptyRequestData();
     }
 
-    bytes32 requestId = computeRequestId(msg.sender, tx.origin, functionId, 0);
+    bytes32 requestId = computeRequestId(msg.sender, tx.origin, functionId, block.number);
+
+    if (reqMap[requestId].birth != 0){
+      return requestId;
+    }
 
     emit OracleRequest(
       requestId,
@@ -85,15 +89,14 @@ contract FunctionsOracle is FunctionsOracleInterface {
       data
     );
     DoubleEndedQueue.pushBack(reqQueen,requestId);
-    reqMap[requestId]=requestBirth(requestId, functionId,block.timestamp,msg.sender);
+    reqMap[requestId]=requestBirth(requestId, functionId, block.timestamp, msg.sender);
     return requestId;
   }
-  function popFrontRequest(
-    bytes32 _requestId
-  ) internal {
-    delete reqMap[_requestId];
-    DoubleEndedQueue.popFront(reqQueen);
+
+  function getReq(bytes32 requestId) public view returns(uint){
+    return reqMap[requestId].birth;
   }
+
   /**
    * @notice Called by the node to fulfill requests
    * @dev Response must have a valid callback, and will delete the associated callback storage
@@ -115,83 +118,129 @@ contract FunctionsOracle is FunctionsOracleInterface {
     uint birth = reqMap[_requestId].birth;
 
     if (birth + EXPIRY_TIME < block.timestamp){
-      revert("function request timeout");
+      emit OracleRequestTimeout(_requestId, birth, block.timestamp, "timeout after 5 min");
+      return true;
     }
 
-    responseInfo memory respA = responseInfo(tx.origin,oracleAddress,score,resp,err);
+    responseInfo memory respA = responseInfo(tx.origin, oracleAddress, score,resp,err);
 
     functionResponse[_requestId].push(respA);
     emit OracleResponse(_requestId);
     return true;
   }
 
+  function selectResponse(responseInfo[] memory respArr)internal{
+    for (uint ir = 0; ir < respArr.length; ir++) {
+      bool isRight = respArr[ir].resp.length != 0;
+
+      if (respSelector.length == 0 && isRight){
+        respSelector.push(ir);
+        continue;
+      }
+
+      if(respArr[respSelector[0]].score > respArr[ir].score) {
+        continue;
+      }
+
+      if(respArr[respSelector[0]].score < respArr[ir].score && isRight) {
+        respSelector = [ir];
+      }
+
+      if(respArr[respSelector[0]].score == respArr[ir].score && isRight) {
+        respSelector.push(ir);
+      }
+    }
+  }
+
+  function commitResp(bytes32 reqId,address oracleAddress,responseInfo[] memory respArr)internal{
+    if (respArr.length == 0) {
+      FunctionsClientInterface(oracleAddress).handleOracleFulfillment(reqId,address(0x0),0,"","timeout");
+      return;
+    }
+    // TODO: if oracle address is invalid, how to do;
+    uint256 vtfValue = selector.getVRF();
+
+    if(respSelector.length > 0) {
+      responseInfo memory ret = respArr[respSelector[vtfValue % respSelector.length]];
+
+      FunctionsClientInterface(oracleAddress).handleOracleFulfillment(
+          reqId,ret.node,ret.score,ret.resp,ret.err);
+    }else{
+      responseInfo memory ret = respArr[vtfValue % respArr.length];
+
+      FunctionsClientInterface(oracleAddress).handleOracleFulfillment(
+        reqId,ret.node,ret.score,ret.resp,ret.err);
+    }
+  }
+
+  function deleteReq(bytes32 reqId) internal{
+    bytes32 frontReqId = DoubleEndedQueue.front(reqQueen);
+    
+    if (frontReqId==reqId){
+      DoubleEndedQueue.popFront(reqQueen);
+      delete reqMap[reqId];
+      return; 
+    }
+    delete reqMap[reqId];
+    return;
+  }
+
+  function getReq(uint qIndex) internal view returns(requestBirth memory reqInfo, bool isDel){
+    bytes32 reqId = DoubleEndedQueue.at(reqQueen, qIndex);
+    reqInfo = reqMap[reqId];
+    if (reqInfo.birth == 0 && reqInfo.msgSender == address(0)){
+       isDel = true;
+       return (reqInfo, isDel); 
+    }
+    isDel = false;
+    return (reqInfo, isDel);
+  }
+
   function fulfillOracleRequest() public  returns (bool) {
 
-    uint256 vtfValue = selector.getVRF();
+    
     delete respSelector;
+    
+    for (uint reqIndex = 0; reqIndex < DoubleEndedQueue.length(reqQueen); reqIndex++) {
 
-    while (DoubleEndedQueue.length(reqQueen) != 0) {
+      requestBirth memory reqInfo;
+      bool isDel;
+      (reqInfo,isDel)= getReq(reqIndex);
 
-      bytes32 reqId = DoubleEndedQueue.front(reqQueen);
-
-      requestBirth memory reqInfo = reqMap[reqId];
-      bool isTimeout = reqInfo.birth + EXPIRY_TIME > block.timestamp;
-      responseInfo[] memory respArr =functionResponse[reqId];
-
-      if ( !isTimeout && respArr.length < 1) {
-          continue;
+      if (isDel) {
+        continue;
       }
+
+      bool isTimeout = reqInfo.birth + EXPIRY_TIME < block.timestamp;
+      responseInfo[] memory respArr =functionResponse[reqInfo.requestId];
 
       if (isTimeout && respArr.length == 0) {
-        FunctionsClientInterface(reqInfo.msgSender).handleOracleFulfillment(reqId,address(0x0),0,"","timeout");
-        popFrontRequest(reqId);
-        emit OracleRequestTimeout(reqId, "not found response");
+        commitResp(reqInfo.requestId,reqInfo.msgSender,respArr);
+        deleteReq(reqInfo.requestId);
+        emit OracleRequestTimeout(reqInfo.requestId,0,0, "not found response");
         continue;
       }
 
-      if (respArr.length > 0) {
-        for (uint ir = 0; ir < respArr.length; ir++) {
-          bool isRight = respArr[ir].resp.length != 0;
-          if (respSelector.length == 0 && isRight){
-            respSelector.push(ir);
-            continue;
-          }
-
-          if(respArr[respSelector[0]].score > respArr[ir].score) {
-            continue;
-          }
-
-          if(respArr[respSelector[0]].score < respArr[ir].score && isRight) {
-            respSelector = [ir];
-          }
-
-          if(respArr[respSelector[0]].score == respArr[ir].score && isRight) {
-            respSelector.push(ir);
-          }
-        }
-      }else{
+      if  (respArr.length == 0) {
         continue;
       }
 
-      if(respSelector.length > 0) {
-        responseInfo memory ret = respArr[respSelector[vtfValue % respSelector.length]];
+      selectResponse(respArr);
 
-        FunctionsClientInterface(ret.oracleAddress).handleOracleFulfillment(
-          reqId,ret.node,ret.score,ret.resp,ret.err);
-      }else{
-        responseInfo memory ret = respArr[vtfValue % respArr.length];
-
-        FunctionsClientInterface(ret.oracleAddress).handleOracleFulfillment(
-          reqId,ret.node,ret.score,ret.resp,ret.err);
-      }
-
-      popFrontRequest(reqId);
+      commitResp(reqInfo.requestId,reqInfo.msgSender,respArr);
+      deleteReq(reqInfo.requestId);
 
     }
 
     return true;
   }
 
+  function getSelectorResp(uint i) public view returns(uint){
+    if (i>respSelector.length){
+      return respSelector[0];
+    }
+      return respSelector[i]; 
+  }
   /**
    * @dev Reverts if request ID does not exist
    * @param _requestId The given request ID to check in stored `callbacks`
@@ -216,7 +265,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
     address nodeAddr,
     address client,
     bytes32 subscriptionId,
-    uint64 nonce
+    uint256 nonce
   ) private pure returns (bytes32) {
     return keccak256(abi.encode(nodeAddr, client, subscriptionId, nonce));
   }

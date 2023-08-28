@@ -32,6 +32,11 @@
 			},
 			{
 				"inputs": [],
+				"name": "OutOfBounds",
+				"type": "error"
+			},
+			{
+				"inputs": [],
 				"name": "UnauthorizedPublicKeyChange",
 				"type": "error"
 			},
@@ -86,6 +91,18 @@
 						"internalType": "bytes32",
 						"name": "requestId",
 						"type": "bytes32"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "birth",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "blockTime",
+						"type": "uint256"
 					},
 					{
 						"indexed": false,
@@ -176,6 +193,44 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "requestId",
+						"type": "bytes32"
+					}
+				],
+				"name": "getReq",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "i",
+						"type": "uint256"
+					}
+				],
+				"name": "getSelectorResp",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "init",
 				"outputs": [],
@@ -232,6 +287,11 @@
 				"Empty()": [
 					{
 						"details": "An operation (e.g. {front}) couldn't be completed due to the queue being empty."
+					}
+				],
+				"OutOfBounds()": [
+					{
+						"details": "An operation (e.g. {at}) couldn't be completed due to an index being out of bounds."
 					}
 				]
 			},
@@ -323,11 +383,11 @@
 			]
 		},
 		"dev/functions/FunctionsOracle.sol": {
-			"keccak256": "0x9c9f507477991e6e3eead96444346685b53f99bb44bb1fd44457d200fda941e5",
+			"keccak256": "0x055e2bacbdfd2abc0f7f4aea36fb60c032dc22b9886a598ececda632f6f14727",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c5949a8677a2a758aadd60c210bb436b99375342d99472430cc822f23f6f1957",
-				"dweb:/ipfs/QmVEVPqX7FUQnHsTQ1tzWuR1NR6jMMc9dzD1GhKdgHjzV2"
+				"bzz-raw://0e9336860c872e784ae7adf7f58d9f979f8a102f251f045f95dd5294a866cbf1",
+				"dweb:/ipfs/QmQU48bzv1i2ZH8Hp2gFidtNFyqyDDDfzUBDdUqZY1kJKi"
 			]
 		},
 		"dev/functions/baseManager.sol": {

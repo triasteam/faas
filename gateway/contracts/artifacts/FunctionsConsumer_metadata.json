@@ -248,6 +248,19 @@
 				],
 				"stateMutability": "view",
 				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "oracle",
+						"type": "address"
+					}
+				],
+				"name": "setOracle",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -269,6 +282,11 @@
 						"requestId": "The requestId returned by FunctionsClient.sendRequest().",
 						"response": "Aggregated response from the user code."
 					}
+				},
+				"setOracle(address)": {
+					"params": {
+						"oracle": "The address of Functions Oracle contract"
+					}
 				}
 			},
 			"title": "Functions Consumer contract",
@@ -282,6 +300,9 @@
 				},
 				"handleOracleFulfillment(bytes32,address,uint256,bytes,bytes)": {
 					"notice": "Chainlink Functions response handler called by the designated transmitter node in an OCR round."
+				},
+				"setOracle(address)": {
+					"notice": "Sets the stored Oracle address"
 				}
 			},
 			"notice": "This contract is a demonstration of using Functions.NOT FOR PRODUCTION USE",
@@ -337,11 +358,11 @@
 			]
 		},
 		"dev/functions/FunctionsClient.sol": {
-			"keccak256": "0x9f7d041521ee1038e60e092c4140261bafd5bc16114a82a4efb39e4059b28e53",
+			"keccak256": "0x6ba5b1b53de6715f2d3bcee1f01f1dc6e36ff485ed38d0e2c63cf29960c7475e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://83c76f838e29ed9ee78f6988d0fb7709f5c3d1b358e7271ae5c9df01fbba1538",
-				"dweb:/ipfs/QmarJy9mAoyYyXiz5VAGXfPfU4voeGdpKGfarHpqaBBNTP"
+				"bzz-raw://d4164eb6a819de913dcc0210e1f7a8fbaf46681ae55ff9ddd60b9a24bd63fce8",
+				"dweb:/ipfs/QmZv7rfWiGH1Mu5y5ShvMeYnPGFGdAbtpmUgz3rWD5yghB"
 			]
 		},
 		"dev/functions/baseManager.sol": {
