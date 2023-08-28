@@ -16,7 +16,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
     bytes32 indexed requestId,
     address requestingContract,
     address requestInitiator,
-    bytes32 indexed subscriptionId,
+    bytes32 indexed functionId,
     address subscriptionOwner,
     bytes data
   );
@@ -121,7 +121,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
     responseInfo memory respA = responseInfo(tx.origin,oracleAddress,score,resp,err);
 
     functionResponse[_requestId].push(respA);
-
+    emit OracleResponse(_requestId);
     return true;
   }
 

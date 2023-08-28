@@ -40,3 +40,21 @@ func TestVerifierReporter_SendFunctions(t *testing.T) {
 	}
 	time.Sleep(10 * time.Second)
 }
+
+func TestVerifierReporter_SendFunctions2(t *testing.T) {
+	t.Skip()
+	os.Setenv(envFaasNodeAddress, "0x98723945873953453w")
+	os.Setenv(envFaasVerifierProvider, "http://210.73.218.174:8001/api/v1/worker/functions/")
+
+	vr, err := NewVerifierReporter()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	for i := 0; i < 10; i++ {
+		vr.SendFunctions([]types.FunctionStatus{{Name: fmt.Sprintf("%d", i)}})
+		time.Sleep(time.Microsecond * 10)
+	}
+	time.Sleep(10 * time.Second)
+}
