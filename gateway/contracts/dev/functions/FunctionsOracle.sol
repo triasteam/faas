@@ -157,8 +157,8 @@ contract FunctionsOracle is FunctionsOracleInterface {
       FunctionsClientInterface(oracleAddress).handleOracleFulfillment(reqId,address(0x0),0,"","timeout");
       return;
     }
-    // TODO: if oracle address is invalid, how to do;
-    uint256 vtfValue = selector.getVRF();
+ 
+    uint256 vtfValue = uint256(blockhash(block.number-1));
 
     if(respSelector.length > 0) {
       responseInfo memory ret = respArr[respSelector[vtfValue % respSelector.length]];
@@ -248,15 +248,6 @@ contract FunctionsOracle is FunctionsOracleInterface {
   modifier isValidRequest(bytes32 _requestId) {
 
     require(reqMap[_requestId].birth != 0, "Must have a valid requestId");
-
-//    address managerAddr = reg.manager(req.functionName);
-//
-//    require(managerAddr != address(0x0), "not found manager");
-//
-//    BaseManager m = BaseManager(managerAddr);
-//    bytes32 name =   m.getName(msg.sender);
-//
-//    require(name != bytes32(0x0), "selected node unregistered");
     _;
   }
 

@@ -358,11 +358,11 @@
 			]
 		},
 		"dev/functions/FunctionsClient.sol": {
-			"keccak256": "0x6ba5b1b53de6715f2d3bcee1f01f1dc6e36ff485ed38d0e2c63cf29960c7475e",
+			"keccak256": "0x6c9db0498149b02af4a60c92c3347938c4e498d0c60f7bc6572614333a9e4c06",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d4164eb6a819de913dcc0210e1f7a8fbaf46681ae55ff9ddd60b9a24bd63fce8",
-				"dweb:/ipfs/QmZv7rfWiGH1Mu5y5ShvMeYnPGFGdAbtpmUgz3rWD5yghB"
+				"bzz-raw://4f0237d2c60c9dbca736be025e8251a8d969432127bdfcf6f4a54484386dff3c",
+				"dweb:/ipfs/Qmcg9CsJmUFmKzBqstkNYp7kz6w7dKV358QyTJrz5RoGKZ"
 			]
 		},
 		"dev/functions/baseManager.sol": {

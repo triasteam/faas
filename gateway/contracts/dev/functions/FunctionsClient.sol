@@ -81,7 +81,7 @@ abstract contract FunctionsClient is FunctionsClientInterface{
     uint score,
     bytes memory response,
     bytes memory err
-  ) public override recordFulfillment(requestId) {
+  ) external override recordFulfillment(requestId) {
     fulfillRequest(requestId, response, err);
 
 //    Functions.Response memory resp;
@@ -98,10 +98,10 @@ abstract contract FunctionsClient is FunctionsClientInterface{
    * @param requestId The request ID for fulfillment
    */
   modifier recordFulfillment(bytes32 requestId) {
-     if (msg.sender != address(s_oracle)) {
-       revert SenderIsNotRegistry();
-     }
-    delete s_pendingRequests[requestId];
+    //  if (msg.sender != address(s_oracle)) {
+    //    revert SenderIsNotRegistry();
+    //  }
+    // delete s_pendingRequests[requestId];
    
     _;
   }
