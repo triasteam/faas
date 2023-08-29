@@ -31,17 +31,17 @@ type Exporter struct {
 
 // NewExporter creates a new exporter for the OpenFaaS gateway metrics
 func NewExporter(options MetricOptions, credentials *auth.BasicAuthCredentials, namespace string) *Exporter {
-	reporter, err := NewVerifierReporter()
-	if err != nil {
-		logger.Fatal("cannot start verifier reporter", "err", err)
-	}
+
 	return &Exporter{
 		metricOptions:     options,
 		services:          []types.FunctionStatus{},
 		credentials:       credentials,
 		FunctionNamespace: namespace,
-		functionReporter:  reporter,
 	}
+}
+
+func (e *Exporter) SetFunctionReporter(reporter FunctionReporter) {
+	e.functionReporter = reporter
 }
 
 // Describe is to describe the metrics for Prometheus
@@ -118,8 +118,9 @@ func (e *Exporter) StartServiceWatcher(endpointURL url.URL, metricsOptions Metri
 
 				e.services = services
 				logger.Info("get all services", "values", services)
-
-				e.functionReporter.SendFunctions(e.services)
+				if e.functionReporter != nil {
+					e.functionReporter.SendFunctions(e.services)
+				}
 
 				break
 			case <-quit:
