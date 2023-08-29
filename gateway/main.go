@@ -68,7 +68,12 @@ func main() {
 	servicePollInterval := time.Second * 5
 
 	metricsOptions := metrics.BuildMetricsOptions()
+	reporter, err := metrics.NewVerifierReporter()
+	if err != nil {
+		logger.Fatal("cannot start verifier reporter", "err", err)
+	}
 	exporter := metrics.NewExporter(metricsOptions, credentials, config.Namespace)
+	exporter.SetFunctionReporter(reporter)
 	exporter.StartServiceWatcher(*config.FunctionsProviderURL, metricsOptions, "func", servicePollInterval)
 	metrics.RegisterExporter(exporter)
 
