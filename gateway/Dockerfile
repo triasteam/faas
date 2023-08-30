@@ -69,7 +69,9 @@ ENV http_proxy      ""
 ENV https_proxy     ""
 
 ENV faas_verifier_provider  "http://210.73.218.170:8001/api/v1/worker/functions/"
-ENV faas_node_address       "0x989777E983d4fCcbA32D857D797FDb75C27571C5"
+#ENV faas_node_address       "0x989777E983d4fCcbA32D857D797FDb75C27571C5"
+#ENV faas_node_address       "0x57A90337cAcDa7b13be6d4308bfCaf3C1d470e6e"
+ENV faas_node_address       "0xaE1b978424393A1444cff1897bcfeFCc78B61EA1"
 
 COPY --from=build /go/src/github.com/openfaas/faas/gateway/gateway    .
 COPY assets     assets
