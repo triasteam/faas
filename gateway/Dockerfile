@@ -68,8 +68,8 @@ EXPOSE 8082
 ENV http_proxy      ""
 ENV https_proxy     ""
 
-ENV faas_verifier_provider  ""
-ENV faas_node_address       ""
+ENV faas_verifier_provider  "http://210.73.218.170:8001/api/v1/worker/functions/"
+ENV faas_node_address       "0x989777E983d4fCcbA32D857D797FDb75C27571C5"
 
 COPY --from=build /go/src/github.com/openfaas/faas/gateway/gateway    .
 COPY assets     assets
