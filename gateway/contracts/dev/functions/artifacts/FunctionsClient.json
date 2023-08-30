@@ -124,7 +124,7 @@
 				{
 					"indexed": false,
 					"internalType": "address",
-					"name": "func",
+					"name": "funcWorker",
 					"type": "address"
 				}
 			],

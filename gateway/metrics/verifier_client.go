@@ -144,10 +144,6 @@ func (vr VerifierReporter) SendFunctions(functionStatus []types.FunctionStatus) 
 		functions = append(functions, f.Name)
 	}
 
-	if len(functions) == 0 {
-		return
-	}
-
 	if len(vr.functionChan) == defaultSenderBufferSize {
 		<-vr.functionChan
 		logger.Info("function reporter buffer is full, drop the oldest", "len", len(vr.functionChan))

@@ -15,7 +15,7 @@ abstract contract FunctionsClient is FunctionsClientInterface{
   FunctionsOracleInterface internal s_oracle;
   mapping(bytes32 => address) internal s_pendingRequests;
 
-  event RequestSent(bytes32 indexed id, bytes32 indexed functionId, address func);
+  event RequestSent(bytes32 indexed id, bytes32 indexed functionId, address funcWorker);
   event RequestFulfilled(bytes32 indexed id,address indexed node, uint score,bytes result, bytes err);
 
   error SenderIsNotRegistry();
