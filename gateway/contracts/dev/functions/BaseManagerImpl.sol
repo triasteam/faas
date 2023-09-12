@@ -5,21 +5,22 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./registry.sol";
 import "./baseManager.sol";
+import "./Functions.sol";
 
 contract BaseManagerImpl is ERC721, BaseManager{
     using Counters for Counters.Counter;
 
-    // The funtion registry
+    // The function registry
     Registry internal reg;
-    // The namehash of the TLD this registrar owns (eg, .eth)
+    // The name hash of the TLD this registrar owns (eg, .eth)
     bytes32 public baseNode;
 
-    
-    mapping(address => bytes32) public memberNames;
+    mapping(address => uint256) public memberNames;
 
-    bytes functionMetaData;
+    Functions.FunctionRecord public FunctionMetaData;
 
     Counters.Counter private membersCounts;
+    Counters.Counter private versionRecord;
 
     /**
      * v2.1.3 version of _isApprovedOrOwner which calls ownerOf(tokenId) and takes grace period into consideration instead of ERC721.ownerOf(tokenId);
@@ -70,27 +71,31 @@ contract BaseManagerImpl is ERC721, BaseManager{
 
 
     // Set the resolver for the TLD this registrar manages.
-    function setManager(address resolver) external override  {}
+    function registerManager(string memory functionName) external override  {
+        baseNode = keccak256(abi.encodePacked(functionName));
+        FunctionMetaData.name=functionName;
+        reg.setManager(baseNode, address(this));
+    }
 
     function getMembersCounts() public view override returns(uint)  {
         return membersCounts.current();
     }
 
     function getName(address m) public view override returns(bytes32) {
-      return memberNames[m];
+      return bytes32(memberNames[m]);
     }
 
     /**
      * @dev Register a name.
-     * @param id The token ID (keccak256 of the label).
      * @param owner The address that should deploy the function.
      */
     function register(
-        bytes32 id,
         address owner
     ) public override returns (uint256) {
-        
-        return _register(uint256(id), owner, true);
+        membersCounts.increment();
+        uint256 id = membersCounts.current();
+        memberNames[owner]=id;
+        return _register(id, owner, true);
     }
    
 
@@ -100,25 +105,34 @@ contract BaseManagerImpl is ERC721, BaseManager{
         address owner,
         bool updateRegistry
     ) internal live onlyController returns (uint256) {
-       
-        _mint(owner, id);
-        if (updateRegistry) {
-            reg.setSubnodeOwner(baseNode, bytes32(id), owner);
-        }
-       
-        memberNames[owner]=bytes32(id);
 
-        emit NameRegistered(id, owner, block.timestamp);
-        membersCounts.increment();
+        bytes32 subNode;
+        if (updateRegistry) {
+            subNode = reg.setSubnodeOwner(baseNode, bytes32(id), owner);
+        }else{
+            subNode = keccak256(abi.encodePacked(baseNode, bytes32(id)));
+        }
+
+        _mint(owner,uint256(subNode));
+
         return block.timestamp;
     }
 
+    function updateMetaData(string memory Lang,string memory functionCode, bool doUpdate,string[] memory envVars ) external override{
+        FunctionMetaData.codeFrom=functionCode;
+        FunctionMetaData.doUpdate=doUpdate;
+        FunctionMetaData.envVars = envVars;
+        FunctionMetaData.language = Lang;
+        versionRecord.increment();
+        FunctionMetaData.version=versionRecord.current();
 
-
-    function updateMetaData(bytes memory funcBytes) external override{
-        functionMetaData = funcBytes;
-        emit MetaDataUpdated(funcBytes);
+        emit MetaDataUpdated( Functions.encodeFunctionRecord(FunctionMetaData));
         return;
     }
-  
+
+    function getMetaData() external override view returns(bytes memory){
+
+        return Functions.encodeFunctionRecord(FunctionMetaData);
+    }
+    
 }

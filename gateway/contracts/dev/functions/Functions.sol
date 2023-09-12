@@ -110,9 +110,9 @@ library Functions {
   }
 
   function initializeResponse(
-  Response memory self,
-  bytes memory resp,
-  bytes memory err
+    Response memory self,
+    bytes memory resp,
+    bytes memory err
   ) internal pure {
     if (resp.length == 0) revert EmptyArg();
     if (err.length == 0) revert EmptyArg();
@@ -132,6 +132,44 @@ library Functions {
     if (self.err.length > 0) {
       CBOR.writeString(buffer, "err");
       CBOR.writeBytes(buffer, self.err);
+    }
+
+    return buffer.buf.buf;
+  }
+
+  struct FunctionRecord {
+    string name;
+    string language;
+    string codeFrom;
+    bool doUpdate;
+    uint256 version;
+    string[] envVars;
+  }
+
+  function encodeFunctionRecord(FunctionRecord memory self) internal pure returns (bytes memory) {
+    CBOR.CBORBuffer memory buffer;
+    Buffer.init(buffer.buf, DEFAULT_BUFFER_SIZE);
+
+    CBOR.writeString(buffer, "name");
+    CBOR.writeString(buffer, self.name);
+
+    CBOR.writeString(buffer, "language");
+    CBOR.writeString(buffer, self.language);
+
+    CBOR.writeString(buffer, "codeFrom");
+    CBOR.writeString(buffer, self.codeFrom);
+
+    CBOR.writeString(buffer, "version");
+    CBOR.writeUInt256(buffer, uint256(self.version));
+
+
+  if (self.envVars.length > 0) {
+      CBOR.writeString(buffer, "envVars");
+      CBOR.startArray(buffer);
+      for (uint256 i = 0; i < self.envVars.length; i++) {
+        CBOR.writeString(buffer, self.envVars[i]);
+      }
+      CBOR.endSequence(buffer);
     }
 
     return buffer.buf.buf;

@@ -21,7 +21,7 @@ interface BaseManager is IERC721 {
     event MetaDataUpdated(bytes funcMeta);
 
     // Set the resolver for the TLD this registrar manages.
-    function setManager(address resolver) external;
+    function registerManager(string memory name) external;
 
     function getName(address m) external view  returns(bytes32) ;
     function getMembersCounts() external view returns(uint);
@@ -29,9 +29,9 @@ interface BaseManager is IERC721 {
      * @dev Register a name.
      */
     function register(
-        bytes32 id,
         address owner
     ) external returns (uint256);
 
-    function updateMetaData(bytes memory func) external;
+    function updateMetaData(string memory Lang,string memory functionCode, bool doUpdate, string[] memory envVars ) external;
+    function getMetaData() external view returns(bytes memory);
 }
