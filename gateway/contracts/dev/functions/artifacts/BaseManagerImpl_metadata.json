@@ -186,6 +186,39 @@
 				"type": "event"
 			},
 			{
+				"inputs": [],
+				"name": "FunctionMetaData",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "language",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "codeFrom",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "doUpdate",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "version",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -268,6 +301,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "getMetaData",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "",
+						"type": "bytes"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -321,9 +367,9 @@
 				"name": "memberNames",
 				"outputs": [
 					{
-						"internalType": "bytes32",
+						"internalType": "uint256",
 						"name": "",
-						"type": "bytes32"
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -364,11 +410,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "bytes32",
-						"name": "id",
-						"type": "bytes32"
-					},
-					{
 						"internalType": "address",
 						"name": "owner",
 						"type": "address"
@@ -382,6 +423,19 @@
 						"type": "uint256"
 					}
 				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "functionName",
+						"type": "string"
+					}
+				],
+				"name": "registerManager",
+				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -450,19 +504,6 @@
 					}
 				],
 				"name": "setApprovalForAll",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "resolver",
-						"type": "address"
-					}
-				],
-				"name": "setManager",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -544,9 +585,24 @@
 			{
 				"inputs": [
 					{
-						"internalType": "bytes",
-						"name": "funcBytes",
-						"type": "bytes"
+						"internalType": "string",
+						"name": "Lang",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "functionCode",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "doUpdate",
+						"type": "bool"
+					},
+					{
+						"internalType": "string[]",
+						"name": "envVars",
+						"type": "string[]"
 					}
 				],
 				"name": "updateMetaData",
@@ -582,10 +638,9 @@
 						"_0": "address currently marked as the owner of the given token ID"
 					}
 				},
-				"register(bytes32,address)": {
+				"register(address)": {
 					"details": "Register a name.",
 					"params": {
-						"id": "The token ID (keccak256 of the label).",
 						"owner": "The address that should deploy the function."
 					}
 				},
@@ -732,19 +787,27 @@
 			]
 		},
 		"dev/functions/BaseManagerImpl.sol": {
-			"keccak256": "0xa755236016996608fbc8f58370574466dfeec8ff8116e14268d008c96213b63a",
+			"keccak256": "0xd3085d08f3afe7da3401421f3075ac6e697a44808c53006e5f4abd4495f918d5",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://51d54012b527512dee6c4067a20069166ab6e3f1b056a1bc6356baf9c1aee379",
-				"dweb:/ipfs/QmV44tGKWD72yoFgVYzC9Yq1pShWopsbaatvpAyvzVJ9pS"
+				"bzz-raw://1f19f89405c92f0431895503cb412aad93bf2a1e5a5d9e83753e734d34166dcd",
+				"dweb:/ipfs/QmTxg4BdvusHN9fySfKYPZRupuLAxMhMjfNYCdiVhbJ1gR"
+			]
+		},
+		"dev/functions/Functions.sol": {
+			"keccak256": "0xc6577be0879be6100ef8c6aac4b43aed82bfd8b4aba5421e8f2858967dc1f82b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1908950220be52be0a981fd212ac94d36174a78e01204a008f558c5e8f7baa14",
+				"dweb:/ipfs/Qmb1wF8QNvvsFreZQnbWDCF7PQbANzpkDBerwSRe2jfb98"
 			]
 		},
 		"dev/functions/baseManager.sol": {
-			"keccak256": "0x57c62836c2d5c0cf7a693ca2cd0055aef86736cb395f2684c961c11ea603c04c",
+			"keccak256": "0x00970fbb12b26580a67d990b88e5c563e3a51756f86ff2b5d70c28256eaa638c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1c7db5f352d9d5bac0bfd803006edc0eccac373256a32c4a2d929c2dd6781061",
-				"dweb:/ipfs/QmQbJE7cgpyXBUEWWrakPWmk8J7dBkR4e6v3ojCPUDZifw"
+				"bzz-raw://499d19f227927fa002aa4f37a4c5790873517c359f993199384873420fc201de",
+				"dweb:/ipfs/QmQT4anodjw1vauq6yvHUg5gFS4gP33ebR958XwBi8CQn4"
 			]
 		},
 		"dev/functions/registry.sol": {
@@ -753,6 +816,22 @@
 			"urls": [
 				"bzz-raw://c81e838e6273141a5fd534d891c1643fcb18d4f47b4bc098fe03b116f6dee49a",
 				"dweb:/ipfs/QmQe1DhNYxAZSc6Z527D3v82WV7ny516DeQHrdnZNUmWYr"
+			]
+		},
+		"dev/vendor/@ensdomains/buffer/0.1.0/Buffer.sol": {
+			"keccak256": "0x136790eb689cbbeeddac95a2cba37d1537018ecc20c090f83359ad74b65c166e",
+			"license": "BSD-2-Clause",
+			"urls": [
+				"bzz-raw://238b528d38c1abde9a5b1bd03493b6ba7783bda8401a5e090dc799e41bda52e4",
+				"dweb:/ipfs/QmW3eQyUZ591vJkfsdxupGd594ES3XDc9pSXRZCKmsGBiY"
+			]
+		},
+		"dev/vendor/solidity-cborutils/2.0.0/CBOR.sol": {
+			"keccak256": "0x899020e1a773e6c6c4d52619db3f25b9ed479d41db109b71ed4a2401312e78f5",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://eba667deb04c88b34e5645f578874216eb730db3bf2bc0136f054d0498ee9481",
+				"dweb:/ipfs/QmdPu97HGiBsfMLauU22FFkfUJ2zNF4c8r4C7FFcvw1Jth"
 			]
 		}
 	},
