@@ -18,7 +18,7 @@ interface BaseManager is IERC721 {
         address indexed owner,
         uint256 expires
     );
-    event MetaDataUpdated(bytes funcMeta);
+    event MetaDataUpdated(address indexed updateAddr, address indexed managerAddr, bytes funcMeta);
 
     // Set the resolver for the TLD this registrar manages.
     function registerManager(string memory name) external;

@@ -41,9 +41,8 @@ contract BaseManagerImpl is ERC721, BaseManager{
             isApprovedForAll(owner, spender));
     }
 
-    constructor(Registry _reg, bytes32 _baseNode) ERC721("", "") {
+    constructor(Registry _reg) ERC721("", "") {
         reg = _reg;
-        baseNode = _baseNode;
     }
 
     modifier live() {
@@ -72,6 +71,7 @@ contract BaseManagerImpl is ERC721, BaseManager{
 
     // Set the resolver for the TLD this registrar manages.
     function registerManager(string memory functionName) external override  {
+        // TODO: verify msg sender
         baseNode = keccak256(abi.encodePacked(functionName));
         FunctionMetaData.name=functionName;
         reg.setManager(baseNode, address(this));
@@ -119,6 +119,7 @@ contract BaseManagerImpl is ERC721, BaseManager{
     }
 
     function updateMetaData(string memory Lang,string memory functionCode, bool doUpdate,string[] memory envVars ) external override{
+        // TODO: verify msg sender
         FunctionMetaData.codeFrom=functionCode;
         FunctionMetaData.doUpdate=doUpdate;
         FunctionMetaData.envVars = envVars;
@@ -126,7 +127,7 @@ contract BaseManagerImpl is ERC721, BaseManager{
         versionRecord.increment();
         FunctionMetaData.version=versionRecord.current();
 
-        emit MetaDataUpdated( Functions.encodeFunctionRecord(FunctionMetaData));
+        emit MetaDataUpdated( msg.sender,address(this), Functions.encodeFunctionRecord(FunctionMetaData));
         return;
     }
 
