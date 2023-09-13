@@ -62,7 +62,7 @@ library Functions {
 
     CBOR.writeString(buffer, "source");
     CBOR.writeString(buffer, self.source);
-
+    
     if (self.args.length > 0) {
       CBOR.writeString(buffer, "args");
       CBOR.startArray(buffer);
@@ -161,7 +161,9 @@ library Functions {
 
     CBOR.writeString(buffer, "version");
     CBOR.writeUInt256(buffer, uint256(self.version));
-
+    
+    CBOR.writeString(buffer, "doUpdate");
+    CBOR.writeBool(buffer, self.doUpdate);
 
   if (self.envVars.length > 0) {
       CBOR.writeString(buffer, "envVars");
