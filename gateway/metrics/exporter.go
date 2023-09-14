@@ -118,9 +118,9 @@ func (e *Exporter) StartServiceWatcher(endpointURL url.URL, metricsOptions Metri
 
 				e.services = services
 				logger.Info("get all services", "values", services)
-				if e.functionReporter != nil {
-					e.functionReporter.SendFunctions(e.services)
-				}
+				//if e.functionReporter != nil {
+				//	e.functionReporter.SendFunctions(e.services)
+				//}
 
 				break
 			case <-quit:
