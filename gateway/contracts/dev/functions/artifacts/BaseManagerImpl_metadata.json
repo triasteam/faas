@@ -11,11 +11,6 @@
 						"internalType": "contract Registry",
 						"name": "_reg",
 						"type": "address"
-					},
-					{
-						"internalType": "bytes32",
-						"name": "_baseNode",
-						"type": "bytes32"
 					}
 				],
 				"stateMutability": "nonpayable",
@@ -799,11 +794,11 @@
 			]
 		},
 		"dev/functions/BaseManagerImpl.sol": {
-			"keccak256": "0x18d2fe502c28b778612defcf391efccb615d5f0550767b3a27767a4bd86b8158",
+			"keccak256": "0xa0162960c06ae52af4790f2f0ea90bb858de33a50cdb39d13663097786423843",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://503d8f555095c7a02b43a835e00bff2257fa2b5f6bbc57489b97d675961c5348",
-				"dweb:/ipfs/QmeWZLrLK5ZSt49W2mVbDq6v3kd4AiVAvLfhmRDrUhkJCo"
+				"bzz-raw://ae717c825f2cbf9c9f49a7fd60c67bafe542aee08d5a80b2f60655c07f70ae03",
+				"dweb:/ipfs/QmWbboUUqJ4pvTot8gBiBcNUmYGPUm2xRNq3EQQN7LeTcw"
 			]
 		},
 		"dev/functions/Functions.sol": {

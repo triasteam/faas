@@ -72,7 +72,7 @@ contract BaseManagerImpl is ERC721, BaseManager{
     // Set the resolver for the TLD this registrar manages.
     function registerManager(string memory functionName) external override  {
         // TODO: verify msg sender
-        baseNode = keccak256(abi.encodePacked(functionName));
+        baseNode = keccak256(bytes(functionName));
         FunctionMetaData.name=functionName;
         reg.setManager(baseNode, address(this));
     }
