@@ -90,11 +90,6 @@
 						"type": "bytes32"
 					},
 					{
-						"internalType": "address",
-						"name": "node",
-						"type": "address"
-					},
-					{
 						"internalType": "uint256",
 						"name": "score",
 						"type": "uint256"
@@ -132,7 +127,7 @@
 		"devdoc": {
 			"kind": "dev",
 			"methods": {
-				"handleOracleFulfillment(bytes32,address,uint256,bytes,bytes)": {
+				"handleOracleFulfillment(bytes32,uint256,bytes,bytes)": {
 					"params": {
 						"err": "Aggregated error either from the user code or from the execution pipeline. Either response or error parameter will be set, but never both.",
 						"requestId": "The requestId returned by FunctionsClient.sendRequest().",
@@ -151,7 +146,7 @@
 		"userdoc": {
 			"kind": "user",
 			"methods": {
-				"handleOracleFulfillment(bytes32,address,uint256,bytes,bytes)": {
+				"handleOracleFulfillment(bytes32,uint256,bytes,bytes)": {
 					"notice": "Chainlink Functions response handler called by the designated transmitter node in an OCR round."
 				},
 				"setOracle(address)": {
@@ -195,27 +190,27 @@
 			]
 		},
 		"dev/functions/Functions.sol": {
-			"keccak256": "0xd280c07fb38f45d1fddfa2bb581a4886aadf118ef20bfac92396e0554a1e55be",
+			"keccak256": "0xdd83b75bb360fa43721e808abd5810660536282ee67d6462540abb2dfc71b00a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://8681c47cc7352be2b73f1a8f61fe6cd1a393a0b0cffdd6bff68ae35839c42c04",
-				"dweb:/ipfs/QmZWnCkJX9CvXM6hM6X9Y7M5Y8owgG88dFgfVoHegg88Bw"
+				"bzz-raw://00e83234541cbaf93822dc16986cb61fe96158ba058e45798cb824cd2e30d484",
+				"dweb:/ipfs/QmautLfhn7R8GxGKtFi36kqm9mSawoJwBHQioztBsFcqGH"
 			]
 		},
 		"dev/functions/FunctionsClient.sol": {
-			"keccak256": "0x939ec208d754c441ad4992ec9af6b80ab56195a6509d6e2372db7edc644b62e3",
+			"keccak256": "0x2354e789c061fd49f3ed9bcbf42da6fd2987cf33c202ad1efe109769e0e4af16",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e485ee17b4b51c9848cef4940d05397b21260441553c942e15f33aa8d3e2da08",
-				"dweb:/ipfs/QmRLPan8GAaBbEEfLuDPHXYDameHXJNWaSKt88Zwd8tdXu"
+				"bzz-raw://0e3b51649510e45793ca5dde9a3cc6a065365e27be1218b12d4ffc59882e69e3",
+				"dweb:/ipfs/QmTLt52YiMiosdcy6R6X4PmjgC4ZiaACpnJxsvGeoXDArj"
 			]
 		},
 		"dev/functions/baseManager.sol": {
-			"keccak256": "0x57c62836c2d5c0cf7a693ca2cd0055aef86736cb395f2684c961c11ea603c04c",
+			"keccak256": "0x49ecc52149afeb24c2f60e5b5c6b4b42f7ff6710bdfa2ff153793e5fe1e738ed",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1c7db5f352d9d5bac0bfd803006edc0eccac373256a32c4a2d929c2dd6781061",
-				"dweb:/ipfs/QmQbJE7cgpyXBUEWWrakPWmk8J7dBkR4e6v3ojCPUDZifw"
+				"bzz-raw://ded5da99d01d1646a55808dd22d433438a408bb93e630843c5131cf6864d4145",
+				"dweb:/ipfs/QmYTmAjzkVKKrNVDBrUdDXAWtmd4FTuqpxWfjb4B6edksP"
 			]
 		},
 		"dev/functions/registry.sol": {
@@ -235,19 +230,19 @@
 			]
 		},
 		"dev/interfaces/FunctionsClientInterface.sol": {
-			"keccak256": "0x2cfcf4ca36ace3cb2054a25e1dd0b21becaa95d4ca506c3ce41100bcd8e1d2de",
+			"keccak256": "0xcb6ca30592a726a312641f3a2ecd84105b7fb43ff099353df994e5fef26a2298",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0f2653ddf25139bec5f75d03f63d9d3e719451b0ba2c13f378fff244ba81e812",
-				"dweb:/ipfs/QmaYSy5cpWKaRB46vP8P5Nk4hCUpxevAoPHYdSPBh7sCNr"
+				"bzz-raw://5ffefee6623b23ea859ad2a8ccc3af564f8b7e16fabf399860ae4f8bdf8c73f2",
+				"dweb:/ipfs/Qmf1zY8G7jfpGdvpUm5PcjGufz3atvZuk2XMsSp8a8M9J8"
 			]
 		},
 		"dev/interfaces/FunctionsOracleInterface.sol": {
-			"keccak256": "0xa87ed2e8828848e3af293c40bd8896100ceed117f44089b481f80e8d05034e0e",
+			"keccak256": "0x9c30be2ad4cce68aa003223cd35f6f03e6d0cd263eb4a59d0f1277ba652cb5de",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://011219a5061e82c5f9b6dd09c291d55fe827989824e7171586691c52f57c59ed",
-				"dweb:/ipfs/Qmee8oab7WLh23AYQetoqqSKUZYWNsFor76LeDo96wandJ"
+				"bzz-raw://6a54aa05cd6e7907de966381151fe6891ebbdff05454a7da2290b6c55d0927d5",
+				"dweb:/ipfs/QmUG2fYgMYDvayk5qABQmbAekstPrpjMpGbFrSCvivbxta"
 			]
 		},
 		"dev/vendor/@ensdomains/buffer/0.1.0/Buffer.sol": {

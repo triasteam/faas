@@ -77,14 +77,13 @@ abstract contract FunctionsClient is FunctionsClientInterface{
 
   function handleOracleFulfillment(
     bytes32 requestId,
-    address node,
     uint score,
     bytes memory response,
     bytes memory err
   ) external override recordFulfillment(requestId) {
-    fulfillRequest(requestId, response, err);
     
-    emit RequestFulfilled(requestId, node,score,response, err);
+    s_oracle.fulfillRequestByNode(requestId, score, response, err);
+    emit RequestFulfilled(requestId, msg.sender,score,response, err);
   }
 
   /**

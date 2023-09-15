@@ -128,6 +128,43 @@
 				"type": "event"
 			},
 			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "id",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "node",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "score",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "result",
+						"type": "bytes"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "err",
+						"type": "bytes"
+					}
+				],
+				"name": "RequestFulfilled",
+				"type": "event"
+			},
+			{
 				"inputs": [],
 				"name": "EXPIRY_TIME",
 				"outputs": [
@@ -159,11 +196,6 @@
 						"internalType": "bytes32",
 						"name": "_requestId",
 						"type": "bytes32"
-					},
-					{
-						"internalType": "address",
-						"name": "oracleAddress",
-						"type": "address"
 					},
 					{
 						"internalType": "uint256",
@@ -201,25 +233,6 @@
 					}
 				],
 				"name": "getReq",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "i",
-						"type": "uint256"
-					}
-				],
-				"name": "getSelectorResp",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -297,12 +310,11 @@
 			},
 			"kind": "dev",
 			"methods": {
-				"fulfillRequestByNode(bytes32,address,uint256,bytes,bytes)": {
+				"fulfillRequestByNode(bytes32,uint256,bytes,bytes)": {
 					"details": "Response must have a valid callback, and will delete the associated callback storage before calling the external contract.",
 					"params": {
 						"_requestId": "The fulfillment request ID that must match the requester's",
 						"err": "node occurs error when to execute function",
-						"oracleAddress": "oracle contract address",
 						"resp": "node response",
 						"score": "node score that the execute function"
 					},
@@ -323,7 +335,7 @@
 		"userdoc": {
 			"kind": "user",
 			"methods": {
-				"fulfillRequestByNode(bytes32,address,uint256,bytes,bytes)": {
+				"fulfillRequestByNode(bytes32,uint256,bytes,bytes)": {
 					"notice": "Called by the node to fulfill requests"
 				},
 				"sendRequest(bytes32,bytes)": {
@@ -383,11 +395,11 @@
 			]
 		},
 		"dev/functions/FunctionsOracle.sol": {
-			"keccak256": "0x4c59e73bc37b6ad152bd758c1c4a37a95ae743bd7564dc7790feeecaada76c93",
+			"keccak256": "0xdff44462b8eee2a7870e83e8f8ab779b9b0e811b166a683ee1f252a08b7fa363",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://cfd48c1183fa3e4a8bc87174e1fc454babece78edf11076d054ad862bb90d4c2",
-				"dweb:/ipfs/QmY6UALmeX8AyM1pndNTNK8TSaMgikmMfM77LeDenT7S23"
+				"bzz-raw://26fedc2181d99a10685a240649794ed0939bb49d69c51ef426c16e81e6b3045f",
+				"dweb:/ipfs/QmZoKrhQDiMa6sTLcEEXXt2mWW4Xm9vXZBJycVQEYJMD6F"
 			]
 		},
 		"dev/functions/baseManager.sol": {
@@ -415,19 +427,19 @@
 			]
 		},
 		"dev/interfaces/FunctionsClientInterface.sol": {
-			"keccak256": "0x2cfcf4ca36ace3cb2054a25e1dd0b21becaa95d4ca506c3ce41100bcd8e1d2de",
+			"keccak256": "0xcb6ca30592a726a312641f3a2ecd84105b7fb43ff099353df994e5fef26a2298",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0f2653ddf25139bec5f75d03f63d9d3e719451b0ba2c13f378fff244ba81e812",
-				"dweb:/ipfs/QmaYSy5cpWKaRB46vP8P5Nk4hCUpxevAoPHYdSPBh7sCNr"
+				"bzz-raw://5ffefee6623b23ea859ad2a8ccc3af564f8b7e16fabf399860ae4f8bdf8c73f2",
+				"dweb:/ipfs/Qmf1zY8G7jfpGdvpUm5PcjGufz3atvZuk2XMsSp8a8M9J8"
 			]
 		},
 		"dev/interfaces/FunctionsOracleInterface.sol": {
-			"keccak256": "0xa87ed2e8828848e3af293c40bd8896100ceed117f44089b481f80e8d05034e0e",
+			"keccak256": "0x9c30be2ad4cce68aa003223cd35f6f03e6d0cd263eb4a59d0f1277ba652cb5de",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://011219a5061e82c5f9b6dd09c291d55fe827989824e7171586691c52f57c59ed",
-				"dweb:/ipfs/Qmee8oab7WLh23AYQetoqqSKUZYWNsFor76LeDo96wandJ"
+				"bzz-raw://6a54aa05cd6e7907de966381151fe6891ebbdff05454a7da2290b6c55d0927d5",
+				"dweb:/ipfs/QmUG2fYgMYDvayk5qABQmbAekstPrpjMpGbFrSCvivbxta"
 			]
 		}
 	},

@@ -49,7 +49,7 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
-			"handleOracleFulfillment(bytes32,address,uint256,bytes,bytes)": "42ba6d28",
+			"handleOracleFulfillment(bytes32,uint256,bytes,bytes)": "fba45fbe",
 			"setOracle(address)": "7adbf973"
 		}
 	},
@@ -137,11 +137,6 @@
 					"internalType": "bytes32",
 					"name": "requestId",
 					"type": "bytes32"
-				},
-				{
-					"internalType": "address",
-					"name": "node",
-					"type": "address"
 				},
 				{
 					"internalType": "uint256",
