@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.17+commit.8df45f5f"
+		"version": "0.8.6+commit.11564f7e"
 	},
 	"language": "Solidity",
 	"output": {
@@ -11,6 +11,16 @@
 						"internalType": "bytes32",
 						"name": "requestId",
 						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "node",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "score",
+						"type": "uint256"
 					},
 					{
 						"internalType": "bytes",
@@ -32,7 +42,7 @@
 		"devdoc": {
 			"kind": "dev",
 			"methods": {
-				"handleOracleFulfillment(bytes32,bytes,bytes)": {
+				"handleOracleFulfillment(bytes32,address,uint256,bytes,bytes)": {
 					"params": {
 						"err": "Aggregated error either from the user code or from the execution pipeline. Either response or error parameter will be set, but never both.",
 						"requestId": "The requestId returned by FunctionsClient.sendRequest().",
@@ -46,7 +56,7 @@
 		"userdoc": {
 			"kind": "user",
 			"methods": {
-				"handleOracleFulfillment(bytes32,bytes,bytes)": {
+				"handleOracleFulfillment(bytes32,address,uint256,bytes,bytes)": {
 					"notice": "Chainlink Functions response handler called by the designated transmitter node in an OCR round."
 				}
 			},
@@ -57,7 +67,7 @@
 		"compilationTarget": {
 			"dev/interfaces/FunctionsClientInterface.sol": "FunctionsClientInterface"
 		},
-		"evmVersion": "london",
+		"evmVersion": "berlin",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -70,11 +80,11 @@
 	},
 	"sources": {
 		"dev/interfaces/FunctionsClientInterface.sol": {
-			"keccak256": "0xe1a1cd28844da5ac804d05a72d0a024a1b35d90b7bfad57e1ae9605da01d34da",
+			"keccak256": "0x2cfcf4ca36ace3cb2054a25e1dd0b21becaa95d4ca506c3ce41100bcd8e1d2de",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://a9a7277615a685ef0eb55db2c909e0af3bac2143216a10729ce1234f4f835bba",
-				"dweb:/ipfs/Qmf16vpigTCvN86GSrUY7sR4VHbCSAVthDHdHGFNGD74ts"
+				"bzz-raw://0f2653ddf25139bec5f75d03f63d9d3e719451b0ba2c13f378fff244ba81e812",
+				"dweb:/ipfs/QmaYSy5cpWKaRB46vP8P5Nk4hCUpxevAoPHYdSPBh7sCNr"
 			]
 		}
 	},

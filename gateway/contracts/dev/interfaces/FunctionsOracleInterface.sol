@@ -13,10 +13,11 @@ interface FunctionsOracleInterface {
    */
   function sendRequest(bytes32 functionId, bytes calldata data) external returns (bytes32);
 
-  function fulfillRequestByNode(
-    bytes32 _requestId,
-    address oracleAddress,
-    uint score,
+  function fulfillOracleRequest() external returns (bool);
+
+  function fulfillRequestByNode(bytes32 _requestId,
+    uint score, 
     bytes calldata resp,
-    bytes calldata err) external returns (bool);
+    bytes calldata err
+    ) external returns (bool);
 }
