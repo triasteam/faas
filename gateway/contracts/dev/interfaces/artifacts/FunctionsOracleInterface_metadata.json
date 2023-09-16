@@ -1,26 +1,75 @@
 {
 	"compiler": {
-		"version": "0.8.17+commit.8df45f5f"
+		"version": "0.8.6+commit.11564f7e"
 	},
 	"language": "Solidity",
 	"output": {
 		"abi": [
 			{
+				"inputs": [],
+				"name": "fulfillOracleRequest",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
-						"internalType": "uint64",
-						"name": "subscriptionId",
-						"type": "uint64"
+						"internalType": "bytes32",
+						"name": "_requestId",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "score",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "resp",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "err",
+						"type": "bytes"
+					}
+				],
+				"name": "fulfillRequestByNode",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "init",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "functionId",
+						"type": "bytes32"
 					},
 					{
 						"internalType": "bytes",
 						"name": "data",
 						"type": "bytes"
-					},
-					{
-						"internalType": "uint32",
-						"name": "gasLimit",
-						"type": "uint32"
 					}
 				],
 				"name": "sendRequest",
@@ -38,14 +87,10 @@
 		"devdoc": {
 			"kind": "dev",
 			"methods": {
-				"sendRequest(uint64,bytes,uint32)": {
+				"sendRequest(bytes32,bytes)": {
 					"params": {
-						"data": "Encoded Chainlink Functions request data, use FunctionsClient API to encode a request",
-						"gasLimit": "Gas limit for the fulfillment callback",
-						"subscriptionId": "A unique subscription ID allocated by billing system, a client can make requests from different contracts referencing the same subscription"
-					},
-					"returns": {
-						"_0": "requestId A unique request identifier (unique per DON)"
+						"data": "Encoded Functions request data, use FunctionsClient API to encode a request",
+						"functionId": "A unique subscription ID allocated by billing system, a client can make requests from different contracts referencing the same subscription"
 					}
 				}
 			},
@@ -55,7 +100,7 @@
 		"userdoc": {
 			"kind": "user",
 			"methods": {
-				"sendRequest(uint64,bytes,uint32)": {
+				"sendRequest(bytes32,bytes)": {
 					"notice": "Sends a request (encoded as data) using the provided subscriptionId"
 				}
 			},
@@ -66,7 +111,7 @@
 		"compilationTarget": {
 			"dev/interfaces/FunctionsOracleInterface.sol": "FunctionsOracleInterface"
 		},
-		"evmVersion": "london",
+		"evmVersion": "berlin",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -79,11 +124,11 @@
 	},
 	"sources": {
 		"dev/interfaces/FunctionsOracleInterface.sol": {
-			"keccak256": "0xdf718c57d58ce28df47079e675a9b94afd7f69879583c7404bd8400bd1755865",
+			"keccak256": "0x4ca47282c1dd095d2238fd5cfaf8c1912c6d9cdedead81664a9784c205df731c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://956dbfc276a9b0330a85f496d4291818bbf5602922882cf5283b68c6fb9d4d43",
-				"dweb:/ipfs/QmZRbzRrbZXK7Q5kP2VRHUyFYBCEKyByHShFXHvTa6F3xD"
+				"bzz-raw://cd6c777bcdef112303e7f117220845cdda8ccd5c75e44a2b382cede03decd057",
+				"dweb:/ipfs/QmXKi85sMYAS848gg4xxGyjBtsmnuNVhfK72AUBxcYJdJA"
 			]
 		}
 	},

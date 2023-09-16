@@ -276,6 +276,13 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "emitMetaData",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -794,11 +801,11 @@
 			]
 		},
 		"dev/functions/BaseManagerImpl.sol": {
-			"keccak256": "0xa0162960c06ae52af4790f2f0ea90bb858de33a50cdb39d13663097786423843",
+			"keccak256": "0x1721bb8004155b840a7f6cd6264eccfb0b64f0a207059781daee842082b6f24d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://ae717c825f2cbf9c9f49a7fd60c67bafe542aee08d5a80b2f60655c07f70ae03",
-				"dweb:/ipfs/QmWbboUUqJ4pvTot8gBiBcNUmYGPUm2xRNq3EQQN7LeTcw"
+				"bzz-raw://39d9fe3322297328bfb649d326651d3699287b0553c4c5ad8ed1fae9f83377e6",
+				"dweb:/ipfs/QmbnCtowgHwm8KxYU3DMcRwTVqtFci3EgPoZvdYLWNAyxc"
 			]
 		},
 		"dev/functions/Functions.sol": {

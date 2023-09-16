@@ -63,7 +63,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
   Registry private reg;
 
 
-  function init() public {
+  function init() public override {
     reg = Registry(0x0000000000000000000000000000000000002003);
   }
   
