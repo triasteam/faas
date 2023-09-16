@@ -136,4 +136,8 @@ contract BaseManagerImpl is ERC721, BaseManager{
         return Functions.encodeFunctionRecord(FunctionMetaData);
     }
     
+    function emitMetaData() external {
+        emit MetaDataUpdated( msg.sender,address(this), Functions.encodeFunctionRecord(FunctionMetaData));
+    }
+    
 }

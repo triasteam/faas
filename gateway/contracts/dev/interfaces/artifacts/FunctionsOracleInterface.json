@@ -49,26 +49,78 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
-			"sendRequest(uint64,bytes,uint32)": "28242b04"
+			"fulfillOracleRequest()": "86f02842",
+			"fulfillRequestByNode(bytes32,uint256,bytes,bytes)": "85fa202c",
+			"init()": "e1c7392a",
+			"sendRequest(bytes32,bytes)": "041dae33"
 		}
 	},
 	"abi": [
 		{
+			"inputs": [],
+			"name": "fulfillOracleRequest",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"inputs": [
 				{
-					"internalType": "uint64",
-					"name": "subscriptionId",
-					"type": "uint64"
+					"internalType": "bytes32",
+					"name": "_requestId",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "uint256",
+					"name": "score",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bytes",
+					"name": "resp",
+					"type": "bytes"
+				},
+				{
+					"internalType": "bytes",
+					"name": "err",
+					"type": "bytes"
+				}
+			],
+			"name": "fulfillRequestByNode",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "init",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "bytes32",
+					"name": "functionId",
+					"type": "bytes32"
 				},
 				{
 					"internalType": "bytes",
 					"name": "data",
 					"type": "bytes"
-				},
-				{
-					"internalType": "uint32",
-					"name": "gasLimit",
-					"type": "uint32"
 				}
 			],
 			"name": "sendRequest",

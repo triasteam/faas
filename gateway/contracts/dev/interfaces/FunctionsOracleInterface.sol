@@ -5,6 +5,7 @@ pragma solidity ^0.8.6;
  * @title Chainlink Functions oracle interface.
  */
 interface FunctionsOracleInterface {
+  function init() external;
   /**
    * @notice Sends a request (encoded as data) using the provided subscriptionId
    * @param functionId A unique subscription ID allocated by billing system,
