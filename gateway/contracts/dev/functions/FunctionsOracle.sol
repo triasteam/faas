@@ -22,10 +22,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
   );
   event OracleResponse(bytes32 indexed requestId);
   event OracleRequestTimeout(bytes32 indexed requestId, uint birth, uint blockTime,string reason);
-  event RequestFulfilled(bytes32 indexed id,address indexed node, uint score,bytes result, bytes err);
-  // event UserCallbackError(bytes32 indexed requestId, string reason);
-  // event UserCallbackRawError(bytes32 indexed requestId, bytes lowLevelData);
-  // event InvalidRequestID(bytes32 indexed requestId);
+  event SelectedResponse(bytes32 indexed id,address indexed node, uint score,bytes result, bytes err);
 
   error EmptyRequestData();
   error InconsistentReportData();
@@ -45,23 +42,28 @@ contract FunctionsOracle is FunctionsOracleInterface {
     bytes32 functionId;
     uint birth;
     address msgSender;
+    bytes data;
   }
 
   uint256 constant public EXPIRY_TIME = 5 minutes;
   mapping(bytes32 => mapping(address => bool)) private allowedOracles;
   //  mapping(bytes32 => Callback) private callbacks;//requestId
-  mapping(bytes32 => responseInfo[]) private functionResponse;//requestId => node address => responseInfo
+
+  //requestId => node address => responseInfo
+  mapping(bytes32 => mapping( address => responseInfo)) private functionResponse;
+  // requestId => resp address queue by time (young -> old) and score (big -> little)
+  mapping(bytes32 => DoubleEndedQueue.Bytes32Deque) private sortRespAddr;
+  DoubleEndedQueue.Bytes32Deque pendingRespQueue;
+  
   DoubleEndedQueue.Bytes32Deque reqQueen; // request birth
   mapping(bytes32 => requestBirth) reqMap;
 
   uint256[] public respSelector;
 
-  Selector private selector;
   Registry private reg;
 
 
   function init() public {
-    selector = Selector(0x0000000000000000000000000000000000002005);
     reg = Registry(0x0000000000000000000000000000000000002003);
   }
   
@@ -88,8 +90,9 @@ contract FunctionsOracle is FunctionsOracleInterface {
       address(0x0),
       data
     );
+
     DoubleEndedQueue.pushBack(reqQueen,requestId);
-    reqMap[requestId]=requestBirth(requestId, functionId, block.timestamp, msg.sender);
+    reqMap[requestId]=requestBirth(requestId, functionId, block.timestamp, msg.sender, data);
     return requestId;
   }
 
@@ -123,54 +126,77 @@ contract FunctionsOracle is FunctionsOracleInterface {
       return true;
     }
 
-    responseInfo memory respA = responseInfo(tx.origin, score,resp,err);
+    responseInfo memory respA = responseInfo(tx.origin, score, resp, err);
 
-    functionResponse[_requestId].push(respA);
+    functionResponse[_requestId][tx.origin] = respA;
+
+
+    if (DoubleEndedQueue.empty(sortRespAddr[_requestId])) {
+      DoubleEndedQueue.pushFront(sortRespAddr[_requestId],bytes32(uint256(uint160(tx.origin))));
+      return true;
+    }
+
+    bytes32 addrBytes = DoubleEndedQueue.front(sortRespAddr[_requestId]);
+    responseInfo memory oldResp =  functionResponse[_requestId][address(uint160(uint256(addrBytes)))];
+    if (oldResp.score <= score){
+      DoubleEndedQueue.pushFront(sortRespAddr[_requestId], bytes32(uint256(uint160(tx.origin))));
+    }else{
+      DoubleEndedQueue.pushBack(sortRespAddr[_requestId], bytes32(uint256(uint160(tx.origin))));
+    }
+
     return true;
   }
 
-  function selectResponse(responseInfo[] memory respArr)private{
-    for (uint ir = 0; ir < respArr.length; ir++) {
-      bool isRight = respArr[ir].resp.length != 0;
 
-      if (respSelector.length == 0 && isRight){
-        respSelector.push(ir);
-        continue;
-      }
+  function selectResp(
+    bool isTimeout,
+    bytes32 requestId
+  ) private view returns(responseInfo memory tmpResp,bool isWaitNextBlock){
 
-      if(respArr[respSelector[0]].score > respArr[ir].score) {
-        continue;
-      }
-
-      if(respArr[respSelector[0]].score < respArr[ir].score && isRight) {
-        respSelector = [ir];
-      }
-
-      if(respArr[respSelector[0]].score == respArr[ir].score && isRight) {
-        respSelector.push(ir);
-      }
+    if (isTimeout && DoubleEndedQueue.empty(sortRespAddr[requestId])) {
+      return (tmpResp, isWaitNextBlock);
     }
-  }
 
-  function commitResp(bytes32 reqId, responseInfo[] memory respArr)private{
-    if (respArr.length == 0) {
-      emit OracleRequestTimeout(reqId,0,0, "timeout");
-      return;
+    if (DoubleEndedQueue.empty( sortRespAddr[requestId])){
+      isWaitNextBlock = true;
+      return (tmpResp, isWaitNextBlock);
+    }
+
+    bytes32 addrBytes;
+    if (DoubleEndedQueue.length(  sortRespAddr[requestId]) == 1){
+      addrBytes = DoubleEndedQueue.front( sortRespAddr[requestId]);
+      tmpResp = functionResponse[requestId][address(uint160(uint256(addrBytes)))];
+      return (tmpResp, isWaitNextBlock);
+    }
+
+    uint splitIndex = 0;
+    addrBytes = DoubleEndedQueue.front( sortRespAddr[requestId]);
+    tmpResp = functionResponse[requestId][address(uint160(uint256(addrBytes)))];
+
+    for (uint i = 1; i < DoubleEndedQueue.length(  sortRespAddr[requestId])-1; i++) {
+        addrBytes = DoubleEndedQueue.at(  sortRespAddr[requestId], i);
+        responseInfo memory oldTmpResp = functionResponse[requestId][address(uint160(uint256(addrBytes)))];
+        if (tmpResp.score > oldTmpResp.score || oldTmpResp.score==0 ){
+          break;
+        }
+        tmpResp = oldTmpResp;
+        splitIndex++;
+    }
+    if (splitIndex != 0) {
+      uint256 vtfValue = uint256(blockhash(block.number-1));
+      splitIndex = vtfValue % splitIndex + 1;
     }
  
-    uint256 vtfValue = uint256(blockhash(block.number-1));
-    responseInfo memory ret;
-    if(respSelector.length > 0) {
-       ret = respArr[respSelector[vtfValue % respSelector.length]];
-    }else{
-      ret = respArr[vtfValue % respArr.length];
-    }
-    emit RequestFulfilled(reqId, ret.node,ret.score,ret.resp,ret.err);
+    addrBytes = DoubleEndedQueue.at(sortRespAddr[requestId], splitIndex);
+    tmpResp = functionResponse[requestId][address(uint160(uint256(addrBytes)))];
+  
+    return (tmpResp, isWaitNextBlock);
   }
 
   function getReqFromQueen(uint qIndex) private view returns(requestBirth memory reqInfo, bool isDel){
     bytes32 reqId = DoubleEndedQueue.at(reqQueen, qIndex);
     reqInfo = reqMap[reqId];
+
     if (reqInfo.birth == 0 && reqInfo.msgSender == address(0)){
        isDel = true;
        return (reqInfo, isDel); 
@@ -182,7 +208,6 @@ contract FunctionsOracle is FunctionsOracleInterface {
   function fulfillOracleRequest() external override returns (bool) {
 
     bool isPopFront;
-    delete respSelector;
     
     for (uint reqIndex = 0; reqIndex < DoubleEndedQueue.length(reqQueen); reqIndex++) {
 
@@ -190,49 +215,49 @@ contract FunctionsOracle is FunctionsOracleInterface {
       bool isDel;
 
       (reqInfo, isDel)= getReqFromQueen(reqIndex);
-
       if (isDel) {
         continue;
       }
 
       bool isTimeout = reqInfo.birth + EXPIRY_TIME < block.timestamp;
-      responseInfo[] memory respArr =functionResponse[reqInfo.requestId];
 
-      if (isTimeout && respArr.length == 0) {
-        commitResp(reqInfo.requestId,respArr);
-        delete reqMap[reqInfo.requestId];
-        emit OracleRequestTimeout(reqInfo.requestId,0,0, "not found response");
+      responseInfo memory tmpResp;
+      bool isWait;
 
-        if (reqIndex == 0) {
-          isPopFront = true;
-        }
+      (tmpResp, isWait) = selectResp(isTimeout, reqInfo.requestId);
 
+      if (isWait){
         continue;
       }
 
-      if (respArr.length == 0) {
-        continue;
+      if (tmpResp.node == address(0)){
+          emit OracleRequestTimeout(reqInfo.requestId, reqInfo.birth, block.timestamp, 
+            "no node execute function, timeout");
+          // delete functionResponse[reqInfo.requestId];
+          // delete sortRespAddr[reqInfo.requestId];
+          delete reqMap[reqInfo.requestId];
+          return true;
       }
 
-      selectResponse(respArr);
-      commitResp(reqInfo.requestId, respArr);
+      emit SelectedResponse(reqInfo.requestId, 
+            tmpResp.node, tmpResp.score, tmpResp.resp, tmpResp.err);
+
+      if (reqIndex == 0){
+        isPopFront = true;
+      }
       delete reqMap[reqInfo.requestId];
-      if (reqIndex == 0) {
-          isPopFront = true;
-        }
-
     }
 
     if (isPopFront && !DoubleEndedQueue.empty(reqQueen)){
         DoubleEndedQueue.popFront(reqQueen);
     }
+    
     return true;
   }
 
-  function getSelectorResp(uint i) private view returns(uint){
-    if (i>respSelector.length){
-      return respSelector[0];
-    }
+  function getSelectorResp(uint i) public view returns(uint){
+    
+    require(i < respSelector.length, "out of respSelector length");
       return respSelector[i]; 
   }
   /**

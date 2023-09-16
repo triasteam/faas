@@ -161,7 +161,7 @@
 						"type": "bytes"
 					}
 				],
-				"name": "RequestFulfilled",
+				"name": "SelectedResponse",
 				"type": "event"
 			},
 			{
@@ -233,6 +233,25 @@
 					}
 				],
 				"name": "getReq",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "i",
+						"type": "uint256"
+					}
+				],
+				"name": "getSelectorResp",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -395,11 +414,11 @@
 			]
 		},
 		"dev/functions/FunctionsOracle.sol": {
-			"keccak256": "0xdff44462b8eee2a7870e83e8f8ab779b9b0e811b166a683ee1f252a08b7fa363",
+			"keccak256": "0xd83e7a41b600055809b6039c8756639ec703bee6c245648e1ff61ac698699e3d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://26fedc2181d99a10685a240649794ed0939bb49d69c51ef426c16e81e6b3045f",
-				"dweb:/ipfs/QmZoKrhQDiMa6sTLcEEXXt2mWW4Xm9vXZBJycVQEYJMD6F"
+				"bzz-raw://e8fd2f599aa3ba9409d518c98956a5f0c4ad6e9dc2a862c547d0367cde9ff4fd",
+				"dweb:/ipfs/QmUz7BpffGBwCGrkRa2RiCi93Rrjzf7M4XKVB81kqDJLC3"
 			]
 		},
 		"dev/functions/baseManager.sol": {
