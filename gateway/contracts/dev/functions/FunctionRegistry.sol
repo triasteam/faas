@@ -114,8 +114,8 @@ contract FunctionRegistry is Registry {
         bytes32 node,
         address _manager
     ) public virtual override authorised(node) {
-        records[node].manager = _manager;
-        emit NewManager(node, _manager);
+         records[node].manager = _manager;
+          emit NewManager(node, _manager);
     }
 
 
