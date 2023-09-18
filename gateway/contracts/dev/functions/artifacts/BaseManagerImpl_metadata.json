@@ -525,6 +525,19 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "_reg",
+						"type": "address"
+					}
+				],
+				"name": "setRegistry",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes4",
 						"name": "interfaceId",
 						"type": "bytes4"
@@ -801,11 +814,11 @@
 			]
 		},
 		"dev/functions/BaseManagerImpl.sol": {
-			"keccak256": "0x1721bb8004155b840a7f6cd6264eccfb0b64f0a207059781daee842082b6f24d",
+			"keccak256": "0x4f612b0b15acb62924463b91b06e02f83acbc6b3ebbb0df64ffdbdb9045b1bb3",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://39d9fe3322297328bfb649d326651d3699287b0553c4c5ad8ed1fae9f83377e6",
-				"dweb:/ipfs/QmbnCtowgHwm8KxYU3DMcRwTVqtFci3EgPoZvdYLWNAyxc"
+				"bzz-raw://967f7d09789eaf7538a40a11919355a86a20e9fd40fe70eb628316863b1490d3",
+				"dweb:/ipfs/QmRciH9oqHSo2EUfgKBSFM14d97KjqAtV5AWmshpy88xHB"
 			]
 		},
 		"dev/functions/Functions.sol": {

@@ -477,11 +477,11 @@
 			]
 		},
 		"dev/functions/FunctionRegistry.sol": {
-			"keccak256": "0x201337ea26d04d6e2d8cd6af63604af495b9b0e9abb329b0503a0b1a61d25e4a",
+			"keccak256": "0x2ac80bb180937c79e47d0a5dcef71619d90e9b8e6a12ccd8d83d35cbf63e54ed",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e8bde57d3f0f6b139f2b5a570ed5a72d1260bed36c4e778b3c4214daa1303153",
-				"dweb:/ipfs/QmXrbBVQXKzPyd1fSi1ULmUmf8KNpcY3pGcJFLJSdpVoFC"
+				"bzz-raw://6f76a51cc0a1586ee3f2a3ab3b9249d0ed4f95a8d476be2bb510d13fa46aeb9e",
+				"dweb:/ipfs/QmYyVybSXopYf1uMkQssENWuuS9ezoFx4Q1xWekpB5hC5q"
 			]
 		},
 		"dev/functions/baseManager.sol": {

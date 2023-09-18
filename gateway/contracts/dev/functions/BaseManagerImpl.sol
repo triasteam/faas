@@ -67,6 +67,13 @@ contract BaseManagerImpl is ERC721, BaseManager{
         return super.ownerOf(tokenId);
     }
 
+    function setRegistry(
+        address _reg
+    ) public {
+        reg = Registry(_reg);
+        return;
+    }
+
 
 
     // Set the resolver for the TLD this registrar manages.
