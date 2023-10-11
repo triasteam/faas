@@ -814,11 +814,11 @@
 			]
 		},
 		"dev/functions/BaseManagerImpl.sol": {
-			"keccak256": "0x4f612b0b15acb62924463b91b06e02f83acbc6b3ebbb0df64ffdbdb9045b1bb3",
+			"keccak256": "0xc45c06411d1558034d40eaf7912c27619d68c4135d54e814bcd8a4b1c7b7fe5a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://967f7d09789eaf7538a40a11919355a86a20e9fd40fe70eb628316863b1490d3",
-				"dweb:/ipfs/QmRciH9oqHSo2EUfgKBSFM14d97KjqAtV5AWmshpy88xHB"
+				"bzz-raw://c3173131b0a260e8df994b098855ca2ec1685c406c9840174e89bd15520be852",
+				"dweb:/ipfs/QmUW3ygodws9XgAwb37Jbw5NmT69NT8ANkxsfKiPHe767y"
 			]
 		},
 		"dev/functions/Functions.sol": {
