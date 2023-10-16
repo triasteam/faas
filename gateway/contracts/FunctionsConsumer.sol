@@ -3,7 +3,6 @@ pragma solidity ^0.8.4;
 
 import {Functions, FunctionsClient} from "./dev/functions/FunctionsClient.sol";
 import "./dev/functions/registry.sol";
-import "./dev/functions/selector.sol";
 
 /**
  * @title Functions Consumer contract
@@ -19,7 +18,7 @@ contract FunctionsConsumer is FunctionsClient {
 
   event FuncResponse(bytes32 indexed requestId, bytes result, bytes err);
 
-  constructor(address oracle,Registry _reg)FunctionsClient(oracle,_reg)  {}
+  constructor(address oracle,Registry _reg)FunctionsClient(oracle,_reg) {}
   /**
    * @notice Send a simple request, 
    *
@@ -34,7 +33,7 @@ contract FunctionsConsumer is FunctionsClient {
     bytes calldata secrets,
     string[] calldata args
   ) public returns (bytes32) {
-    // TODO: 调用registry合约，判断函数是否存在
+   
     Functions.Request memory req;
     req.initializeRequest(Functions.Location.Inline, Functions.CodeLanguage.JavaScript, source,name);
    
