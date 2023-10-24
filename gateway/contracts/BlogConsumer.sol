@@ -18,9 +18,8 @@ contract BlogConsumer is FunctionsClient {
     bytes public latestError;
 
     event FuncResponse(bytes32 indexed requestId, bytes result, bytes err);
-     event NewBlog(uint256 indexed blogId, address author);
+    event NewBlog(uint256 indexed blogId, address author);
     
-
 
     mapping( uint256 => bytes) blogContent;
     mapping( address => uint256[])  blogOwnerIndex;
@@ -91,7 +90,7 @@ contract BlogConsumer is FunctionsClient {
         return blogContent[uint256(blogId)];
     }
 
-    function getBlogs(address author, uint beginIndex, uint counts)public returns(uint256[] memory){
+    function getBlogsWithCounts(address author, uint beginIndex, uint counts)public returns(uint256[] memory){
         uint blogLength = blogOwnerIndex[author].length;
         if (blogLength<beginIndex && beginIndex>0){
             revert BlogOverflow(blogLength,beginIndex);
@@ -101,6 +100,11 @@ contract BlogConsumer is FunctionsClient {
            blogSlice.push(blogOwnerIndex[author][i-1]);
         }
         return blogSlice;
+    }
+
+    function getBlogs(address author)public view returns(uint256[] memory){
+       
+        return blogOwnerIndex[author];
     }
 
     function BlogOwnerOf(bytes32 blogId)public view returns(address){
