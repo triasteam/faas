@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.4;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./registry.sol";
 import "./baseManager.sol";
 import "./Functions.sol";
 
-contract BaseManagerImpl is ERC721, BaseManager{
+contract BaseManagerImpl is BaseManager{
     using Counters for Counters.Counter;
 
     // The function registry
@@ -16,13 +15,13 @@ contract BaseManagerImpl is ERC721, BaseManager{
     bytes32 public baseNode;
 
     mapping(address => uint256) public memberNames;
+    address[] private memberAddrs;
 
     Functions.FunctionRecord public FunctionMetaData;
 
-    Counters.Counter private membersCounts;
     Counters.Counter private versionRecord;
 
-    constructor(Registry _reg) ERC721("", "") {
+    constructor(Registry _reg){
         reg = _reg;
     }
 
@@ -36,18 +35,6 @@ contract BaseManagerImpl is ERC721, BaseManager{
         _;
     }
 
-    /**
-     * @dev Gets the owner of the specified token ID. Names become unowned
-     *      when their registration expires.
-     * @param tokenId uint256 ID of the token to query the owner of
-     * @return address currently marked as the owner of the given token ID
-     */
-    function ownerOf(
-        uint256 tokenId
-    ) public view override(IERC721, ERC721) returns (address) {
-        return super.ownerOf(tokenId);
-    }
-
     function setRegistry(
         address _reg
     ) public {
@@ -55,7 +42,18 @@ contract BaseManagerImpl is ERC721, BaseManager{
         return;
     }
 
-
+     function registerInfo(string memory functionName,address[] memory nodeAddr) external{
+        // TODO: verify msg sender
+        baseNode = keccak256(bytes(functionName));
+        FunctionMetaData.name=functionName;
+        reg.setManager(baseNode, address(this));
+        for (uint i = 0; i < nodeAddr.length; i++){
+            memberAddrs.push(nodeAddr[i]);
+            uint256 id = memberAddrs.length;
+            memberNames[nodeAddr[i]]=id;
+            _register(id, nodeAddr[i], true);
+        }
+    }
 
     // Set the resolver for the TLD this registrar manages.
     function registerManager(string memory functionName) external override  {
@@ -66,23 +64,21 @@ contract BaseManagerImpl is ERC721, BaseManager{
     }
 
     function getMembersCounts() public view override returns(uint)  {
-        return membersCounts.current();
+        return memberAddrs.length;
     }
 
     function getName(address m) public view override returns(bytes32) {
       return bytes32(memberNames[m]);
     }
 
-    /**
-     * @dev Register a name.
-     * @param owner The address that should deploy the function.
-     */
-    function register(
+    
+    function registerNode(
         address owner
     ) public override returns (uint256) {
-        membersCounts.increment();
-        uint256 id = membersCounts.current();
+        memberAddrs.push(owner);
+        uint256 id = memberAddrs.length;
         memberNames[owner]=id;
+        emit NewMangerMember(owner, address(this), Functions.encodeFunctionRecord(FunctionMetaData));
         return _register(id, owner, true);
     }
    
@@ -101,9 +97,7 @@ contract BaseManagerImpl is ERC721, BaseManager{
             subNode = keccak256(abi.encodePacked(baseNode, bytes32(id)));
         }
 
-        _mint(owner,uint256(subNode));
-
-        return block.timestamp;
+        return uint256(subNode);
     }
 
     function updateMetaData(string memory Lang,string memory functionCode, bool doUpdate,string[] memory envVars ) external override{
@@ -115,7 +109,7 @@ contract BaseManagerImpl is ERC721, BaseManager{
         versionRecord.increment();
         FunctionMetaData.version=versionRecord.current();
 
-        emit MetaDataUpdated( msg.sender,address(this), Functions.encodeFunctionRecord(FunctionMetaData));
+        emitMetaData();
         return;
     }
 
@@ -124,8 +118,8 @@ contract BaseManagerImpl is ERC721, BaseManager{
         return Functions.encodeFunctionRecord(FunctionMetaData);
     }
     
-    function emitMetaData() external {
-        emit MetaDataUpdated( msg.sender,address(this), Functions.encodeFunctionRecord(FunctionMetaData));
+    function emitMetaData() public {
+        emit MetaDataUpdated( memberAddrs,address(this), Functions.encodeFunctionRecord(FunctionMetaData));
     }
     
 }

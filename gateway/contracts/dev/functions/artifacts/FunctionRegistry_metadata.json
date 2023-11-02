@@ -460,22 +460,6 @@
 		"remappings": []
 	},
 	"sources": {
-		"@openzeppelin/contracts/token/ERC721/IERC721.sol": {
-			"keccak256": "0x5bce51e11f7d194b79ea59fe00c9e8de9fa2c5530124960f29a24d4c740a3266",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://7e66dfde185df46104c11bc89d08fa0760737aa59a2b8546a656473d810a8ea4",
-				"dweb:/ipfs/QmXvyqtXPaPss2PD7eqPoSao5Szm2n6UMoiG8TZZDjmChR"
-			]
-		},
-		"@openzeppelin/contracts/utils/introspection/IERC165.sol": {
-			"keccak256": "0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f",
-				"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy"
-			]
-		},
 		"dev/functions/FunctionRegistry.sol": {
 			"keccak256": "0x2ac80bb180937c79e47d0a5dcef71619d90e9b8e6a12ccd8d83d35cbf63e54ed",
 			"license": "MIT",
@@ -485,11 +469,11 @@
 			]
 		},
 		"dev/functions/baseManager.sol": {
-			"keccak256": "0x49ecc52149afeb24c2f60e5b5c6b4b42f7ff6710bdfa2ff153793e5fe1e738ed",
+			"keccak256": "0xf4f2c21e45c9df04172fbe3c1310d0bdfacf2b5989977e9af8b0c409885b2397",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://ded5da99d01d1646a55808dd22d433438a408bb93e630843c5131cf6864d4145",
-				"dweb:/ipfs/QmYTmAjzkVKKrNVDBrUdDXAWtmd4FTuqpxWfjb4B6edksP"
+				"bzz-raw://4d882df8bf9afa58352d596fd5b89edf059208dfe8e3876daa5ada7e5fa01bf8",
+				"dweb:/ipfs/QmbZ9cFKnhh6ntK5yAFXzqJneAxawfLT8ypc4Qr4bSEdQ7"
 			]
 		},
 		"dev/functions/registry.sol": {
