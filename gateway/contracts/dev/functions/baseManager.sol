@@ -22,7 +22,7 @@ interface BaseManager {
 
     // Set the resolver for the TLD this registrar manages.
     function registerManager(string memory name) external;
-
+    function IsExistedFunction(string memory functionName)external view returns(bool);
     function getName(address m) external view  returns(bytes32) ;
     function getMembersCounts() external view returns(uint);
  

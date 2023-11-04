@@ -107,13 +107,21 @@ contract BaseManagerImpl is BaseManager{
         return uint256(subNode);
     }
 
+    function IsExistedFunction(string memory functionName)public override view returns(bool){
+        Functions.FunctionRecord memory r = FunctionMetaDataMap[functionName];
+        if (bytes(r.name).length == 0){
+            return false;
+        }
+         return true;
+    }
+
     function updateMetaData(string memory functionName,string memory Lang,string memory functionCode, bool doUpdate,string[] memory envVars ) external override{
        
         Functions.FunctionRecord memory r = FunctionMetaDataMap[functionName];
         if (bytes(r.name).length == 0){
            revert FunctionNotExist();
         }
-       
+
         // TODO: verify msg sender
         r.codeFrom=functionCode;
         r.doUpdate=doUpdate;

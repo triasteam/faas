@@ -72,6 +72,25 @@
 				"type": "event"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "functionName",
+						"type": "string"
+					}
+				],
+				"name": "IsExistedFunction",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "baseNode",
 				"outputs": [
@@ -356,27 +375,27 @@
 			]
 		},
 		"dev/functions/BaseManagerImpl.sol": {
-			"keccak256": "0x73893448f2c526fec73bac0557fcdc9474d823294f04012b180fe7dff4832327",
+			"keccak256": "0xaf31403b1141542153b99cc0c284c06f3d2d489d2ed9fa7e4f976c200b99efd6",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0cca893fb956606a2bfce776552c239b3b0494b36b7542fd61e3b244983d8931",
-				"dweb:/ipfs/QmVYFgQ2871LefmTodWDyXmt6t4bD6NvRxMjkJy1MpFgAy"
+				"bzz-raw://4aa095cae667e52d5c2308c30179efd97c520d9fef49c063f899bd32146ba2a5",
+				"dweb:/ipfs/QmaM4dDDyzBvAgefvsugodnTGoG3QXozT47uVcvgHfhc3M"
 			]
 		},
 		"dev/functions/Functions.sol": {
-			"keccak256": "0xdd83b75bb360fa43721e808abd5810660536282ee67d6462540abb2dfc71b00a",
+			"keccak256": "0x7a025ab6e3397b77b610a650cb6629955d2ac21c1f8e944658c7e9398e0a0a0a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://00e83234541cbaf93822dc16986cb61fe96158ba058e45798cb824cd2e30d484",
-				"dweb:/ipfs/QmautLfhn7R8GxGKtFi36kqm9mSawoJwBHQioztBsFcqGH"
+				"bzz-raw://f9cf41ecef051b86db43893ab512592e5b7c18f39d99a3f72b3479ed168ff283",
+				"dweb:/ipfs/QmUohvpehqkKxQTcaRdHCFGg78Z4RvKWLxqxdVqL287th5"
 			]
 		},
 		"dev/functions/baseManager.sol": {
-			"keccak256": "0xe9579a096621c491582a3190dc436712302a61a3e80682561fc877c459c31da4",
+			"keccak256": "0x33ed5fff1dd8cf0e2f28ce3e929f467f07e3e26fe5b384ea229846d7d58b6fca",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c983cdbb64e920d2a791d597e2ef1a90bb7c4b35c6ae98c51ecd5899b7a80de4",
-				"dweb:/ipfs/QmfMxhuf9dmtf3Q21o5rE91PKVuHp5JSY5sTfjprSKjtNo"
+				"bzz-raw://1dc1bba4016cb9fdc0e8d3b1f42d678a18c94890044d67923953327f7b750cd9",
+				"dweb:/ipfs/QmNbnp8WHRDvJqzxoLUWkQGtSN9z1NcqYPbw4cLmRRYHm4"
 			]
 		},
 		"dev/functions/registry.sol": {

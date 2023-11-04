@@ -28,6 +28,11 @@
 			},
 			{
 				"inputs": [],
+				"name": "EmptyFunctionName",
+				"type": "error"
+			},
+			{
+				"inputs": [],
 				"name": "EmptyRequestData",
 				"type": "error"
 			},
@@ -38,7 +43,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "EmptySource",
+				"name": "FunctionNotExist",
 				"type": "error"
 			},
 			{
@@ -329,27 +334,27 @@
 			]
 		},
 		"dev/functions/Functions.sol": {
-			"keccak256": "0xdd83b75bb360fa43721e808abd5810660536282ee67d6462540abb2dfc71b00a",
+			"keccak256": "0x7a025ab6e3397b77b610a650cb6629955d2ac21c1f8e944658c7e9398e0a0a0a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://00e83234541cbaf93822dc16986cb61fe96158ba058e45798cb824cd2e30d484",
-				"dweb:/ipfs/QmautLfhn7R8GxGKtFi36kqm9mSawoJwBHQioztBsFcqGH"
+				"bzz-raw://f9cf41ecef051b86db43893ab512592e5b7c18f39d99a3f72b3479ed168ff283",
+				"dweb:/ipfs/QmUohvpehqkKxQTcaRdHCFGg78Z4RvKWLxqxdVqL287th5"
 			]
 		},
 		"dev/functions/FunctionsClient.sol": {
-			"keccak256": "0x2354e789c061fd49f3ed9bcbf42da6fd2987cf33c202ad1efe109769e0e4af16",
+			"keccak256": "0x88da353a7ef92984291be1e1490ee0169efa6dd525987534199108b420fa7b62",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0e3b51649510e45793ca5dde9a3cc6a065365e27be1218b12d4ffc59882e69e3",
-				"dweb:/ipfs/QmTLt52YiMiosdcy6R6X4PmjgC4ZiaACpnJxsvGeoXDArj"
+				"bzz-raw://655e1e2c9f2544399eb0ffc0e786beebbf0a786cd4f914e1d40e8d4d13291620",
+				"dweb:/ipfs/QmXFG5Ck2coTHkHRstaNvoQ1yoyd9sUuQsxCnnBmVEDGh5"
 			]
 		},
 		"dev/functions/baseManager.sol": {
-			"keccak256": "0xe9579a096621c491582a3190dc436712302a61a3e80682561fc877c459c31da4",
+			"keccak256": "0x33ed5fff1dd8cf0e2f28ce3e929f467f07e3e26fe5b384ea229846d7d58b6fca",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c983cdbb64e920d2a791d597e2ef1a90bb7c4b35c6ae98c51ecd5899b7a80de4",
-				"dweb:/ipfs/QmfMxhuf9dmtf3Q21o5rE91PKVuHp5JSY5sTfjprSKjtNo"
+				"bzz-raw://1dc1bba4016cb9fdc0e8d3b1f42d678a18c94890044d67923953327f7b750cd9",
+				"dweb:/ipfs/QmNbnp8WHRDvJqzxoLUWkQGtSN9z1NcqYPbw4cLmRRYHm4"
 			]
 		},
 		"dev/functions/registry.sol": {
