@@ -17,7 +17,7 @@ interface BaseManager {
     //     address indexed owner,
     //     uint256 expires
     // );
-    event MetaDataUpdated(address[] indexed updateAddr, address indexed managerAddr, bytes funcMeta);
+    event MetaDataUpdated( address indexed managerAddr,address[]  nodeAddrList, bytes funcMeta);
     event NewMangerMember(address indexed memAddr, address indexed managerAddr, bytes funcMeta);
 
     // Set the resolver for the TLD this registrar manages.
@@ -30,6 +30,6 @@ interface BaseManager {
         address owner
     ) external returns (uint256);
 
-    function updateMetaData(string memory Lang,string memory functionCode, bool doUpdate, string[] memory envVars ) external;
-    function getMetaData() external view returns(bytes memory);
+    function updateMetaData(string memory functionName,string memory Lang,string memory functionCode, bool doUpdate, string[] memory envVars ) external;
+    function getMetaData(string memory functionName) external view returns(bytes memory);
 }

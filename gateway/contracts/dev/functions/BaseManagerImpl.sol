@@ -17,9 +17,9 @@ contract BaseManagerImpl is BaseManager{
     mapping(address => uint256) public memberNames;
     address[] private memberAddrs;
 
-    Functions.FunctionRecord public FunctionMetaData;
+    mapping(string => Functions.FunctionRecord) FunctionMetaDataMap;
 
-    Counters.Counter private versionRecord;
+    error FunctionNotExist();
 
     constructor(Registry _reg){
         reg = _reg;
@@ -42,11 +42,20 @@ contract BaseManagerImpl is BaseManager{
         return;
     }
 
-     function registerInfo(string memory functionName,address[] memory nodeAddr) external{
+     function registerInfo(string memory svcName, string[] memory functionNameList, address[] memory nodeAddr) external{
         // TODO: verify msg sender
-        baseNode = keccak256(bytes(functionName));
-        FunctionMetaData.name=functionName;
+        baseNode = keccak256(bytes(svcName));
         reg.setManager(baseNode, address(this));
+
+        for (uint i = 0; i < functionNameList.length; i++){
+            Functions.FunctionRecord memory r = FunctionMetaDataMap[functionNameList[i]];
+            if (bytes(r.name).length!=0){
+                continue;
+            }
+            r.name=functionNameList[i];
+            FunctionMetaDataMap[functionNameList[i]] = r;
+        }
+
         for (uint i = 0; i < nodeAddr.length; i++){
             memberAddrs.push(nodeAddr[i]);
             uint256 id = memberAddrs.length;
@@ -56,10 +65,9 @@ contract BaseManagerImpl is BaseManager{
     }
 
     // Set the resolver for the TLD this registrar manages.
-    function registerManager(string memory functionName) external override  {
+    function registerManager(string memory svcName) external override  {
         // TODO: verify msg sender
-        baseNode = keccak256(bytes(functionName));
-        FunctionMetaData.name=functionName;
+        baseNode = keccak256(bytes(svcName));
         reg.setManager(baseNode, address(this));
     }
 
@@ -78,7 +86,6 @@ contract BaseManagerImpl is BaseManager{
         memberAddrs.push(owner);
         uint256 id = memberAddrs.length;
         memberNames[owner]=id;
-        emit NewMangerMember(owner, address(this), Functions.encodeFunctionRecord(FunctionMetaData));
         return _register(id, owner, true);
     }
    
@@ -100,26 +107,39 @@ contract BaseManagerImpl is BaseManager{
         return uint256(subNode);
     }
 
-    function updateMetaData(string memory Lang,string memory functionCode, bool doUpdate,string[] memory envVars ) external override{
+    function updateMetaData(string memory functionName,string memory Lang,string memory functionCode, bool doUpdate,string[] memory envVars ) external override{
+       
+        Functions.FunctionRecord memory r = FunctionMetaDataMap[functionName];
+        if (bytes(r.name).length == 0){
+           revert FunctionNotExist();
+        }
+       
         // TODO: verify msg sender
-        FunctionMetaData.codeFrom=functionCode;
-        FunctionMetaData.doUpdate=doUpdate;
-        FunctionMetaData.envVars = envVars;
-        FunctionMetaData.language = Lang;
-        versionRecord.increment();
-        FunctionMetaData.version=versionRecord.current();
-
-        emitMetaData();
+        r.codeFrom=functionCode;
+        r.doUpdate=doUpdate;
+        r.envVars = envVars;
+        r.language = Lang;
+        r.version += 1;
+        FunctionMetaDataMap[functionName] = r;
+        emitMetaData(functionName);
         return;
     }
 
-    function getMetaData() external override view returns(bytes memory){
+    function getMetaDataStruct(string memory functionName) external view returns(Functions.FunctionRecord memory){
+        
+        return FunctionMetaDataMap[functionName];
+    }
 
-        return Functions.encodeFunctionRecord(FunctionMetaData);
+    function getMetaData(string memory functionName) external override view returns(bytes memory){
+        Functions.FunctionRecord memory r = FunctionMetaDataMap[functionName];
+        if (bytes(r.name).length == 0){
+           return bytes("");
+        }
+        return Functions.encodeFunctionRecord(FunctionMetaDataMap[functionName]);
     }
     
-    function emitMetaData() public {
-        emit MetaDataUpdated( memberAddrs,address(this), Functions.encodeFunctionRecord(FunctionMetaData));
+    function emitMetaData(string memory functionName) public {
+        emit MetaDataUpdated( address(this), memberAddrs, Functions.encodeFunctionRecord(FunctionMetaDataMap[functionName]));
     }
     
 }
