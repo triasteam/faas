@@ -17,7 +17,7 @@ interface BaseManager {
     //     address indexed owner,
     //     uint256 expires
     // );
-    event MetaDataUpdated(address[] indexed updateAddr, address indexed managerAddr, bytes funcMeta);
+    event MetaDataUpdated(address indexed managerAddr,address[] nodeAddrList,  bytes funcMeta);
     event NewMangerMember(address indexed memAddr, address indexed managerAddr, bytes funcMeta);
 
     // Set the resolver for the TLD this registrar manages.

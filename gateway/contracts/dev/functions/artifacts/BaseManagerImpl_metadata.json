@@ -21,15 +21,15 @@
 				"inputs": [
 					{
 						"indexed": true,
-						"internalType": "address[]",
-						"name": "updateAddr",
-						"type": "address[]"
-					},
-					{
-						"indexed": true,
 						"internalType": "address",
 						"name": "managerAddr",
 						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address[]",
+						"name": "nodeAddrList",
+						"type": "address[]"
 					},
 					{
 						"indexed": false,
@@ -311,11 +311,11 @@
 			]
 		},
 		"dev/functions/BaseManagerImpl.sol": {
-			"keccak256": "0x31df5998595bbae287a8d6b88b48fa9b9f87204cd355e4c9fccfa5de2b52f22b",
+			"keccak256": "0x3890782802985024af9c9f024bad4d4be31d8a4e893efb1db766d176c9ec6eff",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e8730a692735170ef0ae2c9d449d1671af5b72ac53be9d0da03a144a9df78471",
-				"dweb:/ipfs/QmP16t1Xcs73zSovtn32yf82gJa3vNvvKoA763hKvzYZoa"
+				"bzz-raw://54065adf756672c0ea67e3cc3e56386368401914762381d918b780ab78d3b8bd",
+				"dweb:/ipfs/QmdGoa3zSogrnD9JpYSecwh6811Ps3AuB3c4268QP9s94a"
 			]
 		},
 		"dev/functions/Functions.sol": {
@@ -327,11 +327,11 @@
 			]
 		},
 		"dev/functions/baseManager.sol": {
-			"keccak256": "0xcbdfede3aa7d770d9ed979dcf13112678250cccf8d25fb65c6087bace7463731",
+			"keccak256": "0x795c0c43fe19c57e1394df3218b7e1293033e40014e4755900e04ffe5384901d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1dbb8f97a9a66807e86c88d402b012b94f322d972a80b56f0b5672571484692c",
-				"dweb:/ipfs/QmTRAxgMEZMka89mKxsHGGQKKyLnwc818M4WbcLT9mDUav"
+				"bzz-raw://00410061dce302437574af9ecd49246b9083d23e4e02690368477676fcf60181",
+				"dweb:/ipfs/QmTYbfX1SeDzRK8mUiX6KqnBLbWfgXT3i37WEpgRjufWmX"
 			]
 		},
 		"dev/functions/registry.sol": {

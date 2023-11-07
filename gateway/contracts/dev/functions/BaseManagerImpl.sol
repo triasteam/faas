@@ -119,7 +119,7 @@ contract BaseManagerImpl is BaseManager{
     }
     
     function emitMetaData() public {
-        emit MetaDataUpdated( memberAddrs,address(this), Functions.encodeFunctionRecord(FunctionMetaData));
+        emit MetaDataUpdated(address(this),memberAddrs, Functions.encodeFunctionRecord(FunctionMetaData));
     }
     
 }
