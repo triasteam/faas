@@ -1,6 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.6;
 
+struct RequestBirth {
+    bytes32 requestId;
+    bytes32 functionId;
+    uint birth;
+    address msgSender;
+    bytes data;
+}
+
 /**
  * @title Chainlink Functions oracle interface.
  */
@@ -20,5 +28,7 @@ interface FunctionsOracleInterface {
     uint score, 
     bytes calldata resp,
     bytes calldata err
-    ) external returns (bool);
+  ) external returns (bool);
+
+  function getReq(bytes32 requestId) external view returns(RequestBirth memory);
 }

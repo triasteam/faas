@@ -28,7 +28,7 @@ contract BlogConsumer is FunctionsClient {
 
     error ArgsExceptions(string[]);
     error BlogOverflow(uint256 blogRealLength, uint expectBeginLength);
-
+ 
     constructor(address oracle,Registry _reg)FunctionsClient(oracle,_reg)  {}
     /**
      * @notice Send a simple request, 
@@ -67,6 +67,7 @@ contract BlogConsumer is FunctionsClient {
         blogIndex[blogId]=msg.sender;
         emit NewBlog(blogId, msg.sender);
         latestRequestId = assignedReqID;
+        
         return assignedReqID;
     }
     /**

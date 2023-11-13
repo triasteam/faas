@@ -27,4 +27,8 @@ contract SystemOracle is FunctionsOracleInterface {
         return allowedOracles.fulfillOracleRequest();
     }
 
+    function getReq(bytes32 requestId) public override view returns(RequestBirth memory){
+    return allowedOracles.getReq(requestId);
+  }
+
 }

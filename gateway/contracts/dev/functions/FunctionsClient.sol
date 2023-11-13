@@ -21,6 +21,7 @@ abstract contract FunctionsClient is FunctionsClientInterface{
   error SenderIsNotRegistry();
   error EmptyRequestData();
   error RequestIsAlreadyPending();
+  error NotFoundFaasNode();
 
   Registry private reg;
 
@@ -81,7 +82,20 @@ abstract contract FunctionsClient is FunctionsClientInterface{
     bytes memory response,
     bytes memory err
   ) external override recordFulfillment(requestId) {
-    
+
+    RequestBirth memory reqInfo = s_oracle.getReq(requestId);
+
+    address managerAddr = reg.manager(reqInfo.functionId);
+
+    require(managerAddr != address(0x0), "not found manager");
+
+    BaseManager m = BaseManager(managerAddr);
+
+    bytes32 nodeName = m.getName(msg.sender);
+    if (nodeName==bytes32(0x0)){
+        revert NotFoundFaasNode();
+    }
+
     s_oracle.fulfillRequestByNode(requestId, score, response, err);
     emit RequestFulfilled(requestId, msg.sender,score,response, err);
   }

@@ -6,6 +6,8 @@ import "./selector.sol";
 import "./registry.sol";
 import "../interfaces/FunctionsClientInterface.sol";
 
+
+
 /**
  * @title Functions Oracle contract
  * @notice Contract that nodes of a Decentralized Oracle Network (DON) interact with
@@ -30,35 +32,28 @@ contract FunctionsOracle is FunctionsOracleInterface {
   error EmptyBillingRegistry();
   error UnauthorizedPublicKeyChange();
 
-  struct responseInfo {
+  struct ResponseInfo {
     address node;
     uint score;
     bytes resp;
     bytes err;
   }
 
-  struct requestBirth {
-    bytes32 requestId;
-    bytes32 functionId;
-    uint birth;
-    address msgSender;
-    bytes data;
-  }
+  
 
   uint256 constant public EXPIRY_TIME = 5 minutes;
   mapping(bytes32 => mapping(address => bool)) private allowedOracles;
   //  mapping(bytes32 => Callback) private callbacks;//requestId
 
   //requestId => node address => responseInfo
-  mapping(bytes32 => mapping( address => responseInfo)) private functionResponse;
+  mapping(bytes32 => mapping( address => ResponseInfo)) private functionResponse;
   // requestId => resp address queue by time (young -> old) and score (big -> little)
   mapping(bytes32 => DoubleEndedQueue.Bytes32Deque) private sortRespAddr;
-  DoubleEndedQueue.Bytes32Deque pendingRespQueue;
   
   DoubleEndedQueue.Bytes32Deque reqQueen; // request birth
-  mapping(bytes32 => requestBirth) reqMap;
+  mapping(bytes32 => RequestBirth) reqMap;//requestId => reqInfo
 
-  uint256[] public respSelector;
+  ResponseInfo[] public respSelector;
 
   Registry private reg;
 
@@ -92,12 +87,12 @@ contract FunctionsOracle is FunctionsOracleInterface {
     );
 
     DoubleEndedQueue.pushBack(reqQueen,requestId);
-    reqMap[requestId]=requestBirth(requestId, functionId, block.timestamp, msg.sender, data);
+    reqMap[requestId]=RequestBirth(requestId, functionId, block.timestamp, msg.sender, data);
     return requestId;
   }
 
-  function getReq(bytes32 requestId) public view returns(uint){
-    return reqMap[requestId].birth;
+  function getReq(bytes32 requestId) public override view returns(RequestBirth memory){
+    return reqMap[requestId];
   }
 
   /**
@@ -126,7 +121,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
       return true;
     }
 
-    responseInfo memory respA = responseInfo(tx.origin, score, resp, err);
+    ResponseInfo memory respA = ResponseInfo(tx.origin, score, resp, err);
 
     functionResponse[_requestId][tx.origin] = respA;
 
@@ -137,7 +132,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
     }
 
     bytes32 addrBytes = DoubleEndedQueue.front(sortRespAddr[_requestId]);
-    responseInfo memory oldResp =  functionResponse[_requestId][address(uint160(uint256(addrBytes)))];
+    ResponseInfo memory oldResp =  functionResponse[_requestId][address(uint160(uint256(addrBytes)))];
     if (oldResp.score <= score){
       DoubleEndedQueue.pushFront(sortRespAddr[_requestId], bytes32(uint256(uint160(tx.origin))));
     }else{
@@ -151,7 +146,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
   function selectResp(
     bool isTimeout,
     bytes32 requestId
-  ) private view returns(responseInfo memory tmpResp,bool isWaitNextBlock){
+  ) private view returns(ResponseInfo memory tmpResp,bool isWaitNextBlock){
 
     if (isTimeout && DoubleEndedQueue.empty(sortRespAddr[requestId])) {
       return (tmpResp, isWaitNextBlock);
@@ -169,31 +164,33 @@ contract FunctionsOracle is FunctionsOracleInterface {
       return (tmpResp, isWaitNextBlock);
     }
 
-    uint splitIndex = 0;
+    
     addrBytes = DoubleEndedQueue.front( sortRespAddr[requestId]);
+    // max score
     tmpResp = functionResponse[requestId][address(uint160(uint256(addrBytes)))];
 
-    for (uint i = 1; i < DoubleEndedQueue.length(  sortRespAddr[requestId])-1; i++) {
-        addrBytes = DoubleEndedQueue.at(  sortRespAddr[requestId], i);
-        responseInfo memory oldTmpResp = functionResponse[requestId][address(uint160(uint256(addrBytes)))];
-        if (tmpResp.score > oldTmpResp.score || oldTmpResp.score==0 ){
-          break;
-        }
-        tmpResp = oldTmpResp;
-        splitIndex++;
-    }
-    if (splitIndex != 0) {
-      uint256 vtfValue = uint256(blockhash(block.number-1));
-      splitIndex = vtfValue % splitIndex + 1;
-    }
+    // uint splitIndex = 0;
+    // for (uint i = 1; i < DoubleEndedQueue.length(  sortRespAddr[requestId])-1; i++) {
+    //     addrBytes = DoubleEndedQueue.at(  sortRespAddr[requestId], i);
+    //     ResponseInfo memory oldTmpResp = functionResponse[requestId][address(uint160(uint256(addrBytes)))];
+    //     if (tmpResp.score > oldTmpResp.score || oldTmpResp.score==0 ){
+    //       break;
+    //     }
+    //     tmpResp = oldTmpResp;
+    //     splitIndex++;
+    // }
+    // if (splitIndex != 0) {
+    //   uint256 vtfValue = uint256(blockhash(block.number-1));
+    //   splitIndex = vtfValue % splitIndex + 1;
+    // }
  
-    addrBytes = DoubleEndedQueue.at(sortRespAddr[requestId], splitIndex);
-    tmpResp = functionResponse[requestId][address(uint160(uint256(addrBytes)))];
+    // addrBytes = DoubleEndedQueue.at(sortRespAddr[requestId], splitIndex);
+    // tmpResp = functionResponse[requestId][address(uint160(uint256(addrBytes)))];
   
     return (tmpResp, isWaitNextBlock);
   }
 
-  function getReqFromQueen(uint qIndex) private view returns(requestBirth memory reqInfo, bool isDel){
+  function getReqFromQueen(uint qIndex) private view returns(RequestBirth memory reqInfo, bool isDel){
     bytes32 reqId = DoubleEndedQueue.at(reqQueen, qIndex);
     reqInfo = reqMap[reqId];
 
@@ -211,7 +208,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
     
     for (uint reqIndex = 0; reqIndex < DoubleEndedQueue.length(reqQueen); reqIndex++) {
 
-      requestBirth memory reqInfo;
+      RequestBirth memory reqInfo;
       bool isDel;
 
       (reqInfo, isDel)= getReqFromQueen(reqIndex);
@@ -221,7 +218,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
 
       bool isTimeout = reqInfo.birth + EXPIRY_TIME < block.timestamp;
 
-      responseInfo memory tmpResp;
+      ResponseInfo memory tmpResp;
       bool isWait;
 
       (tmpResp, isWait) = selectResp(isTimeout, reqInfo.requestId);
@@ -255,10 +252,17 @@ contract FunctionsOracle is FunctionsOracleInterface {
     return true;
   }
 
-  function getSelectorResp(uint i) public view returns(uint){
-    
-    require(i < respSelector.length, "out of respSelector length");
-      return respSelector[i]; 
+  function getRespWith(bytes32 reqID) public  returns(ResponseInfo[] memory){
+    delete respSelector;
+
+
+    for (uint i = 0; i< DoubleEndedQueue.length(sortRespAddr[reqID]); i++){
+      bytes32 addrBytes = DoubleEndedQueue.at(sortRespAddr[reqID], i);
+      respSelector.push(functionResponse[reqID][address(uint160(uint256(addrBytes)))]);
+
+    }
+  
+      return respSelector; 
   }
   /**
    * @dev Reverts if request ID does not exist
