@@ -7,8 +7,6 @@ import "./dev/functions/BaseManagerImpl.sol";
 
 /**
  * @title Functions Consumer contract
- * @notice This contract is a demonstration of using Functions.
- * @notice NOT FOR PRODUCTION USE
  */
 contract BlogConsumer is FunctionsClient {
     using Functions for Functions.Request;
@@ -18,8 +16,6 @@ contract BlogConsumer is FunctionsClient {
     bytes public latestError;
 
     event FuncResponse(bytes32 indexed requestId, bytes result, bytes err);
-    event NewBlog(uint256 indexed blogId, address author);
-    
 
     mapping( uint256 => bytes) blogContent;
     mapping( address => uint256[])  blogOwnerIndex;
@@ -65,7 +61,6 @@ contract BlogConsumer is FunctionsClient {
         blogContent[blogId]=bytes(args[1]);
         blogOwnerIndex[msg.sender].push(blogId);
         blogIndex[blogId]=msg.sender;
-        emit NewBlog(blogId, msg.sender);
         latestRequestId = assignedReqID;
         
         return assignedReqID;

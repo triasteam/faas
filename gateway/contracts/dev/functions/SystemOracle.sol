@@ -4,31 +4,17 @@ pragma solidity ^0.8.6;
 import "../interfaces/FunctionsOracleInterface.sol";
 
 
-contract SystemOracle is FunctionsOracleInterface {
+contract SystemOracle {
   
     FunctionsOracleInterface private allowedOracles;
   
-    function init() public override {
+    function init() public  {
           allowedOracles = FunctionsOracleInterface(address(0x0000000000000000000000000000000000002004));
     }
 
-    function sendRequest(bytes32 ,bytes memory) external  override pure returns (bytes32) {
-        bytes32 a;
-        return a;
-    }
-
-    function fulfillRequestByNode(bytes32 ,uint ,bytes calldata ,bytes calldata) public override pure returns (bool) {
-        return true;
-    }
-
-
-    function fulfillOracleRequest() external override returns (bool) {
+    function fulfillOracleRequest() external returns (bool) {
         
         return allowedOracles.fulfillOracleRequest();
     }
-
-    function getReq(bytes32 requestId) public override view returns(RequestBirth memory){
-    return allowedOracles.getReq(requestId);
-  }
 
 }

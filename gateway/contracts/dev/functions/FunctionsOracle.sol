@@ -25,7 +25,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
   event OracleResponse(bytes32 indexed requestId);
   event OracleRequestTimeout(bytes32 indexed requestId, uint birth, uint blockTime,string reason);
   event SelectedResponse(bytes32 indexed id,address indexed node, uint score,bytes result, bytes err);
-
+ 
   error EmptyRequestData();
   error InconsistentReportData();
   error EmptyPublicKey();
