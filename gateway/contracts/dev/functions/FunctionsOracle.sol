@@ -33,6 +33,8 @@ contract FunctionsOracle is FunctionsOracleInterface {
   error UnauthorizedPublicKeyChange();
 
   struct ResponseInfo {
+    bytes32 requestId;
+    address funcTxAddress;
     address node;
     uint score;
     bytes resp;
@@ -49,6 +51,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
   mapping(bytes32 => mapping( address => ResponseInfo)) private functionResponse;
   // requestId => resp address queue by time (young -> old) and score (big -> little)
   mapping(bytes32 => DoubleEndedQueue.Bytes32Deque) private sortRespAddr;
+  mapping(bytes32 => ResponseInfo) public onlyResp;
   
   DoubleEndedQueue.Bytes32Deque reqQueen; // request birth
   mapping(bytes32 => RequestBirth) reqMap;//requestId => reqInfo
@@ -121,7 +124,7 @@ contract FunctionsOracle is FunctionsOracleInterface {
       return true;
     }
 
-    ResponseInfo memory respA = ResponseInfo(tx.origin, score, resp, err);
+    ResponseInfo memory respA = ResponseInfo(_requestId,reqMap[_requestId].msgSender,tx.origin, score, resp, err);
 
     functionResponse[_requestId][tx.origin] = respA;
 
@@ -236,8 +239,10 @@ contract FunctionsOracle is FunctionsOracleInterface {
           return true;
       }
 
+      onlyResp[reqInfo.requestId]= tmpResp;
       emit SelectedResponse(reqInfo.requestId, 
             tmpResp.node, tmpResp.score, tmpResp.resp, tmpResp.err);
+
 
       if (reqIndex == 0){
         isPopFront = true;
@@ -259,10 +264,14 @@ contract FunctionsOracle is FunctionsOracleInterface {
     for (uint i = 0; i< DoubleEndedQueue.length(sortRespAddr[reqID]); i++){
       bytes32 addrBytes = DoubleEndedQueue.at(sortRespAddr[reqID], i);
       respSelector.push(functionResponse[reqID][address(uint160(uint256(addrBytes)))]);
-
     }
   
       return respSelector; 
+  }
+
+  function getOnlyRespWith(bytes32 reqID) public view returns(ResponseInfo memory){
+  
+      return  onlyResp[reqID]; 
   }
   /**
    * @dev Reverts if request ID does not exist
